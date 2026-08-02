@@ -143,6 +143,7 @@ function Index() {
         <Hero />
         <Features />
         <Servers />
+        <Pricing />
         <Showcase />
         <DownloadSection />
         <Faq open={openFaq} setOpen={setOpenFaq} />
@@ -176,6 +177,9 @@ function Header() {
             </a>
             <a href="#server" className="transition-colors hover:text-foreground">
               Server
+            </a>
+            <a href="#prezzi" className="transition-colors hover:text-foreground">
+              Prezzi
             </a>
             <a href="#download" className="transition-colors hover:text-foreground">
               Download
@@ -340,6 +344,78 @@ function Servers() {
             </li>
           ))}
         </ul>
+      </div>
+    </section>
+  );
+}
+
+const plans = [
+  {
+    name: "Piano 15 giorni",
+    price: "8 €",
+    duration: "15 giorni di licenza",
+    cta: "Acquista 15 giorni",
+    highlight: false,
+  },
+  {
+    name: "Piano 30 giorni",
+    price: "15 €",
+    duration: "30 giorni di licenza",
+    cta: "Acquista 30 giorni",
+    highlight: true,
+  },
+];
+
+const planPerks = [
+  "Tutte le funzioni della mod incluse",
+  "Aggiornamenti costanti inclusi",
+  "Assistenza tramite ticket Discord",
+];
+
+function Pricing() {
+  return (
+    <section id="prezzi" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
+      <SectionTitle
+        eyebrow="Prezzi"
+        title="Scegli la tua licenza"
+        text="Nessun carrello e nessun pagamento automatico: apri un ticket sul Discord ufficiale e lo staff completa l'acquisto con te."
+      />
+      <div className="mx-auto mt-12 grid max-w-4xl gap-5 md:grid-cols-2">
+        {plans.map((p) => (
+          <article
+            key={p.name}
+            className={`glass-card relative flex flex-col rounded-2xl p-7 ${
+              p.highlight ? "glow-ring border-primary/60" : ""
+            }`}
+          >
+            {p.highlight ? (
+              <span className="absolute top-5 right-5 rounded-md bg-accent/15 px-2 py-0.5 text-[11px] font-bold tracking-wider text-accent uppercase">
+                Migliore offerta
+              </span>
+            ) : null}
+            <h3 className="font-display text-lg font-bold">{p.name}</h3>
+            <p className="mt-4 font-display text-4xl font-bold text-gradient">{p.price}</p>
+            <p className="mt-2 text-sm text-muted-foreground">{p.duration}</p>
+            <ul className="mt-6 flex-1 space-y-2 text-sm text-muted-foreground">
+              {planPerks.map((perk) => (
+                <li key={perk} className="flex items-start gap-2">
+                  <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+                  {perk}
+                </li>
+              ))}
+            </ul>
+            <a
+              href={BUY_URL}
+              className={`mt-8 inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 font-display font-bold transition-transform hover:scale-105 ${
+                p.highlight
+                  ? "bg-[image:var(--gradient-accent)] text-primary-foreground"
+                  : "border border-border bg-card/70 text-foreground"
+              }`}
+            >
+              <MessageCircle className="h-5 w-5" /> {p.cta}
+            </a>
+          </article>
+        ))}
       </div>
     </section>
   );
