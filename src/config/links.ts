@@ -1,0 +1,17 @@
+export const LINKS = {
+  discordInvite: "https://discord.gg/yQMrcWxY",
+  ticketIt: "https://discord.com/channels/1530601137462448400/1530637947064553633",
+  ticketEn: "https://discord.com/channels/1530601137462448400/1530638052010102855",
+  guideIt: "https://discord.com/channels/1530601137462448400/1530897133719257148",
+  guideEn: "https://discord.com/channels/1530601137462448400/1530897159820542103",
+  server: {
+    name: "I-Longju",
+    url: "https://i-longju.com/",
+    status: "OK",
+  },
+} as const;
+
+export const EXTERNAL_LINK_PROPS = {
+  target: "_blank",
+  rel: "noopener noreferrer",
+} as const;
