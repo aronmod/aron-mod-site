@@ -9,7 +9,6 @@ import {
   Swords,
   Gauge,
   Boxes,
-  Download,
   MessageCircle,
   ShoppingCart,
   Play,
@@ -17,6 +16,8 @@ import {
   Ticket,
   Mail,
   Server,
+  BookOpen,
+  ExternalLink,
 } from "lucide-react";
 
 import logo from "@/assets/aron-logo.png.asset.json";
@@ -24,24 +25,23 @@ import heroBg from "@/assets/hero-bg.jpg";
 import shot1 from "@/assets/shot-1.jpg";
 import shot2 from "@/assets/shot-2.jpg";
 import shot3 from "@/assets/shot-3.jpg";
-
-const DISCORD_URL = "https://discord.gg/aronmod";
-const BUY_URL = "https://discord.gg/aronmod";
+import { LINKS, EXTERNAL_LINK_PROPS } from "@/config/links";
+import { LinkModal } from "@/components/LinkModal";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Aron Mod — Domina Metin2 con la mod definitiva" },
+      { title: "Aron Mod — La mod premium per Metin2 su retro server" },
       {
         name: "description",
         content:
-          "Aron Mod: la mod premium per Metin2 con auto farm, ESP, bot intelligente e anti-detect. Funzioni, server supportati, download del loader e supporto Discord 24/7.",
+          "Aron Mod: mod premium per retro server Metin2 autorizzati. Funzioni, server supportati, licenze da 8 €, guide e assistenza tramite ticket sul Discord ufficiale.",
       },
-      { property: "og:title", content: "Aron Mod — Domina Metin2" },
+      { property: "og:title", content: "Aron Mod — Domina Metin con Aron Mod" },
       {
         property: "og:description",
         content:
-          "Auto farm, ESP, bot e anti-detect per Metin2. Scarica il loader e entra nel Discord di Aron Mod.",
+          "Auto farm, ESP e bot avanzato per retro server Metin2 autorizzati. Licenze da 8 €, guide e ticket sul Discord ufficiale.",
       },
     ],
   }),
@@ -76,8 +76,8 @@ const features = [
   },
   {
     icon: ShieldCheck,
-    title: "Anti-Detect",
-    text: "Iniezione stealth, randomizzazione dei pattern e bypass aggiornato costantemente contro i sistemi anti-cheat.",
+    title: "Configurazione sicura",
+    text: "Profili salvabili, impostazioni per singolo personaggio e valori consigliati per un uso responsabile sul server.",
   },
   {
     icon: Gauge,
@@ -91,33 +91,18 @@ const features = [
   },
 ];
 
-const servers = [
-  "Metin2 Official IT",
-  "Metin2 Official DE",
-  "Metin2 Official TR",
-  "Metin2 Official EN",
-  "Metin2 Official FR",
-  "Metin2 Official ES",
-  "Metin2 Official PL",
-  "Metin2 Official RO",
-  "Server privati 2013+",
-  "Server privati Old School",
-  "Server privati Custom",
-  "Client 40k / 2089",
-];
-
 const faq = [
   {
     q: "Aron Mod è sicuro da usare?",
-    a: "Aron Mod utilizza un sistema di iniezione stealth con pattern randomizzati e viene aggiornato costantemente. Nessuna mod può garantire il 100% di sicurezza, ma consigliamo sempre un uso moderato e responsabile.",
+    a: "Aron Mod è pensata esclusivamente per retro server e server privati autorizzati. Consigliamo sempre un uso moderato e responsabile, nel rispetto delle regole del server su cui giochi.",
   },
   {
     q: "Come funziona l'acquisto?",
-    a: "Dopo l'acquisto ricevi una chiave di licenza legata al tuo HWID. Inserisci la chiave nel loader e sei pronto a giocare in meno di due minuti.",
+    a: "Per acquistare Aron Mod, entra nel nostro Discord ufficiale e apri un ticket nella sezione italiana o inglese. Lo staff ti fornirà tutte le informazioni necessarie e ti guiderà durante l'acquisto.",
   },
   {
     q: "Su quali server funziona?",
-    a: "Aron Mod supporta i server ufficiali e la maggior parte dei server privati. Trovi la lista completa nella sezione Server supportati, aggiornata a ogni release.",
+    a: "Aron Mod è attualmente disponibile per I-Longju. Consulta la sezione Server supportati per accedere al sito del server. Ulteriori compatibilità verranno comunicate sul nostro Discord ufficiale.",
   },
   {
     q: "Posso usarla su più PC?",
@@ -125,7 +110,7 @@ const faq = [
   },
   {
     q: "Quali sono i requisiti?",
-    a: "Windows 10 o 11 a 64 bit, client Metin2 aggiornato e antivirus configurato con un'eccezione per il loader.",
+    a: "Windows 10 o 11 a 64 bit, client del retro server aggiornato e antivirus configurato con un'eccezione per il loader.",
   },
   {
     q: "Come ricevo gli aggiornamenti?",
@@ -133,28 +118,108 @@ const faq = [
   },
 ];
 
+type ModalHandlers = {
+  openTicket: () => void;
+  openGuide: () => void;
+};
+
 function Index() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [ticketOpen, setTicketOpen] = useState(false);
+  const [guideOpen, setGuideOpen] = useState(false);
+
+  const handlers: ModalHandlers = {
+    openTicket: () => setTicketOpen(true),
+    openGuide: () => setGuideOpen(true),
+  };
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Header {...handlers} />
       <main>
-        <Hero />
+        <Hero {...handlers} />
         <Features />
         <Servers />
-        <Pricing />
+        <Pricing {...handlers} />
         <Showcase />
-        <DownloadSection />
+        <DownloadSection {...handlers} />
         <Faq open={openFaq} setOpen={setOpenFaq} />
-        <Support />
+        <Support {...handlers} />
       </main>
       <Footer />
+
+      <LinkModal
+        open={ticketOpen}
+        onClose={() => setTicketOpen(false)}
+        title="Apri un ticket"
+        description="Scegli la lingua con cui vuoi ricevere assistenza per l'acquisto."
+        footer={
+          <>
+            Non sei ancora nel nostro Discord?{" "}
+            <a
+              href={LINKS.discordInvite}
+              {...EXTERNAL_LINK_PROPS}
+              className="font-semibold text-accent underline underline-offset-4"
+            >
+              Entra prima nel server.
+            </a>
+          </>
+        }
+      >
+        <a
+          href={LINKS.ticketIt}
+          {...EXTERNAL_LINK_PROPS}
+          className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-accent)] px-5 py-3 font-display font-bold text-primary-foreground transition-transform hover:scale-105"
+        >
+          <Ticket className="h-4 w-4" /> Italiano
+        </a>
+        <a
+          href={LINKS.ticketEn}
+          {...EXTERNAL_LINK_PROPS}
+          className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-card/70 px-5 py-3 font-display font-bold transition-colors hover:border-primary"
+        >
+          <Ticket className="h-4 w-4 text-accent" /> English
+        </a>
+      </LinkModal>
+
+      <LinkModal
+        open={guideOpen}
+        onClose={() => setGuideOpen(false)}
+        title="Come ottenere la mod"
+        description="Consulta la guida nella tua lingua e segui le istruzioni pubblicate nel nostro Discord."
+        footer={
+          <>
+            Non fai ancora parte della community?{" "}
+            <a
+              href={LINKS.discordInvite}
+              {...EXTERNAL_LINK_PROPS}
+              className="font-semibold text-accent underline underline-offset-4"
+            >
+              Entra nel Discord ufficiale.
+            </a>
+          </>
+        }
+      >
+        <a
+          href={LINKS.guideIt}
+          {...EXTERNAL_LINK_PROPS}
+          className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-accent)] px-5 py-3 font-display font-bold text-primary-foreground transition-transform hover:scale-105"
+        >
+          <BookOpen className="h-4 w-4" /> Guida italiana
+        </a>
+        <a
+          href={LINKS.guideEn}
+          {...EXTERNAL_LINK_PROPS}
+          className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-card/70 px-5 py-3 font-display font-bold transition-colors hover:border-primary"
+        >
+          <BookOpen className="h-4 w-4 text-accent" /> English guide
+        </a>
+      </LinkModal>
     </div>
   );
 }
 
-function Header() {
+function Header({ openTicket }: ModalHandlers) {
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 sm:px-6">
@@ -182,25 +247,26 @@ function Header() {
               Prezzi
             </a>
             <a href="#download" className="transition-colors hover:text-foreground">
-              Download
+              Loader
             </a>
             <a href="#faq" className="transition-colors hover:text-foreground">
               FAQ
             </a>
           </div>
-          <a
-            href={BUY_URL}
+          <button
+            type="button"
+            onClick={openTicket}
             className="shrink-0 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition-transform hover:scale-105"
           >
             Acquista
-          </a>
+          </button>
         </nav>
       </div>
     </header>
   );
 }
 
-function Hero() {
+function Hero({ openTicket }: ModalHandlers) {
   return (
     <section id="top" className="relative overflow-hidden">
       <img
@@ -232,7 +298,7 @@ function Hero() {
           className="reveal mt-8 inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-4 py-1.5 text-xs font-semibold tracking-[0.2em] text-accent uppercase"
           style={{ animationDelay: "80ms" }}
         >
-          <ShieldCheck className="h-3.5 w-3.5" /> Undetected · v4.2
+          <ShieldCheck className="h-3.5 w-3.5" /> Solo retro server autorizzati
         </p>
 
         <h1
@@ -246,43 +312,36 @@ function Hero() {
           className="reveal mx-auto mt-5 max-w-2xl text-base text-muted-foreground sm:text-lg"
           style={{ animationDelay: "200ms" }}
         >
-          La mod premium per Metin2: auto farm, ESP, bot avanzato e protezione anti-detect in
-          un'unica interfaccia, leggera e aggiornata ogni settimana.
+          La mod premium per i retro server di Metin2: auto farm, ESP e bot avanzato in un'unica
+          interfaccia leggera e aggiornata costantemente.
         </p>
 
         <div
           className="reveal mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row"
           style={{ animationDelay: "260ms" }}
         >
-          <a
-            href={BUY_URL}
+          <button
+            type="button"
+            onClick={openTicket}
             className="glow-ring inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-accent)] px-7 py-3.5 font-display text-base font-bold text-primary-foreground transition-transform hover:scale-105 sm:w-auto"
           >
             <ShoppingCart className="h-5 w-5" /> Acquista la mod
-          </a>
+          </button>
           <a
-            href={DISCORD_URL}
+            href={LINKS.discordInvite}
+            {...EXTERNAL_LINK_PROPS}
             className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card/70 px-7 py-3.5 font-display text-base font-bold text-foreground transition-all hover:border-discord hover:bg-discord/15 sm:w-auto"
           >
             <MessageCircle className="h-5 w-5 text-discord" /> Entra nel Discord
           </a>
         </div>
 
-        <dl
-          className="reveal mx-auto mt-14 grid max-w-2xl grid-cols-3 gap-4"
-          style={{ animationDelay: "320ms" }}
-        >
-          {[
-            ["12.000+", "Utenti attivi"],
-            ["99.9%", "Uptime loader"],
-            ["24/7", "Supporto ticket"],
-          ].map(([value, label]) => (
-            <div key={label} className="glass-card rounded-xl px-3 py-4">
-              <dt className="font-display text-xl font-bold text-accent sm:text-2xl">{value}</dt>
-              <dd className="mt-1 text-xs text-muted-foreground sm:text-sm">{label}</dd>
-            </div>
-          ))}
-        </dl>
+        <div className="reveal mt-14 flex justify-center" style={{ animationDelay: "320ms" }}>
+          <div className="glass-card w-full max-w-xs rounded-xl px-6 py-4 text-center">
+            <p className="font-display text-xl font-bold text-accent sm:text-2xl">24/7</p>
+            <p className="mt-1 text-xs text-muted-foreground sm:text-sm">Supporto ticket Discord</p>
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -328,21 +387,23 @@ function Servers() {
         <SectionTitle
           eyebrow="Compatibilità"
           title="Server supportati"
-          text="Lista aggiornata a ogni release. Non trovi il tuo server? Richiedi il supporto su Discord."
+          text="Aron Mod è attualmente disponibile per il server indicato qui sotto. La lista verrà aggiornata con l'aggiunta di nuovi server."
         />
-        <ul className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {servers.map((s) => (
-            <li
-              key={s}
-              className="glass-card flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold"
+        <ul className="mx-auto mt-12 grid max-w-md gap-3">
+          <li className="glass-card flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
+            <Server className="h-4 w-4 shrink-0 text-accent" />
+            <a
+              href={LINKS.server.url}
+              {...EXTERNAL_LINK_PROPS}
+              className="inline-flex min-w-0 items-center gap-1.5 truncate transition-colors hover:text-accent"
             >
-              <Server className="h-4 w-4 shrink-0 text-accent" />
-              <span className="min-w-0 truncate">{s}</span>
-              <span className="ml-auto shrink-0 rounded-md bg-accent/15 px-2 py-0.5 text-[11px] font-bold text-accent">
-                OK
-              </span>
-            </li>
-          ))}
+              <span className="truncate">{LINKS.server.name}</span>
+              <ExternalLink className="h-3.5 w-3.5 shrink-0" />
+            </a>
+            <span className="ml-auto shrink-0 rounded-md bg-accent/15 px-2 py-0.5 text-[11px] font-bold text-accent">
+              {LINKS.server.status}
+            </span>
+          </li>
         </ul>
       </div>
     </section>
@@ -372,7 +433,7 @@ const planPerks = [
   "Assistenza tramite ticket Discord",
 ];
 
-function Pricing() {
+function Pricing({ openTicket, openGuide }: ModalHandlers) {
   return (
     <section id="prezzi" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
       <SectionTitle
@@ -404,8 +465,9 @@ function Pricing() {
                 </li>
               ))}
             </ul>
-            <a
-              href={BUY_URL}
+            <button
+              type="button"
+              onClick={openTicket}
               className={`mt-8 inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 font-display font-bold transition-transform hover:scale-105 ${
                 p.highlight
                   ? "bg-[image:var(--gradient-accent)] text-primary-foreground"
@@ -413,9 +475,19 @@ function Pricing() {
               }`}
             >
               <MessageCircle className="h-5 w-5" /> {p.cta}
-            </a>
+            </button>
           </article>
         ))}
+      </div>
+
+      <div className="mt-8 flex justify-center">
+        <button
+          type="button"
+          onClick={openGuide}
+          className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card/70 px-7 py-3.5 font-display font-bold transition-colors hover:border-primary"
+        >
+          <BookOpen className="h-5 w-5 text-accent" /> Come ottenere Aron Mod
+        </button>
       </div>
     </section>
   );
@@ -437,7 +509,8 @@ function Showcase() {
 
       <div className="mt-12 grid gap-4 lg:grid-cols-3">
         <a
-          href={DISCORD_URL}
+          href={LINKS.discordInvite}
+          {...EXTERNAL_LINK_PROPS}
           className="glass-card group relative col-span-1 overflow-hidden rounded-2xl lg:col-span-2"
         >
           <img
@@ -478,22 +551,22 @@ function Showcase() {
   );
 }
 
-function DownloadSection() {
+function DownloadSection({ openTicket, openGuide }: ModalHandlers) {
   return (
     <section id="download" className="relative overflow-hidden border-y border-border/60">
       <div className="absolute inset-0 bg-[image:var(--gradient-hero)] opacity-70" />
       <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-4 py-20 sm:px-6 sm:py-24 lg:grid-cols-2">
         <div>
           <p className="text-xs font-bold tracking-[0.25em] text-accent uppercase">Loader</p>
-          <h2 className="mt-3 text-3xl font-bold sm:text-4xl">Scarica il loader di Aron Mod</h2>
+          <h2 className="mt-3 text-3xl font-bold sm:text-4xl">Come ottenere il loader</h2>
           <p className="mt-4 text-muted-foreground">
-            Un solo eseguibile: avvia, inserisci la licenza e il gioco parte già moddato. Il loader
-            si aggiorna da solo a ogni nuova release.
+            Il loader di Aron Mod viene distribuito esclusivamente tramite il Discord ufficiale:
+            segui la guida nella tua lingua e lo staff ti indicherà come riceverlo.
           </p>
           <ul className="mt-6 space-y-2 text-sm text-muted-foreground">
             {[
               "Windows 10 / 11 · 64 bit",
-              "Versione 4.2 · 8.4 MB",
+              "Distribuzione tramite Discord ufficiale",
               "Aggiornamento automatico integrato",
               "Aggiungi un'eccezione nell'antivirus prima dell'avvio",
             ].map((i) => (
@@ -504,18 +577,20 @@ function DownloadSection() {
             ))}
           </ul>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <a
-              href={DISCORD_URL}
+            <button
+              type="button"
+              onClick={openGuide}
               className="glow-ring inline-flex items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-accent)] px-7 py-3.5 font-display font-bold text-primary-foreground transition-transform hover:scale-105"
             >
-              <Download className="h-5 w-5" /> Scarica il loader
-            </a>
-            <a
-              href={BUY_URL}
+              <BookOpen className="h-5 w-5" /> Come ottenere Aron Mod
+            </button>
+            <button
+              type="button"
+              onClick={openTicket}
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card/70 px-7 py-3.5 font-display font-bold transition-colors hover:border-primary"
             >
               <ShoppingCart className="h-5 w-5 text-accent" /> Acquista la licenza
-            </a>
+            </button>
           </div>
         </div>
         <img
@@ -572,7 +647,7 @@ function Faq({ open, setOpen }: { open: number | null; setOpen: (i: number | nul
   );
 }
 
-function Support() {
+function Support({ openTicket }: ModalHandlers) {
   return (
     <section id="assistenza" className="mx-auto max-w-6xl px-4 pb-20 sm:px-6 sm:pb-24">
       <div className="glass-card relative overflow-hidden rounded-3xl px-6 py-12 text-center sm:px-12">
@@ -583,22 +658,23 @@ function Support() {
           </span>
           <h2 className="mt-5 text-3xl font-bold">Assistenza tramite ticket Discord</h2>
           <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-            Apri un ticket nel canale <strong className="text-foreground">#supporto</strong> del
-            nostro server: lo staff risponde in media entro 15 minuti, tutti i giorni, anche di
-            notte.
+            Apri un ticket nella sezione italiana o inglese del nostro server: lo staff ti segue
+            durante l'acquisto e per qualsiasi problema tecnico.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <a
-              href={DISCORD_URL}
+            <button
+              type="button"
+              onClick={openTicket}
               className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-discord px-7 py-3.5 font-display font-bold text-primary-foreground transition-transform hover:scale-105 sm:w-auto"
             >
               <MessageCircle className="h-5 w-5" /> Apri un ticket
-            </a>
+            </button>
             <a
-              href="mailto:support@aronmod.com"
+              href={LINKS.discordInvite}
+              {...EXTERNAL_LINK_PROPS}
               className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border px-7 py-3.5 font-display font-bold transition-colors hover:border-primary sm:w-auto"
             >
-              <Mail className="h-5 w-5 text-accent" /> support@aronmod.com
+              <Mail className="h-5 w-5 text-accent" /> Discord ufficiale
             </a>
           </div>
         </div>
@@ -620,8 +696,9 @@ function Footer() {
               </span>
             </div>
             <p className="mt-4 max-w-sm text-sm text-muted-foreground">
-              Aron Mod è un progetto indipendente e non è affiliato, sponsorizzato o approvato da
-              Gameforge o dagli sviluppatori di Metin2.
+              Aron Mod è un progetto indipendente destinato esclusivamente a retro server e server
+              privati autorizzati. Non è affiliato, sponsorizzato o approvato da Gameforge o dagli
+              sviluppatori di Metin2.
             </p>
           </div>
 
@@ -631,7 +708,7 @@ function Footer() {
               {[
                 ["Funzioni", "#funzioni"],
                 ["Server supportati", "#server"],
-                ["Download", "#download"],
+                ["Loader", "#download"],
                 ["FAQ", "#faq"],
               ].map(([label, href]) => (
                 <li key={label}>
@@ -665,14 +742,19 @@ function Footer() {
               </li>
               <li>
                 <a
-                  href="mailto:support@aronmod.com"
+                  href={LINKS.ticketIt}
+                  {...EXTERNAL_LINK_PROPS}
                   className="transition-colors hover:text-foreground"
                 >
-                  support@aronmod.com
+                  Ticket assistenza (IT)
                 </a>
               </li>
               <li>
-                <a href={DISCORD_URL} className="transition-colors hover:text-foreground">
+                <a
+                  href={LINKS.discordInvite}
+                  {...EXTERNAL_LINK_PROPS}
+                  className="transition-colors hover:text-foreground"
+                >
                   Discord ufficiale
                 </a>
               </li>
