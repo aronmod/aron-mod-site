@@ -4,6 +4,8 @@ export const LINKS = {
   ticketEn: "https://discord.com/channels/1530601137462448400/1530638052010102855",
   guideIt: "https://discord.com/channels/1530601137462448400/1530897133719257148",
   guideEn: "https://discord.com/channels/1530601137462448400/1530897159820542103",
+  downloadIt: "https://discord.com/channels/1530601137462448400/1530638008460771398",
+  downloadEn: "https://discord.com/channels/1530601137462448400/1530638108977139813",
   server: {
     name: "I-Longju",
     url: "https://i-longju.com/",

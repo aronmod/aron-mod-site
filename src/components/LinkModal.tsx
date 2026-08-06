@@ -11,14 +11,7 @@ type LinkModalProps = {
   footer?: ReactNode;
 };
 
-export function LinkModal({
-  open,
-  onClose,
-  title,
-  description,
-  children,
-  footer,
-}: LinkModalProps) {
+export function LinkModal({ open, onClose, title, description, children, footer }: LinkModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
 
