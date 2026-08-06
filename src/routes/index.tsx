@@ -281,7 +281,7 @@ function Header({ openTicket }: ModalHandlers) {
   );
 }
 
-function Hero({ openTicket }: ModalHandlers) {
+function Hero() {
   return (
     <section id="top" className="relative overflow-hidden">
       <img
