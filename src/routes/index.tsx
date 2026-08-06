@@ -48,44 +48,24 @@ export const Route = createFileRoute("/")({
 
 const features = [
   {
+    icon: Swords,
+    title: "Auto Dungeon",
+    text: "Completa i dungeon in automatico con sequenze ottimizzate, gestione delle fasi e ripetizione dei run senza presidiare il PC.",
+  },
+  {
     icon: Bot,
-    title: "Auto Farm Intelligente",
+    title: "Auto Farm",
     text: "Farming automatico di metin, mob e boss con rotte personalizzabili e ritorno al villaggio quando l'inventario è pieno.",
   },
   {
-    icon: Radar,
-    title: "ESP & Radar",
-    text: "Visualizza mob, giocatori, drop e metin attraverso muri e alberi, con filtri per rarità e distanza.",
-  },
-  {
-    icon: Crosshair,
-    title: "Auto Attack & Combo",
-    text: "Combo perfette al millisecondo, target switching automatico e gestione delle skill in base al cooldown.",
-  },
-  {
-    icon: Zap,
-    title: "Speed & Movement",
-    text: "Controllo preciso di velocità di movimento e attacco, teleport ottimizzato e pathfinding fluido.",
-  },
-  {
-    icon: Boxes,
-    title: "Auto Pickup & Filtri",
-    text: "Raccolta automatica del drop con whitelist e blacklist degli oggetti per non sprecare spazio.",
-  },
-  {
     icon: ShieldCheck,
-    title: "Configurazione sicura",
-    text: "Profili salvabili, impostazioni per singolo personaggio e valori consigliati per un uso responsabile sul server.",
+    title: "Anti Ban",
+    text: "Comportamenti configurabili con pause e tempistiche naturali, pensati per un utilizzo prudente e responsabile sul server.",
   },
   {
-    icon: Gauge,
-    title: "FPS Boost",
-    text: "Rendering ottimizzato e rimozione degli effetti superflui: gioco più leggero anche su PC datati.",
-  },
-  {
-    icon: Swords,
-    title: "PvP Assist",
-    text: "Tracking avversari, alert su avvicinamento e reazioni automatiche pensate per l'arena e le guerre di gilda.",
+    icon: Send,
+    title: "Controllo Remoto",
+    text: "Gestisci e monitora la mod ovunque tu sia: avvio, stop e stato delle sessioni direttamente da Telegram.",
   },
 ];
 
