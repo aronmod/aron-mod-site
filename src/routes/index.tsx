@@ -196,6 +196,40 @@ function Index() {
           <BookOpen className="h-4 w-4 text-accent" /> English guide
         </a>
       </LinkModal>
+
+      <LinkModal
+        open={downloadOpen}
+        onClose={() => setDownloadOpen(false)}
+        title="Download"
+        description="Scegli la lingua per accedere al canale di download sul nostro Discord ufficiale."
+        footer={
+          <>
+            Discord ufficiale:{" "}
+            <a
+              href={LINKS.discordInvite}
+              {...EXTERNAL_LINK_PROPS}
+              className="font-semibold text-accent underline underline-offset-4"
+            >
+              discord.gg/yQMrcWxY
+            </a>
+          </>
+        }
+      >
+        <a
+          href={LINKS.downloadIt}
+          {...EXTERNAL_LINK_PROPS}
+          className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-accent)] px-5 py-3 font-display font-bold text-primary-foreground transition-transform hover:scale-105"
+        >
+          <Download className="h-4 w-4" /> Italiano
+        </a>
+        <a
+          href={LINKS.downloadEn}
+          {...EXTERNAL_LINK_PROPS}
+          className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-card/70 px-5 py-3 font-display font-bold transition-colors hover:border-primary"
+        >
+          <Download className="h-4 w-4 text-accent" /> English
+        </a>
+      </LinkModal>
     </div>
   );
 }
