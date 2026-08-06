@@ -455,7 +455,7 @@ function Pricing({ openTicket, openGuide }: ModalHandlers) {
     <section id="prezzi" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
       <SectionTitle
         eyebrow="Prezzi"
-        title="Scegli la tua licenza"
+        title="Scegli il tuo piano"
         text="Nessun carrello e nessun pagamento automatico: apri un ticket sul Discord ufficiale e lo staff completa l'acquisto con te."
       />
       <div className="mx-auto mt-12 grid max-w-4xl gap-5 md:grid-cols-2">
