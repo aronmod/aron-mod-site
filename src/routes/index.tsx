@@ -287,24 +287,26 @@ function Hero({ openTicket }: ModalHandlers) {
         </h1>
 
         <p
-          className="reveal mx-auto mt-5 max-w-2xl text-base text-muted-foreground sm:text-lg"
+          className="reveal glass-card glow-ring mx-auto mt-7 max-w-3xl rounded-2xl px-5 py-5 font-display text-lg leading-relaxed font-semibold text-foreground sm:px-8 sm:py-6 sm:text-2xl"
           style={{ animationDelay: "200ms" }}
         >
-          La mod premium per i retro server di Metin2: auto farm, ESP e bot avanzato in un'unica
-          interfaccia leggera e aggiornata costantemente.
+          La mod premium per i retro server di Metin2:{" "}
+          <span className="text-gradient">AutoDungeon</span>,{" "}
+          <span className="text-gradient">FarmBot</span>, gestione da remoto con{" "}
+          <span className="text-gradient">Telegram</span> e bot avanzato in un'unica interfaccia
+          leggera e sempre aggiornata.
         </p>
 
         <div
           className="reveal mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row"
           style={{ animationDelay: "260ms" }}
         >
-          <button
-            type="button"
-            onClick={openTicket}
+          <a
+            href="#prezzi"
             className="glow-ring inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-accent)] px-7 py-3.5 font-display text-base font-bold text-primary-foreground transition-transform hover:scale-105 sm:w-auto"
           >
             <ShoppingCart className="h-5 w-5" /> Acquista la mod
-          </button>
+          </a>
           <a
             href={LINKS.discordInvite}
             {...EXTERNAL_LINK_PROPS}
