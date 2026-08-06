@@ -521,7 +521,7 @@ function Showcase() {
       <SectionTitle
         eyebrow="Gallery"
         title="Immagini e video dimostrativi"
-        text="Guarda Aron Mod in azione: overlay, auto farm e PvP assist registrati in gioco."
+        text="Guarda Aron Mod in azione: scopri tutte le sue funzioni."
       />
 
       <div className="mt-12 grid gap-4 lg:grid-cols-3">
