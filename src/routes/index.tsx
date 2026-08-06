@@ -544,7 +544,9 @@ function Showcase() {
               <Play className="h-6 w-6 fill-current text-accent" />
             </span>
             <span className="font-display text-lg font-bold">Video demo · Auto farm 1h</span>
-            <span className="text-xs text-muted-foreground">Guarda la clip completa su Discord</span>
+            <span className="text-xs text-muted-foreground">
+              Guarda la clip completa su Discord
+            </span>
           </div>
         </a>
 
@@ -577,8 +579,8 @@ function DownloadSection({ openTicket, openDownload }: ModalHandlers) {
           <p className="text-xs font-bold tracking-[0.25em] text-accent uppercase">Loader</p>
           <h2 className="mt-3 text-3xl font-bold sm:text-4xl">Il loader di Aron Mod</h2>
           <p className="mt-4 text-muted-foreground">
-            Un'interfaccia essenziale in italiano e inglese: inserisci la chiave di licenza, avvia il
-            client e tieni sotto controllo la scadenza del tuo piano. Il download avviene
+            Un'interfaccia essenziale in italiano e inglese: inserisci la chiave di licenza, avvia
+            il client e tieni sotto controllo la scadenza del tuo piano. Il download avviene
             esclusivamente tramite il Discord ufficiale.
           </p>
           <ul className="mt-6 space-y-2 text-sm text-muted-foreground">
