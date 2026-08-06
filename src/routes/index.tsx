@@ -1,14 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import {
-  Crosshair,
-  Zap,
   ShieldCheck,
   Bot,
-  Radar,
   Swords,
-  Gauge,
-  Boxes,
+  Send,
   MessageCircle,
   ShoppingCart,
   Play,
@@ -17,6 +13,7 @@ import {
   Mail,
   Server,
   BookOpen,
+  Download,
   ExternalLink,
 } from "lucide-react";
 
@@ -24,7 +21,8 @@ import logo from "@/assets/aron-logo.png.asset.json";
 import heroBg from "@/assets/hero-bg.jpg";
 import shot1 from "@/assets/shot-1.jpg";
 import shot2 from "@/assets/shot-2.jpg";
-import shot3 from "@/assets/shot-3.jpg";
+import loaderLogin from "@/assets/loader-login.png.asset.json";
+import loaderLaunch from "@/assets/loader-launch.png.asset.json";
 import { LINKS, EXTERNAL_LINK_PROPS } from "@/config/links";
 import { LinkModal } from "@/components/LinkModal";
 
