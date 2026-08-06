@@ -568,24 +568,25 @@ function Showcase() {
   );
 }
 
-function DownloadSection({ openTicket, openGuide }: ModalHandlers) {
+function DownloadSection({ openTicket, openDownload }: ModalHandlers) {
   return (
     <section id="download" className="relative overflow-hidden border-y border-border/60">
       <div className="absolute inset-0 bg-[image:var(--gradient-hero)] opacity-70" />
-      <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-4 py-20 sm:px-6 sm:py-24 lg:grid-cols-2">
+      <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 py-20 sm:px-6 sm:py-24 lg:grid-cols-2">
         <div>
           <p className="text-xs font-bold tracking-[0.25em] text-accent uppercase">Loader</p>
-          <h2 className="mt-3 text-3xl font-bold sm:text-4xl">Come ottenere il loader</h2>
+          <h2 className="mt-3 text-3xl font-bold sm:text-4xl">Il loader di Aron Mod</h2>
           <p className="mt-4 text-muted-foreground">
-            Il loader di Aron Mod viene distribuito esclusivamente tramite il Discord ufficiale:
-            segui la guida nella tua lingua e lo staff ti indicherà come riceverlo.
+            Un'interfaccia essenziale in italiano e inglese: inserisci la chiave di licenza, avvia il
+            client e tieni sotto controllo la scadenza del tuo piano. Il download avviene
+            esclusivamente tramite il Discord ufficiale.
           </p>
           <ul className="mt-6 space-y-2 text-sm text-muted-foreground">
             {[
               "Windows 10 / 11 · 64 bit",
-              "Distribuzione tramite Discord ufficiale",
-              "Aggiornamento automatico integrato",
-              "Aggiungi un'eccezione nell'antivirus prima dell'avvio",
+              "Verifica della chiave di licenza con opzione «Memorizza key»",
+              "Avvio automatico del client con multi-client integrato",
+              "Aggiornamento automatico e supporto IT / EN nel loader",
             ].map((i) => (
               <li key={i} className="flex items-start gap-2">
                 <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
@@ -596,10 +597,10 @@ function DownloadSection({ openTicket, openGuide }: ModalHandlers) {
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <button
               type="button"
-              onClick={openGuide}
+              onClick={openDownload}
               className="glow-ring inline-flex items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-accent)] px-7 py-3.5 font-display font-bold text-primary-foreground transition-transform hover:scale-105"
             >
-              <BookOpen className="h-5 w-5" /> Come ottenere Aron Mod
+              <Download className="h-5 w-5" /> Download
             </button>
             <button
               type="button"
@@ -610,14 +611,38 @@ function DownloadSection({ openTicket, openGuide }: ModalHandlers) {
             </button>
           </div>
         </div>
-        <img
-          src={shot3}
-          alt="Finestra del loader di Aron Mod"
-          loading="lazy"
-          width={1280}
-          height={800}
-          className="glass-card w-full rounded-2xl object-cover"
-        />
+
+        <div className="relative mx-auto w-full max-w-xl">
+          <div className="animate-pulse-glow absolute inset-8 rounded-full bg-violet/25 blur-3xl" />
+          <div className="relative grid grid-cols-2 items-center gap-4 sm:gap-6">
+            <figure className="glass-card animate-float overflow-hidden rounded-2xl p-2 sm:translate-y-4">
+              <img
+                src={loaderLogin.url}
+                alt="Schermata di login del loader Aron Mod con il campo chiave di licenza"
+                loading="lazy"
+                width={400}
+                height={580}
+                className="w-full rounded-xl"
+              />
+              <figcaption className="px-2 py-2 text-center text-[11px] text-muted-foreground">
+                Accesso con chiave di licenza
+              </figcaption>
+            </figure>
+            <figure className="glass-card glow-ring overflow-hidden rounded-2xl p-2 sm:-translate-y-4">
+              <img
+                src={loaderLaunch.url}
+                alt="Schermata di avvio automatico del client nel loader Aron Mod"
+                loading="lazy"
+                width={400}
+                height={580}
+                className="w-full rounded-xl"
+              />
+              <figcaption className="px-2 py-2 text-center text-[11px] text-muted-foreground">
+                Avvio automatico del client
+              </figcaption>
+            </figure>
+          </div>
+        </div>
       </div>
     </section>
   );
