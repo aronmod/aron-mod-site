@@ -99,23 +99,26 @@ const faq = [
 type ModalHandlers = {
   openTicket: () => void;
   openGuide: () => void;
+  openDownload: () => void;
 };
 
 function Index() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [ticketOpen, setTicketOpen] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
+  const [downloadOpen, setDownloadOpen] = useState(false);
 
   const handlers: ModalHandlers = {
     openTicket: () => setTicketOpen(true),
     openGuide: () => setGuideOpen(true),
+    openDownload: () => setDownloadOpen(true),
   };
 
   return (
     <div className="min-h-screen bg-background">
       <Header {...handlers} />
       <main>
-        <Hero {...handlers} />
+        <Hero />
         <Features />
         <Servers />
         <Pricing {...handlers} />
