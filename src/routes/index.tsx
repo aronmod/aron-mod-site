@@ -17,12 +17,9 @@ import {
   ExternalLink,
 } from "lucide-react";
 
-import logo from "@/assets/aron-logo.png.asset.json";
 import heroBg from "@/assets/hero-bg.jpg";
 import shot1 from "@/assets/shot-1.jpg";
 import shot2 from "@/assets/shot-2.jpg";
-import loaderLogin from "@/assets/loader-login.png.asset.json";
-import loaderLaunch from "@/assets/loader-launch.png.asset.json";
 import { LINKS, EXTERNAL_LINK_PROPS } from "@/config/links";
 import { LinkModal } from "@/components/LinkModal";
 
@@ -240,7 +237,7 @@ function Header({ openTicket }: ModalHandlers) {
       <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 sm:px-6">
         <a href="#top" className="flex min-w-0 items-center gap-3">
           <img
-            src={logo.url}
+            src="/aron-logo.png"
             alt="Logo Aron Mod"
             width={40}
             height={40}
@@ -300,7 +297,7 @@ function Hero() {
           <div className="relative">
             <div className="animate-pulse-glow absolute inset-0 rounded-full bg-violet/40 blur-3xl" />
             <img
-              src={logo.url}
+              src="/aron-logo.png"
               alt="Logo Aron Mod"
               width={160}
               height={160}
@@ -619,7 +616,7 @@ function DownloadSection({ openTicket, openDownload }: ModalHandlers) {
           <div className="relative grid grid-cols-2 items-center gap-4 sm:gap-6">
             <figure className="glass-card animate-float overflow-hidden rounded-2xl p-2 sm:translate-y-4">
               <img
-                src={loaderLogin.url}
+                src="/loader-login.png"
                 alt="Schermata di login del loader Aron Mod con il campo chiave di licenza"
                 loading="lazy"
                 width={400}
@@ -632,7 +629,7 @@ function DownloadSection({ openTicket, openDownload }: ModalHandlers) {
             </figure>
             <figure className="glass-card glow-ring overflow-hidden rounded-2xl p-2 sm:-translate-y-4">
               <img
-                src={loaderLaunch.url}
+                src="/loader-launch.png"
                 alt="Schermata di avvio automatico del client nel loader Aron Mod"
                 loading="lazy"
                 width={400}
@@ -734,7 +731,7 @@ function Footer() {
         <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
             <div className="flex items-center gap-3">
-              <img src={logo.url} alt="Logo Aron Mod" width={36} height={36} className="h-9 w-9" />
+              <img src="/aron-logo.png" alt="Logo Aron Mod" width={36} height={36} className="h-9 w-9" />
               <span className="font-display text-lg font-bold">
                 ARON<span className="text-gradient"> MOD</span>
               </span>
