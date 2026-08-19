@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import type { LucideIcon } from "lucide-react";
 import {
   ShieldCheck,
   Bot,
@@ -36,7 +37,7 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const featureIcons = [Swords, Bot, ShieldCheck, Send];
+const featureIcons: LucideIcon[] = [Swords, Bot, ShieldCheck, Send];
 
 type ModalHandlers = {
   openTicket: () => void;
@@ -62,16 +63,16 @@ function Index() {
     <div className="min-h-screen bg-background">
       <Header lang={lang} setLang={setLang} />
       <main>
-        <Hero />
-        <Features />
-        <Servers />
+        <Hero lang={lang} />
+        <Features lang={lang} />
+        <Servers lang={lang} />
         <Pricing lang={lang} />
-        <Showcase />
+        <Showcase lang={lang} />
         <DownloadSection openDownload={handlers.openDownload} lang={lang} />
-        <Faq open={openFaq} setOpen={setOpenFaq} />
-        <Support openTicket={handlers.openTicket} />
+        <Faq open={openFaq} setOpen={setOpenFaq} lang={lang} />
+        <Support openTicket={handlers.openTicket} lang={lang} />
       </main>
-      <Footer />
+      <Footer lang={lang} />
 
       <LinkModal
         open={ticketOpen}
@@ -253,8 +254,7 @@ function Header({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
   );
 }
 
-function Hero() {
-  const [lang] = useState<Lang>("it");
+function Hero({ lang }: { lang: Lang }) {
   const t = copy[lang];
   return (
     <section id="top" className="relative overflow-hidden">
@@ -346,8 +346,7 @@ function SectionTitle({ eyebrow, title, text }: { eyebrow: string; title: string
   );
 }
 
-function Features() {
-  const [lang] = useState<Lang>("it");
+function Features({ lang }: { lang: Lang }) {
   const t = copy[lang];
   return (
     <section id="funzioni" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
@@ -370,8 +369,7 @@ function Features() {
   );
 }
 
-function Servers() {
-  const [lang] = useState<Lang>("it");
+function Servers({ lang }: { lang: Lang }) {
   const t = copy[lang];
   return (
     <section id="server" className="relative border-y border-border/60 bg-card/30">
@@ -418,7 +416,7 @@ function Pricing({ lang }: { lang: Lang }) {
         </span>
       ) : null}
       <h3 className="font-display text-lg font-bold">{plan.name}</h3>
-      <p className="mt-1 text-sm text-muted-foreground">{"description" in plan ? plan.description : ""}</p>
+      <p className="mt-1 text-sm text-muted-foreground">{plan.description}</p>
       <div className="mt-5 flex flex-col gap-3">
         <a
           href={guideUrl}
@@ -490,8 +488,7 @@ function Pricing({ lang }: { lang: Lang }) {
   );
 }
 
-function Showcase() {
-  const [lang] = useState<Lang>("it");
+function Showcase({ lang }: { lang: Lang }) {
   const t = copy[lang];
   const shots = [
     { src: shot1, alt: t.showcase.shots[0].alt },
@@ -593,27 +590,27 @@ function DownloadSection({ openDownload, lang }: { openDownload: () => void; lan
             <figure className="glass-card animate-float overflow-hidden rounded-2xl p-2 sm:translate-y-4">
               <img
                 src="/loader-login.png"
-                alt="Schermata di login del loader Aron Mod con il campo chiave di licenza"
+                alt={t.loaderImages.loginAlt}
                 loading="lazy"
                 width={400}
                 height={580}
                 className="w-full rounded-xl"
               />
               <figcaption className="px-2 py-2 text-center text-[11px] text-muted-foreground">
-                Accesso con chiave di licenza
+                {t.loaderImages.loginCaption}
               </figcaption>
             </figure>
             <figure className="glass-card glow-ring overflow-hidden rounded-2xl p-2 sm:-translate-y-4">
               <img
                 src="/loader-launch.png"
-                alt="Schermata di avvio automatico del client nel loader Aron Mod"
+                alt={t.loaderImages.launchAlt}
                 loading="lazy"
                 width={400}
                 height={580}
                 className="w-full rounded-xl"
               />
               <figcaption className="px-2 py-2 text-center text-[11px] text-muted-foreground">
-                Avvio automatico del client
+                {t.loaderImages.launchCaption}
               </figcaption>
             </figure>
           </div>
@@ -623,8 +620,7 @@ function DownloadSection({ openDownload, lang }: { openDownload: () => void; lan
   );
 }
 
-function Faq({ open, setOpen }: { open: number | null; setOpen: (i: number | null) => void }) {
-  const [lang] = useState<Lang>("it");
+function Faq({ open, setOpen, lang }: { open: number | null; setOpen: (i: number | null) => void; lang: Lang }) {
   const t = copy[lang];
   return (
     <section id="faq" className="mx-auto max-w-3xl px-4 py-20 sm:px-6 sm:py-24">
@@ -666,8 +662,7 @@ function Faq({ open, setOpen }: { open: number | null; setOpen: (i: number | nul
   );
 }
 
-function Support({ openTicket }: { openTicket: () => void }) {
-  const [lang] = useState<Lang>("it");
+function Support({ openTicket, lang }: { openTicket: () => void; lang: Lang }) {
   const t = copy[lang];
   return (
     <section id="assistenza" className="mx-auto max-w-6xl px-4 pb-20 sm:px-6 sm:pb-24">
@@ -701,8 +696,7 @@ function Support({ openTicket }: { openTicket: () => void }) {
   );
 }
 
-function Footer() {
-  const [lang] = useState<Lang>("it");
+function Footer({ lang }: { lang: Lang }) {
   const t = copy[lang];
   return (
     <footer className="border-t border-border/60 bg-card/30">
