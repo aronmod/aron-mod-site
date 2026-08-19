@@ -22,76 +22,21 @@ import shot1 from "@/assets/shot-1.jpg";
 import shot2 from "@/assets/shot-2.jpg";
 import { LINKS, EXTERNAL_LINK_PROPS } from "@/config/links";
 import { LinkModal } from "@/components/LinkModal";
+import { copy, type Lang } from "@/lib/copy";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Aron Mod — La mod premium per Metin2 su retro server" },
-      {
-        name: "description",
-        content:
-          "Aron Mod: mod premium per retro server Metin2 autorizzati. Funzioni, server supportati, licenze da 8 €, guide e assistenza tramite ticket sul Discord ufficiale.",
-      },
-      { property: "og:title", content: "Aron Mod — Domina Metin con Aron Mod" },
-      {
-        property: "og:description",
-        content:
-          "Auto farm, ESP e bot avanzato per retro server Metin2 autorizzati. Licenze da 8 €, guide e ticket sul Discord ufficiale.",
-      },
+      { title: copy.it.meta.title },
+      { name: "description", content: copy.it.meta.description },
+      { property: "og:title", content: copy.it.meta.ogTitle },
+      { property: "og:description", content: copy.it.meta.ogDescription },
     ],
   }),
   component: Index,
 });
 
-const features = [
-  {
-    icon: Swords,
-    title: "Auto Dungeon",
-    text: "Completa i dungeon in automatico con sequenze ottimizzate, gestione delle fasi e ripetizione dei run senza presidiare il PC.",
-  },
-  {
-    icon: Bot,
-    title: "Auto Farm",
-    text: "Farming automatico di metin, mob e boss con rotte personalizzabili e ritorno al villaggio quando l'inventario è pieno.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Anti Ban",
-    text: "Comportamenti configurabili con pause e tempistiche naturali, pensati per un utilizzo prudente e responsabile sul server.",
-  },
-  {
-    icon: Send,
-    title: "Controllo Remoto",
-    text: "Gestisci e monitora la mod ovunque tu sia: avvio, stop e stato delle sessioni direttamente da Telegram.",
-  },
-];
-
-const faq = [
-  {
-    q: "Aron Mod è sicuro da usare?",
-    a: "Aron Mod è pensata esclusivamente per retro server e server privati autorizzati. Consigliamo sempre un uso moderato e responsabile, nel rispetto delle regole del server su cui giochi.",
-  },
-  {
-    q: "Come funziona l'acquisto?",
-    a: "Per acquistare Aron Mod, entra nel nostro Discord ufficiale e apri un ticket nella sezione italiana o inglese. Lo staff ti fornirà tutte le informazioni necessarie e ti guiderà durante l'acquisto.",
-  },
-  {
-    q: "Su quali server funziona?",
-    a: "Aron Mod è attualmente disponibile per I-Longju. Consulta la sezione Server supportati per accedere al sito del server. Ulteriori compatibilità verranno comunicate sul nostro Discord ufficiale.",
-  },
-  {
-    q: "Posso usarla su più PC?",
-    a: "La licenza è legata a un singolo HWID. Puoi richiedere un reset gratuito al mese aprendo un ticket sul Discord ufficiale.",
-  },
-  {
-    q: "Quali sono i requisiti?",
-    a: "Windows 10 o 11 a 64 bit, client del retro server aggiornato e antivirus configurato con un'eccezione per il loader.",
-  },
-  {
-    q: "Come ricevo gli aggiornamenti?",
-    a: "Il loader si aggiorna in automatico a ogni avvio. Le patch note vengono pubblicate nel canale #changelog del Discord.",
-  },
-];
+const featureIcons = [Swords, Bot, ShieldCheck, Send];
 
 type ModalHandlers = {
   openTicket: () => void;
@@ -100,6 +45,8 @@ type ModalHandlers = {
 };
 
 function Index() {
+  const [lang, setLang] = useState<Lang>("it");
+  const t = copy[lang];
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [ticketOpen, setTicketOpen] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
@@ -113,33 +60,33 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header {...handlers} />
+      <Header lang={lang} setLang={setLang} />
       <main>
         <Hero />
         <Features />
         <Servers />
-        <Pricing {...handlers} />
+        <Pricing lang={lang} />
         <Showcase />
-        <DownloadSection {...handlers} />
+        <DownloadSection openDownload={handlers.openDownload} lang={lang} />
         <Faq open={openFaq} setOpen={setOpenFaq} />
-        <Support {...handlers} />
+        <Support openTicket={handlers.openTicket} />
       </main>
       <Footer />
 
       <LinkModal
         open={ticketOpen}
         onClose={() => setTicketOpen(false)}
-        title="Apri un ticket"
-        description="Scegli la lingua con cui vuoi ricevere assistenza per l'acquisto."
+        title={t.modals.ticket.title}
+        description={t.modals.ticket.desc}
         footer={
           <>
-            Non sei ancora nel nostro Discord?{" "}
+            {t.modals.ticket.join}{" "}
             <a
               href={LINKS.discordInvite}
               {...EXTERNAL_LINK_PROPS}
               className="font-semibold text-accent underline underline-offset-4"
             >
-              Entra prima nel server.
+              {t.modals.ticket.joinLink}
             </a>
           </>
         }
@@ -149,31 +96,31 @@ function Index() {
           {...EXTERNAL_LINK_PROPS}
           className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-accent)] px-5 py-3 font-display font-bold text-primary-foreground transition-transform hover:scale-105"
         >
-          <Ticket className="h-4 w-4" /> Italiano
+          <Ticket className="h-4 w-4" /> {t.modals.ticket.it}
         </a>
         <a
           href={LINKS.ticketEn}
           {...EXTERNAL_LINK_PROPS}
           className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-card/70 px-5 py-3 font-display font-bold transition-colors hover:border-primary"
         >
-          <Ticket className="h-4 w-4 text-accent" /> English
+          <Ticket className="h-4 w-4 text-accent" /> {t.modals.ticket.en}
         </a>
       </LinkModal>
 
       <LinkModal
         open={guideOpen}
         onClose={() => setGuideOpen(false)}
-        title="Come ottenere la mod"
-        description="Consulta la guida nella tua lingua e segui le istruzioni pubblicate nel nostro Discord."
+        title={t.modals.guide.title}
+        description={t.modals.guide.desc}
         footer={
           <>
-            Non fai ancora parte della community?{" "}
+            {t.modals.guide.join}{" "}
             <a
               href={LINKS.discordInvite}
               {...EXTERNAL_LINK_PROPS}
               className="font-semibold text-accent underline underline-offset-4"
             >
-              Entra nel Discord ufficiale.
+              {t.modals.guide.joinLink}
             </a>
           </>
         }
@@ -183,31 +130,31 @@ function Index() {
           {...EXTERNAL_LINK_PROPS}
           className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-accent)] px-5 py-3 font-display font-bold text-primary-foreground transition-transform hover:scale-105"
         >
-          <BookOpen className="h-4 w-4" /> Guida italiana
+          <BookOpen className="h-4 w-4" /> {t.modals.guide.it}
         </a>
         <a
           href={LINKS.guideEn}
           {...EXTERNAL_LINK_PROPS}
           className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-card/70 px-5 py-3 font-display font-bold transition-colors hover:border-primary"
         >
-          <BookOpen className="h-4 w-4 text-accent" /> English guide
+          <BookOpen className="h-4 w-4 text-accent" /> {t.modals.guide.en}
         </a>
       </LinkModal>
 
       <LinkModal
         open={downloadOpen}
         onClose={() => setDownloadOpen(false)}
-        title="Download"
-        description="Scegli la lingua per accedere al canale di download sul nostro Discord ufficiale."
+        title={t.modals.download.title}
+        description={t.modals.download.desc}
         footer={
           <>
-            Discord ufficiale:{" "}
+            {t.modals.download.join}{" "}
             <a
               href={LINKS.discordInvite}
               {...EXTERNAL_LINK_PROPS}
               className="font-semibold text-accent underline underline-offset-4"
             >
-              discord.gg/yQMrcWxY
+              {t.modals.download.joinLink}
             </a>
           </>
         }
@@ -217,21 +164,22 @@ function Index() {
           {...EXTERNAL_LINK_PROPS}
           className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-accent)] px-5 py-3 font-display font-bold text-primary-foreground transition-transform hover:scale-105"
         >
-          <Download className="h-4 w-4" /> Italiano
+          <Download className="h-4 w-4" /> {t.modals.download.it}
         </a>
         <a
           href={LINKS.downloadEn}
           {...EXTERNAL_LINK_PROPS}
           className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-card/70 px-5 py-3 font-display font-bold transition-colors hover:border-primary"
         >
-          <Download className="h-4 w-4 text-accent" /> English
+          <Download className="h-4 w-4 text-accent" /> {t.modals.download.en}
         </a>
       </LinkModal>
     </div>
   );
 }
 
-function Header({ openTicket }: ModalHandlers) {
+function Header({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
+  const t = copy[lang];
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 sm:px-6">
@@ -247,31 +195,58 @@ function Header({ openTicket }: ModalHandlers) {
             ARON<span className="text-gradient"> MOD</span>
           </span>
         </a>
-        <nav className="flex items-center gap-6">
+        <nav className="flex items-center gap-3 sm:gap-6">
           <div className="hidden items-center gap-6 text-sm font-semibold text-muted-foreground md:flex">
             <a href="#funzioni" className="transition-colors hover:text-foreground">
-              Funzioni
+              {t.header.functions}
             </a>
             <a href="#server" className="transition-colors hover:text-foreground">
-              Server
+              {t.header.servers}
             </a>
             <a href="#prezzi" className="transition-colors hover:text-foreground">
-              Prezzi
+              {t.header.pricing}
             </a>
             <a href="#download" className="transition-colors hover:text-foreground">
-              Loader
+              {t.header.loader}
             </a>
             <a href="#faq" className="transition-colors hover:text-foreground">
-              FAQ
+              {t.header.faq}
             </a>
           </div>
-          <button
-            type="button"
-            onClick={openTicket}
+
+          <div className="flex items-center gap-1 rounded-lg border border-border p-0.5">
+            <button
+              type="button"
+              onClick={() => setLang("it")}
+              aria-pressed={lang === "it"}
+              className={`rounded-md px-2 py-1 text-xs font-bold transition-colors ${
+                lang === "it"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {t.header.langIt}
+            </button>
+            <button
+              type="button"
+              onClick={() => setLang("en")}
+              aria-pressed={lang === "en"}
+              className={`rounded-md px-2 py-1 text-xs font-bold transition-colors ${
+                lang === "en"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {t.header.langEn}
+            </button>
+          </div>
+
+          <a
+            href="#prezzi"
             className="shrink-0 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition-transform hover:scale-105"
           >
-            Acquista
-          </button>
+            {t.header.buy}
+          </a>
         </nav>
       </div>
     </header>
@@ -279,6 +254,8 @@ function Header({ openTicket }: ModalHandlers) {
 }
 
 function Hero() {
+  const [lang] = useState<Lang>("it");
+  const t = copy[lang];
   return (
     <section id="top" className="relative overflow-hidden">
       <img
@@ -310,25 +287,21 @@ function Hero() {
           className="reveal mt-8 inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-4 py-1.5 text-xs font-semibold tracking-[0.2em] text-accent uppercase"
           style={{ animationDelay: "80ms" }}
         >
-          <ShieldCheck className="h-3.5 w-3.5" /> Solo retro server autorizzati
+          <ShieldCheck className="h-3.5 w-3.5" /> {t.hero.badge}
         </p>
 
         <h1
           className="reveal mt-6 text-4xl leading-tight font-bold sm:text-6xl"
           style={{ animationDelay: "140ms" }}
         >
-          Domina Metin con <span className="text-gradient">Aron Mod</span>
+          {t.hero.title}
         </h1>
 
         <p
           className="reveal glass-card glow-ring mx-auto mt-7 max-w-3xl rounded-2xl px-5 py-5 font-display text-lg leading-relaxed font-semibold text-foreground sm:px-8 sm:py-6 sm:text-2xl"
           style={{ animationDelay: "200ms" }}
         >
-          La mod premium per i retro server di Metin2:{" "}
-          <span className="text-gradient">AutoDungeon</span>,{" "}
-          <span className="text-gradient">FarmBot</span>, gestione da remoto con{" "}
-          <span className="text-gradient">Telegram</span> e bot avanzato in un'unica interfaccia
-          leggera e sempre aggiornata.
+          {t.hero.subtitle}
         </p>
 
         <div
@@ -339,21 +312,23 @@ function Hero() {
             href="#prezzi"
             className="glow-ring inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-accent)] px-7 py-3.5 font-display text-base font-bold text-primary-foreground transition-transform hover:scale-105 sm:w-auto"
           >
-            <ShoppingCart className="h-5 w-5" /> Acquista la mod
+            <ShoppingCart className="h-5 w-5" /> {t.hero.ctaBuy}
           </a>
           <a
             href={LINKS.discordInvite}
             {...EXTERNAL_LINK_PROPS}
             className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card/70 px-7 py-3.5 font-display text-base font-bold text-foreground transition-all hover:border-discord hover:bg-discord/15 sm:w-auto"
           >
-            <MessageCircle className="h-5 w-5 text-discord" /> Entra nel Discord
+            <MessageCircle className="h-5 w-5 text-discord" /> {t.hero.ctaDiscord}
           </a>
         </div>
 
         <div className="reveal mt-14 flex justify-center" style={{ animationDelay: "320ms" }}>
           <div className="glass-card w-full max-w-xs rounded-xl px-6 py-4 text-center">
-            <p className="font-display text-xl font-bold text-accent sm:text-2xl">24/7</p>
-            <p className="mt-1 text-xs text-muted-foreground sm:text-sm">Supporto ticket Discord</p>
+            <p className="font-display text-xl font-bold text-accent sm:text-2xl">
+              {t.hero.supportValue}
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground sm:text-sm">{t.hero.supportLabel}</p>
           </div>
         </div>
       </div>
@@ -372,37 +347,36 @@ function SectionTitle({ eyebrow, title, text }: { eyebrow: string; title: string
 }
 
 function Features() {
+  const [lang] = useState<Lang>("it");
+  const t = copy[lang];
   return (
     <section id="funzioni" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
-      <SectionTitle
-        eyebrow="Funzioni"
-        title="Tutto quello che serve per dominare"
-        text="Ogni modulo è attivabile singolarmente e configurabile in tempo reale dall'overlay in-game."
-      />
+      <SectionTitle eyebrow={t.features.eyebrow} title={t.features.title} text={t.features.text} />
       <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {features.map((f) => (
-          <article key={f.title} className="glass-card rounded-2xl p-6">
-            <div className="glow-ring inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/15">
-              <f.icon className="h-5 w-5 text-accent" />
-            </div>
-            <h3 className="mt-4 text-lg font-bold">{f.title}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.text}</p>
-          </article>
-        ))}
+        {t.features.items.map((f, i) => {
+          const Icon = featureIcons[i];
+          return (
+            <article key={f.title} className="glass-card rounded-2xl p-6">
+              <div className="glow-ring inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/15">
+                <Icon className="h-5 w-5 text-accent" />
+              </div>
+              <h3 className="mt-4 text-lg font-bold">{f.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.text}</p>
+            </article>
+          );
+        })}
       </div>
     </section>
   );
 }
 
 function Servers() {
+  const [lang] = useState<Lang>("it");
+  const t = copy[lang];
   return (
     <section id="server" className="relative border-y border-border/60 bg-card/30">
       <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
-        <SectionTitle
-          eyebrow="Compatibilità"
-          title="Server supportati"
-          text="Aron Mod è attualmente disponibile per il server indicato qui sotto. La lista verrà aggiornata con l'aggiunta di nuovi server."
-        />
+        <SectionTitle eyebrow={t.servers.eyebrow} title={t.servers.title} text={t.servers.text} />
         <ul className="mx-auto mt-12 grid max-w-md gap-3">
           <li className="glass-card flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
             <Server className="h-4 w-4 shrink-0 text-accent" />
@@ -415,7 +389,7 @@ function Servers() {
               <ExternalLink className="h-3.5 w-3.5 shrink-0" />
             </a>
             <span className="ml-auto shrink-0 rounded-md bg-accent/15 px-2 py-0.5 text-[11px] font-bold text-accent">
-              {LINKS.server.status}
+              {t.servers.statusOk}
             </span>
           </li>
         </ul>
@@ -424,101 +398,112 @@ function Servers() {
   );
 }
 
-const plans = [
-  {
-    name: "Piano 15 giorni",
-    price: "8 €",
-    duration: "15 giorni di licenza",
-    cta: "Acquista 15 giorni",
-    highlight: false,
-  },
-  {
-    name: "Piano 30 giorni",
-    price: "15 €",
-    duration: "30 giorni di licenza",
-    cta: "Acquista 30 giorni",
-    highlight: true,
-  },
-];
+function Pricing({ lang }: { lang: Lang }) {
+  const t = copy[lang].pricing;
+  const guideUrl = lang === "it" ? LINKS.guideIt : LINKS.guideEn;
 
-const planPerks = [
-  "Tutte le funzioni della mod incluse",
-  "Aggiornamenti costanti inclusi",
-  "Assistenza tramite ticket Discord",
-];
+  const PlanCard = ({
+    plan,
+    highlight,
+  }: {
+    plan: (typeof t)["base"] | (typeof t)["plus"];
+    highlight: boolean;
+  }) => (
+    <article
+      className={`glass-card relative flex flex-col rounded-2xl p-7 ${highlight ? "glow-ring border-primary/60" : ""}`}
+    >
+      {plan.bestValue ? (
+        <span className="absolute top-5 right-5 rounded-md bg-accent/15 px-2 py-0.5 text-[11px] font-bold tracking-wider text-accent uppercase">
+          {plan.bestValueLabel}
+        </span>
+      ) : null}
+      <h3 className="font-display text-lg font-bold">{plan.name}</h3>
+      <p className="mt-1 text-sm text-muted-foreground">{"description" in plan ? plan.description : ""}</p>
+      <div className="mt-5 flex flex-col gap-3">
+        <a
+          href={guideUrl}
+          {...EXTERNAL_LINK_PROPS}
+          className={`inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3.5 font-display font-bold transition-transform hover:scale-105 ${
+            highlight
+              ? "bg-[image:var(--gradient-accent)] text-primary-foreground"
+              : "border border-border bg-card/70 text-foreground hover:border-primary"
+          }`}
+        >
+          <ExternalLink className="h-4 w-4" /> {plan.cta15}
+        </a>
+        <a
+          href={guideUrl}
+          {...EXTERNAL_LINK_PROPS}
+          className={`inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3.5 font-display font-bold transition-transform hover:scale-105 ${
+            highlight
+              ? "border border-border bg-card/70 text-foreground hover:border-primary"
+              : "bg-[image:var(--gradient-accent)] text-primary-foreground"
+          }`}
+        >
+          <ExternalLink className="h-4 w-4" /> {plan.cta30}
+        </a>
+      </div>
 
-function Pricing({ openTicket, openGuide }: ModalHandlers) {
+      {"includes" in plan ? (
+        <div className="mt-6 rounded-xl bg-primary/10 p-4">
+          <p className="font-display text-sm font-bold text-accent">{plan.includesTitle}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{plan.includesIntro}</p>
+          <ul className="mt-3 space-y-1.5">
+            {plan.includes.map((item) => (
+              <li key={item} className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                <ShieldCheck className="h-4 w-4 text-accent" /> {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
+      <ul className="mt-6 flex-1 space-y-2 text-sm text-muted-foreground">
+        {t.commonPerks.map((perk) => (
+          <li key={perk} className="flex items-start gap-2">
+            <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+            {perk}
+          </li>
+        ))}
+      </ul>
+    </article>
+  );
+
   return (
     <section id="prezzi" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
-      <SectionTitle
-        eyebrow="Prezzi"
-        title="Scegli il tuo piano"
-        text="Nessun carrello e nessun pagamento automatico: apri un ticket sul Discord ufficiale e lo staff completa l'acquisto con te."
-      />
+      <SectionTitle eyebrow={t.eyebrow} title={t.title} text={t.subtitle} />
       <div className="mx-auto mt-12 grid max-w-4xl gap-5 md:grid-cols-2">
-        {plans.map((p) => (
-          <article
-            key={p.name}
-            className={`glass-card relative flex flex-col rounded-2xl p-7 ${
-              p.highlight ? "glow-ring border-primary/60" : ""
-            }`}
-          >
-            {p.highlight ? (
-              <span className="absolute top-5 right-5 rounded-md bg-accent/15 px-2 py-0.5 text-[11px] font-bold tracking-wider text-accent uppercase">
-                Migliore offerta
-              </span>
-            ) : null}
-            <h3 className="font-display text-lg font-bold">{p.name}</h3>
-            <p className="mt-4 font-display text-4xl font-bold text-gradient">{p.price}</p>
-            <p className="mt-2 text-sm text-muted-foreground">{p.duration}</p>
-            <ul className="mt-6 flex-1 space-y-2 text-sm text-muted-foreground">
-              {planPerks.map((perk) => (
-                <li key={perk} className="flex items-start gap-2">
-                  <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
-                  {perk}
-                </li>
-              ))}
-            </ul>
-            <button
-              type="button"
-              onClick={openTicket}
-              className={`mt-8 inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 font-display font-bold transition-transform hover:scale-105 ${
-                p.highlight
-                  ? "bg-[image:var(--gradient-accent)] text-primary-foreground"
-                  : "border border-border bg-card/70 text-foreground"
-              }`}
-            >
-              <MessageCircle className="h-5 w-5" /> {p.cta}
-            </button>
-          </article>
-        ))}
+        <PlanCard plan={t.base} highlight={false} />
+        <PlanCard plan={t.plus} highlight={true} />
       </div>
 
       <div className="mt-8 flex justify-center">
-        <button
-          type="button"
-          onClick={openGuide}
+        <a
+          href={guideUrl}
+          {...EXTERNAL_LINK_PROPS}
           className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card/70 px-7 py-3.5 font-display font-bold transition-colors hover:border-primary"
         >
-          <BookOpen className="h-5 w-5 text-accent" /> Come ottenere Aron Mod
-        </button>
+          <BookOpen className="h-5 w-5 text-accent" /> {t.getMod}
+        </a>
       </div>
     </section>
   );
 }
 
 function Showcase() {
+  const [lang] = useState<Lang>("it");
+  const t = copy[lang];
   const shots = [
-    { src: shot1, alt: "Overlay di Aron Mod con i moduli attivi" },
-    { src: shot2, alt: "Auto farm notturno nella foresta di bambù" },
+    { src: shot1, alt: t.showcase.shots[0].alt },
+    { src: shot2, alt: t.showcase.shots[1].alt },
   ];
 
   return (
     <section id="media" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
       <SectionTitle
-        eyebrow="Gallery"
-        title="Immagini e video dimostrativi"
-        text="Guarda Aron Mod in azione: scopri tutte le sue funzioni."
+        eyebrow={t.showcase.eyebrow}
+        title={t.showcase.title}
+        text={t.showcase.text}
       />
 
       <div className="mt-12 grid gap-4 lg:grid-cols-3">
@@ -529,7 +514,7 @@ function Showcase() {
         >
           <img
             src={shot2}
-            alt="Anteprima del video dimostrativo di Aron Mod"
+            alt={t.showcase.videoSub}
             loading="lazy"
             width={1280}
             height={800}
@@ -540,10 +525,8 @@ function Showcase() {
             <span className="glow-ring inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary/25 backdrop-blur">
               <Play className="h-6 w-6 fill-current text-accent" />
             </span>
-            <span className="font-display text-lg font-bold">Video demo · Auto farm 1h</span>
-            <span className="text-xs text-muted-foreground">
-              Guarda la clip completa su Discord
-            </span>
+            <span className="font-display text-lg font-bold">{t.showcase.videoLabel}</span>
+            <span className="text-xs text-muted-foreground">{t.showcase.videoSub}</span>
           </div>
         </a>
 
@@ -567,26 +550,19 @@ function Showcase() {
   );
 }
 
-function DownloadSection({ openTicket, openDownload }: ModalHandlers) {
+function DownloadSection({ openDownload, lang }: { openDownload: () => void; lang: Lang }) {
+  const t = copy[lang].loader;
+  const guideUrl = lang === "it" ? LINKS.guideIt : LINKS.guideEn;
   return (
     <section id="download" className="relative overflow-hidden border-y border-border/60">
       <div className="absolute inset-0 bg-[image:var(--gradient-hero)] opacity-70" />
       <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 py-20 sm:px-6 sm:py-24 lg:grid-cols-2">
         <div>
-          <p className="text-xs font-bold tracking-[0.25em] text-accent uppercase">Loader</p>
-          <h2 className="mt-3 text-3xl font-bold sm:text-4xl">Il loader di Aron Mod</h2>
-          <p className="mt-4 text-muted-foreground">
-            Un'interfaccia essenziale in italiano e inglese: inserisci la chiave di licenza, avvia
-            il client e tieni sotto controllo la scadenza del tuo piano. Il download avviene
-            esclusivamente tramite il Discord ufficiale.
-          </p>
+          <p className="text-xs font-bold tracking-[0.25em] text-accent uppercase">{t.eyebrow}</p>
+          <h2 className="mt-3 text-3xl font-bold sm:text-4xl">{t.title}</h2>
+          <p className="mt-4 text-muted-foreground">{t.description}</p>
           <ul className="mt-6 space-y-2 text-sm text-muted-foreground">
-            {[
-              "Windows 10 / 11 · 64 bit",
-              "Verifica della chiave di licenza con opzione «Memorizza key»",
-              "Avvio automatico del client con multi-client integrato",
-              "Aggiornamento automatico e supporto IT / EN nel loader",
-            ].map((i) => (
+            {t.specs.map((i) => (
               <li key={i} className="flex items-start gap-2">
                 <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
                 {i}
@@ -599,15 +575,15 @@ function DownloadSection({ openTicket, openDownload }: ModalHandlers) {
               onClick={openDownload}
               className="glow-ring inline-flex items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-accent)] px-7 py-3.5 font-display font-bold text-primary-foreground transition-transform hover:scale-105"
             >
-              <Download className="h-5 w-5" /> Download
+              <Download className="h-5 w-5" /> {t.download}
             </button>
-            <button
-              type="button"
-              onClick={openTicket}
+            <a
+              href={guideUrl}
+              {...EXTERNAL_LINK_PROPS}
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card/70 px-7 py-3.5 font-display font-bold transition-colors hover:border-primary"
             >
-              <ShoppingCart className="h-5 w-5 text-accent" /> Acquista la licenza
-            </button>
+              <ShoppingCart className="h-5 w-5 text-accent" /> {t.buyLicense}
+            </a>
           </div>
         </div>
 
@@ -648,11 +624,13 @@ function DownloadSection({ openTicket, openDownload }: ModalHandlers) {
 }
 
 function Faq({ open, setOpen }: { open: number | null; setOpen: (i: number | null) => void }) {
+  const [lang] = useState<Lang>("it");
+  const t = copy[lang];
   return (
     <section id="faq" className="mx-auto max-w-3xl px-4 py-20 sm:px-6 sm:py-24">
-      <SectionTitle eyebrow="Supporto" title="Domande frequenti" />
+      <SectionTitle eyebrow={t.support.eyebrow} title={t.support.title} />
       <div className="mt-10 space-y-3">
-        {faq.map((item, i) => {
+        {t.faq.map((item, i) => {
           const isOpen = open === i;
           return (
             <div key={item.q} className="glass-card overflow-hidden rounded-xl">
@@ -688,7 +666,9 @@ function Faq({ open, setOpen }: { open: number | null; setOpen: (i: number | nul
   );
 }
 
-function Support({ openTicket }: ModalHandlers) {
+function Support({ openTicket }: { openTicket: () => void }) {
+  const [lang] = useState<Lang>("it");
+  const t = copy[lang];
   return (
     <section id="assistenza" className="mx-auto max-w-6xl px-4 pb-20 sm:px-6 sm:pb-24">
       <div className="glass-card relative overflow-hidden rounded-3xl px-6 py-12 text-center sm:px-12">
@@ -697,25 +677,22 @@ function Support({ openTicket }: ModalHandlers) {
           <span className="glow-ring inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-discord/20">
             <Ticket className="h-6 w-6 text-discord" />
           </span>
-          <h2 className="mt-5 text-3xl font-bold">Assistenza tramite ticket Discord</h2>
-          <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-            Apri un ticket nella sezione italiana o inglese del nostro server: lo staff ti segue
-            durante l'acquisto e per qualsiasi problema tecnico.
-          </p>
+          <h2 className="mt-5 text-3xl font-bold">{t.support.ticketTitle}</h2>
+          <p className="mx-auto mt-4 max-w-xl text-muted-foreground">{t.support.ticketText}</p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <button
               type="button"
               onClick={openTicket}
               className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-discord px-7 py-3.5 font-display font-bold text-primary-foreground transition-transform hover:scale-105 sm:w-auto"
             >
-              <MessageCircle className="h-5 w-5" /> Apri un ticket
+              <MessageCircle className="h-5 w-5" /> {t.support.ctaTicket}
             </button>
             <a
               href={LINKS.discordInvite}
               {...EXTERNAL_LINK_PROPS}
               className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border px-7 py-3.5 font-display font-bold transition-colors hover:border-primary sm:w-auto"
             >
-              <Mail className="h-5 w-5 text-accent" /> Discord ufficiale
+              <Mail className="h-5 w-5 text-accent" /> {t.support.ctaDiscord}
             </a>
           </div>
         </div>
@@ -725,33 +702,34 @@ function Support({ openTicket }: ModalHandlers) {
 }
 
 function Footer() {
+  const [lang] = useState<Lang>("it");
+  const t = copy[lang];
   return (
     <footer className="border-t border-border/60 bg-card/30">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
         <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
             <div className="flex items-center gap-3">
-              <img src="/aron-logo.png" alt="Logo Aron Mod" width={36} height={36} className="h-9 w-9" />
+              <img
+                src="/aron-logo.png"
+                alt="Logo Aron Mod"
+                width={36}
+                height={36}
+                className="h-9 w-9"
+              />
               <span className="font-display text-lg font-bold">
                 ARON<span className="text-gradient"> MOD</span>
               </span>
             </div>
-            <p className="mt-4 max-w-sm text-sm text-muted-foreground">
-              Aron Mod è un progetto indipendente destinato esclusivamente a retro server e server
-              privati autorizzati. Non è affiliato, sponsorizzato o approvato da Gameforge o dagli
-              sviluppatori di Metin2.
-            </p>
+            <p className="mt-4 max-w-sm text-sm text-muted-foreground">{t.footer.disclaimer}</p>
           </div>
 
           <div>
-            <h3 className="font-display text-sm font-bold tracking-wider uppercase">Navigazione</h3>
+            <h3 className="font-display text-sm font-bold tracking-wider uppercase">
+              {t.footer.navTitle}
+            </h3>
             <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-              {[
-                ["Funzioni", "#funzioni"],
-                ["Server supportati", "#server"],
-                ["Loader", "#download"],
-                ["FAQ", "#faq"],
-              ].map(([label, href]) => (
+              {t.footer.nav.map(([label, href]) => (
                 <li key={label}>
                   <a href={href} className="transition-colors hover:text-foreground">
                     {label}
@@ -763,49 +741,30 @@ function Footer() {
 
           <div>
             <h3 className="font-display text-sm font-bold tracking-wider uppercase">
-              Legale e contatti
+              {t.footer.legalTitle}
             </h3>
             <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-              <li>
-                <a href="#faq" className="transition-colors hover:text-foreground">
-                  Termini di servizio
-                </a>
-              </li>
-              <li>
-                <a href="#faq" className="transition-colors hover:text-foreground">
-                  Privacy policy
-                </a>
-              </li>
-              <li>
-                <a href="#faq" className="transition-colors hover:text-foreground">
-                  Politica di rimborso
-                </a>
-              </li>
-              <li>
-                <a
-                  href={LINKS.ticketIt}
-                  {...EXTERNAL_LINK_PROPS}
-                  className="transition-colors hover:text-foreground"
-                >
-                  Ticket assistenza (IT)
-                </a>
-              </li>
-              <li>
-                <a
-                  href={LINKS.discordInvite}
-                  {...EXTERNAL_LINK_PROPS}
-                  className="transition-colors hover:text-foreground"
-                >
-                  Discord ufficiale
-                </a>
-              </li>
+              {t.footer.legal.map(([label, href]) => {
+                const isExternal = href.startsWith("http");
+                return (
+                  <li key={label}>
+                    <a
+                      href={href}
+                      {...(isExternal ? EXTERNAL_LINK_PROPS : {})}
+                      className="transition-colors hover:text-foreground"
+                    >
+                      {label}
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>
 
         <div className="mt-10 flex flex-col gap-2 border-t border-border/60 pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} Aron Mod. Tutti i diritti riservati.</p>
-          <p>Uso a proprio rischio. Vietata la rivendita delle licenze.</p>
+          <p>{t.footer.copyright.replace("{year}", String(new Date().getFullYear()))}</p>
+          <p>{t.footer.risk}</p>
         </div>
       </div>
     </footer>
