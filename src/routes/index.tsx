@@ -421,10 +421,11 @@ function Servers({ lang }: { lang: Lang }) {
                         className="inline-flex items-center gap-2 font-semibold text-foreground transition-colors hover:text-accent"
                       >
                         <Server className="h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
-                        <span>{row.name}</span>
+                        <span className="font-clean">{row.name}</span>
                         <ExternalLink className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                       </a>
                     </td>
+
                     <td className="px-4 py-3.5 text-center sm:px-6">
                       {row.base ? (
                         <span
