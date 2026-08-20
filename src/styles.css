@@ -138,6 +138,13 @@
   box-shadow: var(--shadow-glow);
 }
 
+@utility font-clean {
+  font-family:
+    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+
 @utility animate-float {
   animation: aron-float 6s ease-in-out infinite;
 }
