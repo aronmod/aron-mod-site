@@ -16,6 +16,8 @@ import {
   BookOpen,
   Download,
   ExternalLink,
+  Search,
+  Check,
 } from "lucide-react";
 
 import shot1 from "@/assets/shot-1.jpg";
@@ -361,28 +363,114 @@ function Features({ lang }: { lang: Lang }) {
   );
 }
 
+const SERVER_ROWS = [{ name: "I-Longju", url: LINKS.server.url, base: true, plus: true }] as const;
+
 function Servers({ lang }: { lang: Lang }) {
   const t = copy[lang];
+  const [query, setQuery] = useState("");
+  const filtered = SERVER_ROWS.filter((row) =>
+    row.name.toLowerCase().includes(query.toLowerCase()),
+  );
+
   return (
     <section id="server" className="relative border-y border-border/60 bg-card/30">
       <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
         <SectionTitle eyebrow={t.servers.eyebrow} title={t.servers.title} text={t.servers.text} />
-        <ul className="mx-auto mt-12 grid max-w-md gap-3">
-          <li className="glass-card flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold">
-            <Server className="h-4 w-4 shrink-0 text-accent" />
-            <a
-              href={LINKS.server.url}
-              {...EXTERNAL_LINK_PROPS}
-              className="inline-flex min-w-0 items-center gap-1.5 truncate transition-colors hover:text-accent"
-            >
-              <span className="truncate">{LINKS.server.name}</span>
-              <ExternalLink className="h-3.5 w-3.5 shrink-0" />
-            </a>
-            <span className="ml-auto shrink-0 rounded-md bg-accent/15 px-2 py-0.5 text-[11px] font-bold text-accent">
-              {t.servers.statusOk}
-            </span>
-          </li>
-        </ul>
+
+        <div className="mx-auto mt-12 max-w-2xl">
+          <div className="relative">
+            <Search
+              className="pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={t.servers.searchPlaceholder}
+              className="w-full rounded-xl border border-border bg-card/70 py-3 pr-4 pl-11 text-sm text-foreground placeholder:text-muted-foreground/70 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
+              aria-label={t.servers.searchPlaceholder}
+            />
+          </div>
+
+          <div className="mt-5 overflow-x-auto rounded-2xl border border-border/60 bg-card/40 backdrop-blur-sm">
+            <table className="w-full min-w-[320px] text-left text-sm">
+              <thead>
+                <tr className="border-b border-border/60 bg-secondary/40">
+                  <th className="px-4 py-3 font-display font-bold text-foreground sm:px-6">
+                    {t.servers.colServer}
+                  </th>
+                  <th className="px-4 py-3 text-center font-display font-bold text-foreground sm:px-6">
+                    {t.servers.colBase}
+                  </th>
+                  <th className="px-4 py-3 text-center font-display font-bold text-foreground sm:px-6">
+                    {t.servers.colPlus}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((row) => (
+                  <tr
+                    key={row.name}
+                    className="border-b border-border/40 last:border-b-0 transition-colors hover:bg-primary/5"
+                  >
+                    <td className="px-4 py-3.5 sm:px-6">
+                      <a
+                        href={row.url}
+                        {...EXTERNAL_LINK_PROPS}
+                        className="inline-flex items-center gap-2 font-semibold text-foreground transition-colors hover:text-accent"
+                      >
+                        <Server className="h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
+                        <span>{row.name}</span>
+                        <ExternalLink className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                      </a>
+                    </td>
+                    <td className="px-4 py-3.5 text-center sm:px-6">
+                      {row.base ? (
+                        <span
+                          className="inline-flex items-center justify-center rounded-full bg-accent/15 p-1.5"
+                          aria-label={t.servers.baseLabel}
+                          title={t.servers.baseLabel}
+                        >
+                          <Check className="h-4 w-4 text-accent" aria-hidden="true" />
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground" aria-label={t.servers.noResults}>
+                          —
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3.5 text-center sm:px-6">
+                      {row.plus ? (
+                        <span
+                          className="inline-flex items-center justify-center rounded-full bg-primary/15 p-1.5"
+                          aria-label={t.servers.plusLabel}
+                          title={t.servers.plusLabel}
+                        >
+                          <Check className="h-4 w-4 text-primary" aria-hidden="true" />
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground" aria-label={t.servers.noResults}>
+                          —
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+                {filtered.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={3}
+                      className="px-4 py-8 text-center text-sm text-muted-foreground sm:px-6"
+                    >
+                      {t.servers.noResults}
+                    </td>
+                  </tr>
+                ) : null}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </section>
   );

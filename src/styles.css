@@ -60,7 +60,8 @@
   --violet: oklch(0.62 0.24 300);
   --discord: oklch(0.62 0.18 279);
 
-  --gradient-hero: radial-gradient(
+  --gradient-hero:
+    radial-gradient(
       120% 90% at 50% 0%,
       color-mix(in oklab, var(--primary) 22%, transparent) 0%,
       transparent 60%
@@ -71,7 +72,8 @@
       transparent 65%
     );
   --gradient-accent: linear-gradient(120deg, var(--primary), var(--violet));
-  --shadow-glow: 0 0 0 1px color-mix(in oklab, var(--primary) 35%, transparent),
+  --shadow-glow:
+    0 0 0 1px color-mix(in oklab, var(--primary) 35%, transparent),
     0 18px 60px -18px color-mix(in oklab, var(--primary) 65%, transparent);
   --shadow-violet: 0 18px 60px -18px color-mix(in oklab, var(--violet) 70%, transparent);
 }
@@ -109,10 +111,8 @@
 }
 
 @utility surface-grid {
-  background-image: linear-gradient(
-      color-mix(in oklab, var(--primary) 8%, transparent) 1px,
-      transparent 1px
-    ),
+  background-image:
+    linear-gradient(color-mix(in oklab, var(--primary) 8%, transparent) 1px, transparent 1px),
     linear-gradient(90deg, color-mix(in oklab, var(--primary) 8%, transparent) 1px, transparent 1px);
   background-size: 56px 56px;
   mask-image: radial-gradient(80% 60% at 50% 30%, #000 0%, transparent 80%);

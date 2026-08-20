@@ -54,7 +54,7 @@ export const copy = {
         },
         {
           title: "Auto Farm",
-          text: "Farming automatico di metin, mob e boss con rotte personalizzabili e ritorno al villaggio quando l'inventario è pieno.",
+          text: "Farming automatico di metin, mob e boss con rotte personalizzabili.",
         },
         {
           title: "Anti Ban",
@@ -70,7 +70,13 @@ export const copy = {
       eyebrow: "Compatibilità",
       title: "Server supportati",
       text: "Aron Mod è attualmente disponibile per il server indicato qui sotto. La lista verrà aggiornata con l'aggiunta di nuovi server.",
-      statusOk: "OK",
+      searchPlaceholder: "Cerca server...",
+      colServer: "Server",
+      colBase: "BASE",
+      colPlus: "PLUS",
+      noResults: "Nessun server trovato",
+      baseLabel: "Compatibile con BASE",
+      plusLabel: "Compatibile con PLUS",
     },
     pricing: {
       eyebrow: "Prezzi",
@@ -267,7 +273,7 @@ export const copy = {
         },
         {
           title: "Auto Farm",
-          text: "Automatic farming for metin, mobs and bosses with custom routes and return to town when your inventory is full.",
+          text: "Automatic farming for metin, mobs and bosses with custom routes.",
         },
         {
           title: "Anti Ban",
@@ -283,7 +289,13 @@ export const copy = {
       eyebrow: "Compatibility",
       title: "Supported servers",
       text: "Aron Mod is currently available for the server listed below. The list will be updated as new servers are added.",
-      statusOk: "OK",
+      searchPlaceholder: "Search servers...",
+      colServer: "Server",
+      colBase: "BASE",
+      colPlus: "PLUS",
+      noResults: "No servers found",
+      baseLabel: "BASE compatible",
+      plusLabel: "PLUS compatible",
     },
     pricing: {
       eyebrow: "Pricing",
