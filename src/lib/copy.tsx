@@ -113,6 +113,12 @@ export const copy = {
         { alt: "Auto farm notturno nella foresta di bambù" },
       ],
     },
+    loaderImages: {
+      loginAlt: "Schermata di login del loader di Aron Mod",
+      loginCaption: "Login con chiave di licenza",
+      launchAlt: "Schermata di avvio del client nel loader di Aron Mod",
+      launchCaption: "Avvio del client e multi-client",
+    },
     loader: {
       eyebrow: "Loader",
       title: "Il loader di Aron Mod",
@@ -319,6 +325,12 @@ export const copy = {
         { alt: "Aron Mod overlay with active modules" },
         { alt: "Night auto farm in the bamboo forest" },
       ],
+    },
+    loaderImages: {
+      loginAlt: "Aron Mod loader login screen",
+      loginCaption: "Login with your license key",
+      launchAlt: "Aron Mod loader client launch screen",
+      launchCaption: "Client launch and multi-client",
     },
     loader: {
       eyebrow: "Loader",
