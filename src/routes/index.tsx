@@ -353,7 +353,7 @@ function Features({ lang }: { lang: Lang }) {
       <SectionTitle eyebrow={t.features.eyebrow} title={t.features.title} text={t.features.text} />
       <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {t.features.items.map((f, i) => {
-          const Icon = featureIcons[i];
+          const Icon = featureIcons[i] ?? featureIcons[0]!;
           return (
             <article key={f.title} className="glass-card rounded-2xl p-6">
               <div className="glow-ring inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/15">
@@ -590,27 +590,27 @@ function DownloadSection({ openDownload, lang }: { openDownload: () => void; lan
             <figure className="glass-card animate-float overflow-hidden rounded-2xl p-2 sm:translate-y-4">
               <img
                 src="/loader-login.png"
-                alt={t.loaderImages.loginAlt}
+                alt={t.images.loginAlt}
                 loading="lazy"
                 width={400}
                 height={580}
                 className="w-full rounded-xl"
               />
               <figcaption className="px-2 py-2 text-center text-[11px] text-muted-foreground">
-                {t.loaderImages.loginCaption}
+                {t.images.loginCaption}
               </figcaption>
             </figure>
             <figure className="glass-card glow-ring overflow-hidden rounded-2xl p-2 sm:-translate-y-4">
               <img
                 src="/loader-launch.png"
-                alt={t.loaderImages.launchAlt}
+                alt={t.images.launchAlt}
                 loading="lazy"
                 width={400}
                 height={580}
                 className="w-full rounded-xl"
               />
               <figcaption className="px-2 py-2 text-center text-[11px] text-muted-foreground">
-                {t.loaderImages.launchCaption}
+                {t.images.launchCaption}
               </figcaption>
             </figure>
           </div>
