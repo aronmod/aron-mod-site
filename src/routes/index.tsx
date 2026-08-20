@@ -391,6 +391,7 @@ function Servers({ lang }: { lang: Lang }) {
 
 function Pricing({ lang }: { lang: Lang }) {
   const t = copy[lang].pricing;
+  const guideUrl = lang === "it" ? LINKS.guideIt : LINKS.guideEn;
 
   const PlanCard = ({
     plan,
