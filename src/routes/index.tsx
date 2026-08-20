@@ -18,7 +18,6 @@ import {
   ExternalLink,
 } from "lucide-react";
 
-
 import shot1 from "@/assets/shot-1.jpg";
 import shot2 from "@/assets/shot-2.jpg";
 import { LINKS, EXTERNAL_LINK_PROPS } from "@/config/links";
@@ -441,7 +440,10 @@ function Pricing({ lang }: { lang: Lang }) {
           <p className="mt-1 text-xs text-muted-foreground">{plan.includesIntro}</p>
           <ul className="mt-3 space-y-1.5">
             {plan.includes.map((item) => (
-              <li key={item} className="flex items-center gap-2 text-sm font-semibold text-foreground">
+              <li
+                key={item}
+                className="flex items-center gap-2 text-sm font-semibold text-foreground"
+              >
                 <ShieldCheck className="h-4 w-4 text-accent" /> {item}
               </li>
             ))}
@@ -480,11 +482,7 @@ function Showcase({ lang }: { lang: Lang }) {
 
   return (
     <section id="media" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
-      <SectionTitle
-        eyebrow={t.showcase.eyebrow}
-        title={t.showcase.title}
-        text={t.showcase.text}
-      />
+      <SectionTitle eyebrow={t.showcase.eyebrow} title={t.showcase.title} text={t.showcase.text} />
 
       <div className="mt-12 grid gap-4 lg:grid-cols-3">
         <a
@@ -603,7 +601,15 @@ function DownloadSection({ openDownload, lang }: { openDownload: () => void; lan
   );
 }
 
-function Faq({ open, setOpen, lang }: { open: number | null; setOpen: (i: number | null) => void; lang: Lang }) {
+function Faq({
+  open,
+  setOpen,
+  lang,
+}: {
+  open: number | null;
+  setOpen: (i: number | null) => void;
+  lang: Lang;
+}) {
   const t = copy[lang];
   return (
     <section id="faq" className="mx-auto max-w-3xl px-4 py-20 sm:px-6 sm:py-24">
