@@ -18,7 +18,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 
-import heroBg from "@/assets/hero-bg.jpg";
+
 import shot1 from "@/assets/shot-1.jpg";
 import shot2 from "@/assets/shot-2.jpg";
 import { LINKS, EXTERNAL_LINK_PROPS } from "@/config/links";
@@ -257,16 +257,9 @@ function Header({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
 function Hero({ lang }: { lang: Lang }) {
   const t = copy[lang];
   return (
-    <section id="top" className="relative overflow-hidden">
-      <img
-        src={heroBg}
-        alt="Battaglia nel mondo di Metin2"
-        width={1920}
-        height={1080}
-        className="absolute inset-0 h-full w-full object-cover opacity-35"
-      />
-      <div className="absolute inset-0 bg-[image:var(--gradient-hero)]" />
-      <div className="surface-grid absolute inset-0" />
+    <section id="top" className="relative overflow-hidden bg-background">
+      <div className="absolute inset-0 bg-[image:radial-gradient(120%_90%_at_50%_0%,color-mix(in_oklab,var(--primary)_12%,transparent)_0%,transparent_60%),radial-gradient(80%_60%_at_85%_20%,color-mix(in_oklab,var(--violet)_10%,transparent)_0%,transparent_65%)]" />
+      <div className="surface-grid absolute inset-0 opacity-60" />
       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent" />
 
       <div className="relative mx-auto max-w-4xl px-4 py-24 text-center sm:px-6 sm:py-32">
@@ -473,16 +466,6 @@ function Pricing({ lang }: { lang: Lang }) {
       <div className="mx-auto mt-12 grid max-w-4xl gap-5 md:grid-cols-2">
         <PlanCard plan={t.base} highlight={false} />
         <PlanCard plan={t.plus} highlight={true} />
-      </div>
-
-      <div className="mt-8 flex justify-center">
-        <a
-          href={guideUrl}
-          {...EXTERNAL_LINK_PROPS}
-          className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card/70 px-7 py-3.5 font-display font-bold transition-colors hover:border-primary"
-        >
-          <BookOpen className="h-5 w-5 text-accent" /> {t.getMod}
-        </a>
       </div>
     </section>
   );
