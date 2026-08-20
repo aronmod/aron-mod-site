@@ -363,15 +363,13 @@ function Features({ lang }: { lang: Lang }) {
   );
 }
 
-const SERVER_ROWS = [
-  { name: "I-Longju", url: LINKS.server.url, base: true, plus: true },
-] as const;
+const SERVER_ROWS = [{ name: "I-Longju", url: LINKS.server.url, base: true, plus: true }] as const;
 
 function Servers({ lang }: { lang: Lang }) {
   const t = copy[lang];
   const [query, setQuery] = useState("");
   const filtered = SERVER_ROWS.filter((row) =>
-    row.name.toLowerCase().includes(query.toLowerCase())
+    row.name.toLowerCase().includes(query.toLowerCase()),
   );
 
   return (
