@@ -31,7 +31,12 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-violet: var(--violet);
+  --color-magenta: var(--magenta);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
   --color-discord: var(--discord);
+
   --font-display: "Chakra Petch", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Rajdhani", ui-sans-serif, system-ui, sans-serif;
 }
