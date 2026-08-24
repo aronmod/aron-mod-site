@@ -241,6 +241,7 @@ export const copy = {
       functions: "Features",
       servers: "Servers",
       pricing: "Pricing",
+      gallery: "Gallery",
       loader: "Loader",
       faq: "FAQ",
       buy: "Buy",
