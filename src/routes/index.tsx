@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type { CSSProperties } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
   ShieldCheck,
@@ -45,7 +45,7 @@ import { useLang } from "@/hooks/use-lang";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Automatizzazione per Metin" },
+      { title: "Aron Mod - La Mod per metin sui server privati!" },
       { name: "description", content: "FarmBot, Auto Dungeon, Auto Alchimia e altre funzioni avanzate." },
       { property: "og:title", content: "Automatizzazione per Metin" },
       { property: "og:description", content: "FarmBot, Auto Dungeon, Auto Alchimia e altre funzioni avanzate." },
