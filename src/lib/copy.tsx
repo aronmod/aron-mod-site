@@ -29,13 +29,13 @@ export const copy = {
         </>
       ),
       subtitle: (
-        <span className="block text-base leading-relaxed font-medium text-foreground/90 sm:text-lg">
-          <span className="text-gradient font-semibold">Auto Dungeon</span>,{" "}
-          <span className="text-gradient font-semibold">FarmBot</span>,{" "}
-          <span className="text-gradient font-semibold">Auto Alchimia</span>, controllo remoto
-          tramite <span className="text-gradient font-semibold">Telegram</span> e molte altre
-          funzioni avanzate.
-        </span>
+        <>
+          <span className="font-semibold text-accent">Auto Dungeon</span>,{" "}
+          <span className="font-semibold text-accent">FarmBot</span>,{" "}
+          <span className="font-semibold text-accent">Auto Alchimia</span>, controllo remoto tramite{" "}
+          <span className="font-semibold text-violet">Telegram</span> e molte altre funzioni
+          avanzate.
+        </>
       ),
       ctaBuy: "Acquista la mod",
       ctaDiscord: "Entra nel Discord",
@@ -256,13 +256,13 @@ export const copy = {
         </>
       ),
       subtitle: (
-        <span className="block text-base leading-relaxed font-medium text-foreground/90 sm:text-lg">
-          <span className="text-gradient font-semibold">Auto Dungeon</span>,{" "}
-          <span className="text-gradient font-semibold">FarmBot</span>,{" "}
-          <span className="text-gradient font-semibold">Auto Alchemy</span>, remote control via{" "}
-          <span className="text-gradient font-semibold">Telegram</span>, and many other advanced
+        <>
+          <span className="font-semibold text-accent">Auto Dungeon</span>,{" "}
+          <span className="font-semibold text-accent">FarmBot</span>,{" "}
+          <span className="font-semibold text-accent">Auto Alchemy</span>, remote control via{" "}
+          <span className="font-semibold text-violet">Telegram</span>, and many other advanced
           features.
-        </span>
+        </>
       ),
       ctaBuy: "Buy the mod",
       ctaDiscord: "Join Discord",
