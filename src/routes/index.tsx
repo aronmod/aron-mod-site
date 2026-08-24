@@ -346,10 +346,20 @@ function Hero({ lang }: { lang: Lang }) {
   );
 }
 
-function SectionTitle({ eyebrow, title, text }: { eyebrow: string; title: string; text?: string }) {
+function SectionTitle({
+  eyebrow,
+  title,
+  text,
+}: {
+  eyebrow?: string;
+  title: string;
+  text?: string;
+}) {
   return (
     <div className="mx-auto max-w-2xl text-center">
-      <p className="text-xs font-bold tracking-[0.25em] text-accent uppercase">{eyebrow}</p>
+      {eyebrow ? (
+        <p className="text-xs font-bold tracking-[0.25em] text-accent uppercase">{eyebrow}</p>
+      ) : null}
       <h2 className="mt-3 text-3xl font-bold sm:text-4xl">{title}</h2>
       {text ? <p className="mt-4 text-muted-foreground">{text}</p> : null}
     </div>
@@ -398,15 +408,25 @@ function Features({ lang }: { lang: Lang }) {
   );
 }
 
-function SupportCell({ value, lang }: { value: Support; lang: Lang }) {
+function SupportCell({
+  value,
+  lang,
+  size = "md",
+}: {
+  value: Support;
+  lang: Lang;
+  size?: "sm" | "md";
+}) {
   const t = copy[lang].servers;
+  const pad = size === "sm" ? "p-1" : "p-1.5";
+  const icon = size === "sm" ? "h-3 w-3" : "h-4 w-4";
   if (value === true) {
     return (
       <span
-        className="inline-flex items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--success)_18%,transparent)] p-1.5 ring-1 ring-[color-mix(in_oklab,var(--success)_45%,transparent)]"
+        className={`inline-flex items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--success)_18%,transparent)] ${pad} ring-1 ring-[color-mix(in_oklab,var(--success)_45%,transparent)]`}
         title={t.legendYes}
       >
-        <Check className="h-4 w-4 text-[var(--success)]" aria-hidden="true" />
+        <Check className={`${icon} text-[var(--success)]`} aria-hidden="true" />
         <span className="sr-only">{t.legendYes}</span>
       </span>
     );
@@ -414,21 +434,21 @@ function SupportCell({ value, lang }: { value: Support; lang: Lang }) {
   if (value === false) {
     return (
       <span
-        className="inline-flex items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--danger)_16%,transparent)] p-1.5 ring-1 ring-[color-mix(in_oklab,var(--danger)_40%,transparent)]"
+        className={`inline-flex items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--danger)_16%,transparent)] ${pad} ring-1 ring-[color-mix(in_oklab,var(--danger)_40%,transparent)]`}
         title={t.legendNo}
       >
-        <X className="h-4 w-4 text-[var(--danger)]" aria-hidden="true" />
+        <X className={`${icon} text-[var(--danger)]`} aria-hidden="true" />
         <span className="sr-only">{t.legendNo}</span>
       </span>
     );
   }
   return (
     <span
-      className="inline-flex items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--warning)_16%,transparent)] p-1.5 ring-1 ring-[color-mix(in_oklab,var(--warning)_40%,transparent)]"
-      title={t.legendUnknown}
+      className={`inline-flex items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--warning)_16%,transparent)] ${pad} ring-1 ring-[color-mix(in_oklab,var(--warning)_40%,transparent)]`}
+      title={t.unknown}
     >
-      <HelpCircle className="h-4 w-4 text-[var(--warning)]" aria-hidden="true" />
-      <span className="sr-only">{t.legendUnknown}</span>
+      <HelpCircle className={`${icon} text-[var(--warning)]`} aria-hidden="true" />
+      <span className="sr-only">{t.unknown}</span>
     </span>
   );
 }
@@ -499,7 +519,7 @@ function Servers({ lang }: { lang: Lang }) {
         aria-hidden="true"
       />
       <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
-        <SectionTitle eyebrow={t.servers.eyebrow} title={t.servers.title} text={t.servers.text} />
+        <SectionTitle title={t.servers.title} text={t.servers.text} />
 
         <div className="spectrum-frame mt-12">
           <div className="spectrum-inner p-4 sm:p-7">
@@ -519,10 +539,6 @@ function Servers({ lang }: { lang: Lang }) {
                   className="font-clean w-full rounded-xl border border-border bg-background/60 py-3 pr-4 pl-11 text-sm text-foreground placeholder:text-muted-foreground/70 outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/50"
                 />
               </div>
-              <p className="font-clean text-xs text-muted-foreground">
-                <span className="font-bold text-foreground">{filtered.length}</span>{" "}
-                {t.servers.countLabel}
-              </p>
             </div>
 
             {/* Filter chips */}
@@ -576,14 +592,6 @@ function Servers({ lang }: { lang: Lang }) {
                     <th className="px-4 py-3 text-center font-display text-xs font-bold tracking-wider uppercase">
                       {t.servers.colPlus}
                     </th>
-                    {SERVER_FEATURES.map((f) => (
-                      <th
-                        key={f}
-                        className="px-4 py-3 text-center font-display text-xs font-bold tracking-wider uppercase"
-                      >
-                        {featureLabels[f]}
-                      </th>
-                    ))}
                   </tr>
                 </thead>
                 <tbody>
@@ -615,11 +623,6 @@ function Servers({ lang }: { lang: Lang }) {
                       <td className="px-4 py-4 text-center">
                         <SupportCell value={row.plus} lang={lang} />
                       </td>
-                      {SERVER_FEATURES.map((f) => (
-                        <td key={f} className="px-4 py-4 text-center">
-                          <SupportCell value={row.features[f]} lang={lang} />
-                        </td>
-                      ))}
                     </tr>
                   ))}
                 </tbody>
@@ -650,9 +653,6 @@ function Servers({ lang }: { lang: Lang }) {
                       [
                         [t.servers.colBase, row.base],
                         [t.servers.colPlus, row.plus],
-                        ...SERVER_FEATURES.map(
-                          (f) => [featureLabels[f], row.features[f]] as [string, Support],
-                        ),
                       ] as [string, Support][]
                     ).map(([label, value]) => (
                       <div
@@ -690,13 +690,10 @@ function Servers({ lang }: { lang: Lang }) {
             <div className="mt-6 flex flex-wrap items-center gap-4 border-t border-border/50 pt-5 text-xs">
               <span className="font-clean font-bold text-foreground">{t.servers.legendTitle}</span>
               <span className="font-clean flex items-center gap-2 text-muted-foreground">
-                <SupportCell value={true} lang={lang} /> {t.servers.legendYes}
+                <SupportCell value={true} lang={lang} size="sm" /> {t.servers.legendYes}
               </span>
               <span className="font-clean flex items-center gap-2 text-muted-foreground">
-                <SupportCell value={false} lang={lang} /> {t.servers.legendNo}
-              </span>
-              <span className="font-clean flex items-center gap-2 text-muted-foreground">
-                <SupportCell value={null} lang={lang} /> {t.servers.legendUnknown}
+                <SupportCell value={false} lang={lang} size="sm" /> {t.servers.legendNo}
               </span>
             </div>
           </div>

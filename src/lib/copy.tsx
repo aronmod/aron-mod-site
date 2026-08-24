@@ -67,9 +67,8 @@ export const copy = {
       ],
     },
     servers: {
-      eyebrow: "Compatibilità",
       title: "Server supportati",
-      text: "Aron Mod è attualmente disponibile per il server indicato qui sotto. La lista verrà aggiornata con l'aggiunta di nuovi server.",
+      text: "Aron Mod è attualmente disponibile per i server indicati qui sotto. La lista verrà aggiornata con l'aggiunta di nuovi server.",
       searchPlaceholder: "Cerca server per nome...",
       colStatus: "Status",
       colServer: "Nome server",
@@ -99,8 +98,6 @@ export const copy = {
       legendTitle: "Legenda",
       legendYes: "Supportato",
       legendNo: "Non supportato",
-      legendUnknown: "Da verificare",
-      countLabel: "server",
     },
 
     pricing: {
@@ -311,9 +308,8 @@ export const copy = {
       ],
     },
     servers: {
-      eyebrow: "Compatibility",
       title: "Supported servers",
-      text: "Aron Mod is currently available for the server listed below. The list will be updated as new servers are added.",
+      text: "Aron Mod is currently available for the servers listed below. The list will be updated as new servers are added.",
       searchPlaceholder: "Search servers by name...",
       colStatus: "Status",
       colServer: "Server name",
@@ -343,8 +339,6 @@ export const copy = {
       legendTitle: "Legend",
       legendYes: "Supported",
       legendNo: "Not supported",
-      legendUnknown: "To be confirmed",
-      countLabel: "servers",
     },
     pricing: {
       eyebrow: "Pricing",

@@ -33,10 +33,10 @@ export const SERVERS: ServerRow[] = [
     base: true,
     plus: true,
     features: {
-      autoDungeon: null,
-      switchAmmalia: null,
-      autoAlchimia: null,
-      captcha: null,
+      autoDungeon: true,
+      switchAmmalia: true,
+      autoAlchimia: true,
+      captcha: true,
     },
   },
 ];
