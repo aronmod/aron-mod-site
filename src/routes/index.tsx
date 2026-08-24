@@ -770,7 +770,7 @@ function Pricing({ lang }: { lang: Lang }) {
           </p>
         }
       />
-      <div className="mx-auto mt-12 grid max-w-4xl gap-5 md:grid-cols-2">
+      <div className="mx-auto mt-12 grid max-w-4xl gap-5.5 md:grid-cols-2 md:gap-x-7.5 md:gap-y-6">
         <PlanCard plan={t.base} highlight={false} />
         <PlanCard plan={t.plus} highlight={true} />
       </div>
