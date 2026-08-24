@@ -45,16 +45,16 @@ import { useLang } from "@/hooks/use-lang";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Aron Mod - La Mod per metin sui server privati!" },
+      { title: "Aron Mod - Il Bot di Metin per Server Privati" },
       { name: "description", content: "FarmBot, Auto Dungeon, Auto Alchimia e altre funzioni avanzate." },
-      { property: "og:title", content: "Aron Mod - Automatizzazione per Metin" },
+      { property: "og:title", content: "Aron Mod - Il Bot di Metin per Server Privati" },
       { property: "og:description", content: "FarmBot, Auto Dungeon, Auto Alchimia e altre funzioni avanzate." },
       { property: "og:url", content: "https://aronmod.net/" },
       { property: "og:image", content: "https://aronmod.net/og-aron-mod-v2.png" },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "630" },
       { property: "og:image:alt", content: "Logo Aron Mod" },
-      { name: "twitter:title", content: "Aron Mod - Automatizzazione per Metin" },
+      { name: "twitter:title", content: "Aron Mod - Il Bot di Metin per Server Privati" },
       { name: "twitter:description", content: "FarmBot, Auto Dungeon, Auto Alchimia e altre funzioni avanzate." },
       { name: "twitter:image", content: "https://aronmod.net/og-aron-mod-v2.png" },
       { name: "twitter:image:alt", content: "Logo Aron Mod" },
