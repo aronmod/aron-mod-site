@@ -65,7 +65,7 @@ type ModalHandlers = {
 };
 
 function Index() {
-  const [lang, setLang] = useState<Lang>("it");
+  const [lang, setLang] = useLang("it");
   const t = copy[lang];
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [ticketOpen, setTicketOpen] = useState(false);
