@@ -404,11 +404,11 @@ function SupportCell({
 }: {
   value: Support;
   lang: Lang;
-  size?: "sm" | "md";
+  size?: "xs" | "sm" | "md";
 }) {
   const t = copy[lang].servers;
-  const pad = size === "sm" ? "p-1" : "p-1.5";
-  const icon = size === "sm" ? "h-3 w-3" : "h-4 w-4";
+  const pad = size === "xs" ? "p-0.5" : size === "sm" ? "p-1" : "p-1.5";
+  const icon = size === "xs" ? "h-3 w-3" : size === "sm" ? "h-3 w-3" : "h-4 w-4";
   if (value === true) {
     return (
       <span
