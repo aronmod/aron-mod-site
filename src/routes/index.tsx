@@ -87,7 +87,7 @@ function Index() {
         <Servers lang={lang} />
         <Pricing lang={lang} />
         <Showcase lang={lang} />
-        <DownloadSection openDownload={handlers.openDownload} lang={lang} />
+        <DownloadSection lang={lang} />
         <Faq open={openFaq} setOpen={setOpenFaq} lang={lang} />
         <Support openTicket={handlers.openTicket} lang={lang} />
       </main>
