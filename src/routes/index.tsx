@@ -283,7 +283,7 @@ function Header({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
 
           <a
             href="#prezzi"
-            className="shrink-0 rounded-lg bg-primary px-3.5 py-1.5 text-[13px] font-bold text-primary-foreground transition-transform hover:scale-105"
+            className="shrink-0 rounded-xl bg-[image:var(--gradient-accent)] px-5 py-2 text-[13px] font-bold text-primary-foreground transition-transform hover:scale-105"
           >
             {t.header.buy}
           </a>
