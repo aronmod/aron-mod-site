@@ -107,14 +107,12 @@ export const copy = {
         "Scegli il piano, clicca su «Acquista» e completa l'acquisto con il nostro staff su Discord.",
       base: {
         name: "BASE",
-        description: "Licenza standard",
         bestValue: false,
         cta15: "Acquista 15 giorni — 9 €",
         cta30: "Acquista 30 giorni — 15 €",
       },
       plus: {
         name: "PLUS",
-        description: "Massima potenza",
         bestValue: true,
         bestValueLabel: "Migliore offerta",
         cta15: "Acquista 15 giorni — 11 €",
@@ -339,14 +337,12 @@ export const copy = {
         'Choose your plan, click "Buy", and complete your purchase with our staff on Discord.',
       base: {
         name: "BASE",
-        description: "Standard license",
         bestValue: false,
         cta15: "Buy 15 days — €9",
         cta30: "Buy 30 days — €15",
       },
       plus: {
         name: "PLUS",
-        description: "Maximum power",
         bestValue: true,
         bestValueLabel: "Best value",
         cta15: "Buy 15 days — €11",
