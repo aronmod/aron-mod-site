@@ -216,6 +216,28 @@ function Index() {
   );
 }
 
+function FlagIt() {
+  return (
+    <svg aria-hidden viewBox="0 0 16 12" className="h-3 w-4 shrink-0 rounded-[2px]">
+      <rect width="16" height="12" fill="#f1f2f1" />
+      <rect width="5.34" height="12" fill="#009246" />
+      <rect x="10.66" width="5.34" height="12" fill="#ce2b37" />
+    </svg>
+  );
+}
+
+function FlagGb() {
+  return (
+    <svg aria-hidden viewBox="0 0 16 12" className="h-3 w-4 shrink-0 rounded-[2px]">
+      <rect width="16" height="12" fill="#012169" />
+      <path d="M0 0l16 12M16 0L0 12" stroke="#fff" strokeWidth="2.4" />
+      <path d="M0 0l16 12M16 0L0 12" stroke="#c8102e" strokeWidth="1.2" />
+      <path d="M8 0v12M0 6h16" stroke="#fff" strokeWidth="4" />
+      <path d="M8 0v12M0 6h16" stroke="#c8102e" strokeWidth="2.4" />
+    </svg>
+  );
+}
+
 function Header({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
   const t = copy[lang];
   return (
