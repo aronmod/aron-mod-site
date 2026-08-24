@@ -817,10 +817,15 @@ function Showcase({ lang }: { lang: Lang }) {
   ];
 
   return (
-    <section id="galleria" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
-      <SectionTitle title={t.showcase.title} text={t.showcase.text} />
+    <section id="galleria" className="relative">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[image:linear-gradient(180deg,color-mix(in_oklab,var(--primary)_5%,transparent)_0%,color-mix(in_oklab,var(--violet)_4%,transparent)_55%,transparent_100%)]"
+      />
+      <div className="relative mx-auto max-w-6xl px-4 pt-16 pb-20 sm:px-6 sm:pt-20 sm:pb-24">
+        <SectionTitle title={t.showcase.title} text={t.showcase.text} />
 
-      <div className="mt-12 grid gap-4 lg:grid-cols-3">
+        <div className="mt-12 grid gap-4 lg:grid-cols-3">
         <a
           href={LINKS.discordInvite}
           {...EXTERNAL_LINK_PROPS}
