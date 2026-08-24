@@ -320,7 +320,7 @@ function Hero({ lang }: { lang: Lang }) {
               {
                 "--spark-col": c.col,
                 "--spark-row": c.row,
-                animationDelay: c.delay,
+                "--spark-delay": c.delay,
               } as CSSProperties
             }
           />
