@@ -615,11 +615,7 @@ function Servers({ lang }: { lang: Lang }) {
                       <td className="px-4 py-4 text-center">
                         <SupportCell value={row.plus} lang={lang} />
                       </td>
-                      {SERVER_FEATURES.map((f) => (
-                        <td key={f} className="px-4 py-4 text-center">
-                          <SupportCell value={row.features[f]} lang={lang} />
-                        </td>
-                      ))}
+
                     </tr>
                   ))}
                 </tbody>
