@@ -499,7 +499,7 @@ function Servers({ lang }: { lang: Lang }) {
         aria-hidden="true"
       />
       <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
-        <SectionTitle eyebrow={t.servers.eyebrow} title={t.servers.title} text={t.servers.text} />
+        <SectionTitle title={t.servers.title} text={t.servers.text} />
 
         <div className="spectrum-frame mt-12">
           <div className="spectrum-inner p-4 sm:p-7">
@@ -519,11 +519,8 @@ function Servers({ lang }: { lang: Lang }) {
                   className="font-clean w-full rounded-xl border border-border bg-background/60 py-3 pr-4 pl-11 text-sm text-foreground placeholder:text-muted-foreground/70 outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/50"
                 />
               </div>
-              <p className="font-clean text-xs text-muted-foreground">
-                <span className="font-bold text-foreground">{filtered.length}</span>{" "}
-                {t.servers.countLabel}
-              </p>
             </div>
+
 
             {/* Filter chips */}
             <div className="mt-5 flex flex-wrap items-center gap-2">
