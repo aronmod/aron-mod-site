@@ -104,7 +104,7 @@ export const copy = {
       eyebrow: "",
       title: "Scegli il tuo piano",
       subtitle:
-        "Nessun carrello e nessun pagamento automatico: seleziona il pacchetto su Discord e lo staff completa l'acquisto con te.",
+        "Scegli il piano che preferisci e clicca su «Acquista»: il nostro staff ti assisterà su Discord per completare l'acquisto.",
       base: {
         name: "BASE",
         description: "Licenza standard",
@@ -119,7 +119,7 @@ export const copy = {
         bestValueLabel: "Migliore offerta",
         cta15: "Acquista 15 giorni — 11 €",
         cta30: "Acquista 30 giorni — 20 €",
-        includesTitle: "COSA INCLUDE IL PLUS",
+        includesTitle: "",
         includesIntro: "Rispetto al pacchetto BASE, il PLUS include:",
         includes: ["AutoDungeon", "AutoAlchimia", "SwitchBonus Ammalia"],
       },
@@ -344,7 +344,7 @@ export const copy = {
       eyebrow: "",
       title: "Choose your plan",
       subtitle:
-        "No cart and no automatic payment: select the package on Discord and our staff will complete the purchase with you.",
+        "Choose the plan you prefer and click 'Buy': our staff will assist you on Discord to complete your purchase.",
       base: {
         name: "BASE",
         description: "Standard license",
@@ -359,7 +359,7 @@ export const copy = {
         bestValueLabel: "Best value",
         cta15: "Buy 15 days — €11",
         cta30: "Buy 30 days — €20",
-        includesTitle: "WHAT'S INCLUDED IN PLUS",
+        includesTitle: "",
         includesIntro: "Compared to the BASE package, PLUS includes:",
         includes: ["AutoDungeon", "AutoAlchimia", "SwitchBonus Ammalia"],
       },
