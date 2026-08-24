@@ -398,15 +398,25 @@ function Features({ lang }: { lang: Lang }) {
   );
 }
 
-function SupportCell({ value, lang }: { value: Support; lang: Lang }) {
+function SupportCell({
+  value,
+  lang,
+  size = "md",
+}: {
+  value: Support;
+  lang: Lang;
+  size?: "sm" | "md";
+}) {
   const t = copy[lang].servers;
+  const pad = size === "sm" ? "p-1" : "p-1.5";
+  const icon = size === "sm" ? "h-3 w-3" : "h-4 w-4";
   if (value === true) {
     return (
       <span
-        className="inline-flex items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--success)_18%,transparent)] p-1.5 ring-1 ring-[color-mix(in_oklab,var(--success)_45%,transparent)]"
+        className={`inline-flex items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--success)_18%,transparent)] ${pad} ring-1 ring-[color-mix(in_oklab,var(--success)_45%,transparent)]`}
         title={t.legendYes}
       >
-        <Check className="h-4 w-4 text-[var(--success)]" aria-hidden="true" />
+        <Check className={`${icon} text-[var(--success)]`} aria-hidden="true" />
         <span className="sr-only">{t.legendYes}</span>
       </span>
     );
@@ -414,24 +424,25 @@ function SupportCell({ value, lang }: { value: Support; lang: Lang }) {
   if (value === false) {
     return (
       <span
-        className="inline-flex items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--danger)_16%,transparent)] p-1.5 ring-1 ring-[color-mix(in_oklab,var(--danger)_40%,transparent)]"
+        className={`inline-flex items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--danger)_16%,transparent)] ${pad} ring-1 ring-[color-mix(in_oklab,var(--danger)_40%,transparent)]`}
         title={t.legendNo}
       >
-        <X className="h-4 w-4 text-[var(--danger)]" aria-hidden="true" />
+        <X className={`${icon} text-[var(--danger)]`} aria-hidden="true" />
         <span className="sr-only">{t.legendNo}</span>
       </span>
     );
   }
   return (
     <span
-      className="inline-flex items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--warning)_16%,transparent)] p-1.5 ring-1 ring-[color-mix(in_oklab,var(--warning)_40%,transparent)]"
-      title={t.legendUnknown}
+      className={`inline-flex items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--warning)_16%,transparent)] ${pad} ring-1 ring-[color-mix(in_oklab,var(--warning)_40%,transparent)]`}
+      title={t.unknown}
     >
-      <HelpCircle className="h-4 w-4 text-[var(--warning)]" aria-hidden="true" />
-      <span className="sr-only">{t.legendUnknown}</span>
+      <HelpCircle className={`${icon} text-[var(--warning)]`} aria-hidden="true" />
+      <span className="sr-only">{t.unknown}</span>
     </span>
   );
 }
+
 
 function StatusBadge({ status, lang }: { status: ServerStatus; lang: Lang }) {
   const t = copy[lang].servers.status;
