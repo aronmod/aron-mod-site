@@ -301,20 +301,27 @@ function Hero({ lang }: { lang: Lang }) {
       <div className="surface-grid animate-grid-breathe absolute inset-0 opacity-60" />
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
         {[
-          { left: "38%", top: "14%", delay: "0s", violet: false },
-          { left: "56%", top: "10%", delay: "2.6s", violet: true },
-          { left: "44%", top: "26%", delay: "5.4s", violet: false },
-          { left: "62%", top: "22%", delay: "8.1s", violet: true },
-          { left: "34%", top: "20%", delay: "11s", violet: true },
-          { left: "52%", top: "30%", delay: "13.2s", violet: false },
+          { col: -2, row: 2, delay: "0s", violet: false },
+          { col: 1, row: 1, delay: "2.6s", violet: true },
+          { col: -1, row: 4, delay: "5.4s", violet: false },
+          { col: 1, row: 3, delay: "8.1s", violet: true },
+          { col: -2, row: 3, delay: "11s", violet: true },
+          { col: 0, row: 4, delay: "13.2s", violet: false },
         ].map((c) => (
           <span
-            key={`${c.left}-${c.top}`}
+            key={`${c.col}-${c.row}`}
             className={`grid-spark ${c.violet ? "grid-spark-violet" : ""}`}
-            style={{ left: c.left, top: c.top, animationDelay: c.delay }}
+            style={
+              {
+                "--spark-col": c.col,
+                "--spark-row": c.row,
+                animationDelay: c.delay,
+              } as React.CSSProperties
+            }
           />
         ))}
       </div>
+
       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent" />
 
       <div className="relative mx-auto max-w-4xl px-4 py-24 text-center sm:px-6 sm:py-32">
