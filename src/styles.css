@@ -216,3 +216,41 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+@utility spectrum-frame {
+  position: relative;
+  border-radius: calc(var(--radius) + 12px);
+  background: linear-gradient(
+    150deg,
+    color-mix(in oklab, var(--accent) 45%, transparent),
+    color-mix(in oklab, var(--primary) 40%, transparent) 35%,
+    color-mix(in oklab, var(--violet) 45%, transparent) 65%,
+    color-mix(in oklab, var(--magenta) 45%, transparent)
+  );
+  padding: 1px;
+  box-shadow: var(--shadow-spectrum);
+}
+
+@utility spectrum-inner {
+  border-radius: calc(var(--radius) + 11px);
+  background:
+    radial-gradient(
+      90% 70% at 10% 0%,
+      color-mix(in oklab, var(--primary) 12%, transparent) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      80% 70% at 95% 10%,
+      color-mix(in oklab, var(--magenta) 10%, transparent) 0%,
+      transparent 65%
+    ),
+    color-mix(in oklab, var(--card) 92%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+@utility text-gradient-spectrum {
+  background: var(--gradient-spectrum);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
