@@ -14,6 +14,7 @@ export const copy = {
       functions: "Funzioni",
       servers: "Server",
       pricing: "Prezzi",
+      gallery: "Galleria",
       loader: "Loader",
       faq: "FAQ",
       buy: "Acquista",
