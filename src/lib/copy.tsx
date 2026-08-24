@@ -30,18 +30,13 @@ export const copy = {
         </>
       ),
       subtitle: (
-        <>
-          <span className="block text-lg font-semibold sm:text-xl">
-            La mod premium per i retro server di Metin2.
-          </span>
-          <span className="mt-2.5 block text-sm leading-relaxed font-normal text-foreground/85 sm:text-base">
-            <span className="text-gradient font-medium">AutoDungeon</span>,{" "}
-            <span className="text-gradient font-medium">FarmBot</span>,{" "}
-            <span className="text-gradient font-medium">AutoAlchimia</span> e controllo remoto
-            tramite <span className="text-gradient font-medium">Telegram</span>. Tutto in un'unica
-            interfaccia leggera e sempre aggiornata.
-          </span>
-        </>
+        <span className="block text-base leading-relaxed font-medium text-foreground/90 sm:text-lg">
+          <span className="text-gradient font-semibold">AutoDungeon</span>,{" "}
+          <span className="text-gradient font-semibold">FarmBot</span>,{" "}
+          <span className="text-gradient font-semibold">AutoAlchimia</span>, controllo remoto tramite{" "}
+          <span className="text-gradient font-semibold">Telegram</span> e molte altre funzioni
+          avanzate.
+        </span>
       ),
       ctaBuy: "Acquista la mod",
       ctaDiscord: "Entra nel Discord",
@@ -266,18 +261,13 @@ export const copy = {
         </>
       ),
       subtitle: (
-        <>
-          <span className="block text-lg font-semibold sm:text-xl">
-            The premium mod for Metin2 private servers.
-          </span>
-          <span className="mt-2.5 block text-sm leading-relaxed font-normal text-foreground/85 sm:text-base">
-            <span className="text-gradient font-medium">AutoDungeon</span>,{" "}
-            <span className="text-gradient font-medium">FarmBot</span>,{" "}
-            <span className="text-gradient font-medium">AutoAlchimia</span>, and remote control via{" "}
-            <span className="text-gradient font-medium">Telegram</span>. Everything in one
-            lightweight, always up-to-date interface.
-          </span>
-        </>
+        <span className="block text-base leading-relaxed font-medium text-foreground/90 sm:text-lg">
+          <span className="text-gradient font-semibold">AutoDungeon</span>,{" "}
+          <span className="text-gradient font-semibold">FarmBot</span>,{" "}
+          <span className="text-gradient font-semibold">Auto Alchemy</span>, remote control via{" "}
+          <span className="text-gradient font-semibold">Telegram</span>, and many other advanced
+          features.
+        </span>
       ),
       ctaBuy: "Buy the mod",
       ctaDiscord: "Join Discord",
@@ -326,8 +316,8 @@ export const copy = {
       filters: {
         all: "All",
         autoDungeon: "AutoDungeon",
-        switchAmmalia: "Switch Ammalia",
-        autoAlchimia: "AutoAlchimia",
+        switchAmmalia: "Auto Enchant",
+        autoAlchimia: "Auto Alchemy",
         captcha: "Captcha",
       },
       status: {
@@ -359,7 +349,7 @@ export const copy = {
         cta30: "Buy 30 days — €20",
         includesTitle: "",
         includesIntro: "Depending on the server, PLUS includes:",
-        includes: ["AutoDungeon", "AutoAlchimia", "SwitchBonus Ammalia", "HWID Spoofer"],
+        includes: ["AutoDungeon", "Auto Alchemy", "Auto Enchant", "HWID Spoofer"],
       },
       commonPerks: [
         "All mod features included",
