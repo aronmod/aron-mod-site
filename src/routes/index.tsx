@@ -300,12 +300,12 @@ function Hero({ lang }: { lang: Lang }) {
           {t.hero.title}
         </h1>
 
-        <p
-          className="reveal glass-card glow-ring mx-auto mt-7 max-w-3xl rounded-2xl px-5 py-5 font-display text-lg leading-relaxed font-semibold text-foreground sm:px-8 sm:py-6 sm:text-2xl"
+        <div
+          className="reveal glass-card mx-auto mt-7 max-w-2xl rounded-2xl border-border/50 px-5 py-4 font-display text-foreground sm:px-7 sm:py-5"
           style={{ animationDelay: "200ms" }}
         >
           {t.hero.subtitle}
-        </p>
+        </div>
 
         <div
           className="reveal mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row"
