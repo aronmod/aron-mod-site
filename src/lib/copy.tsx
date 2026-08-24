@@ -3,12 +3,12 @@ export type Lang = "it" | "en";
 export const copy = {
   it: {
     meta: {
-      title: "Aron Mod — La mod premium per Metin2 su retro server",
+      title: "Aron Mod — Automazione avanzata per Metin2",
       description:
-        "Aron Mod: mod premium per retro server Metin2 autorizzati. Pacchetti BASE e PLUS, server supportati, guide e assistenza tramite ticket sul Discord ufficiale.",
-      ogTitle: "Aron Mod — Domina Metin con Aron Mod",
+        "Auto Dungeon, FarmBot, Auto Alchimia e controllo remoto tramite Telegram. Scopri tutte le funzioni di Aron Mod.",
+      ogTitle: "Aron Mod — Automazione avanzata per Metin2",
       ogDescription:
-        "Auto Dungeon, FarmBot e controllo remoto per retro server Metin2 autorizzati. Pacchetti BASE e PLUS, guide e ticket sul Discord ufficiale.",
+        "Auto Dungeon, FarmBot, Auto Alchimia e controllo remoto tramite Telegram. Scopri tutte le funzioni di Aron Mod.",
     },
     header: {
       functions: "Funzioni",
