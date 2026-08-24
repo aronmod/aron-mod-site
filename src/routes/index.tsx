@@ -335,10 +335,12 @@ function SectionTitle({
   eyebrow,
   title,
   text,
+  textClassName,
 }: {
   eyebrow?: string;
   title: string;
-  text?: string;
+  text?: React.ReactNode;
+  textClassName?: string;
 }) {
   return (
     <div className="mx-auto max-w-2xl text-center">
@@ -346,7 +348,9 @@ function SectionTitle({
         <p className="text-xs font-bold tracking-[0.25em] text-accent uppercase">{eyebrow}</p>
       ) : null}
       <h2 className="mt-3 text-3xl font-bold sm:text-4xl">{title}</h2>
-      {text ? <p className="mt-4 text-muted-foreground">{text}</p> : null}
+      {text ? (
+        <div className={`mt-4 ${textClassName ?? "text-muted-foreground"}`}>{text}</div>
+      ) : null}
     </div>
   );
 }
@@ -728,7 +732,9 @@ function Pricing({ lang }: { lang: Lang }) {
 
       {"includes" in plan ? (
         <div className="mt-6 rounded-xl bg-primary/10 p-4">
-          <p className="mt-1 text-xs font-bold text-foreground">{plan.includesIntro}</p>
+          <p className="text-sm font-semibold leading-relaxed text-foreground sm:text-base">
+            {plan.includesIntro}
+          </p>
           <ul className="mt-3 space-y-1.5">
             {plan.includes.map((item) => (
               <li
@@ -761,7 +767,14 @@ function Pricing({ lang }: { lang: Lang }) {
 
   return (
     <section id="prezzi" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
-      <SectionTitle title={t.title} text={t.subtitle} />
+      <SectionTitle
+        title={t.title}
+        text={
+          <p className="mx-auto max-w-xl text-base leading-relaxed font-normal text-foreground/90 sm:text-lg">
+            {t.subtitle}
+          </p>
+        }
+      />
       <div className="mx-auto mt-12 grid max-w-4xl gap-5 md:grid-cols-2">
         <PlanCard plan={t.base} highlight={false} />
         <PlanCard plan={t.plus} highlight={true} />

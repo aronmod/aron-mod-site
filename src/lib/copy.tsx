@@ -104,7 +104,7 @@ export const copy = {
       eyebrow: "",
       title: "Scegli il tuo piano",
       subtitle:
-        "Scegli il piano che preferisci e clicca su «Acquista»: il nostro staff ti assisterà su Discord per completare l'acquisto.",
+        "Scegli il piano, clicca su «Acquista» e completa l'acquisto con il nostro staff su Discord.",
       base: {
         name: "BASE",
         description: "Licenza standard",
@@ -344,7 +344,7 @@ export const copy = {
       eyebrow: "",
       title: "Choose your plan",
       subtitle:
-        "Choose the plan you prefer and click 'Buy': our staff will assist you on Discord to complete your purchase.",
+        'Choose your plan, click "Buy", and complete your purchase with our staff on Discord.',
       base: {
         name: "BASE",
         description: "Standard license",
