@@ -270,8 +270,12 @@
   position: absolute;
   width: 56px;
   height: 56px;
-  border-radius: 6px;
+  border-radius: 0;
   opacity: 0;
+  /* anchored to the same 56px origin as .surface-grid:
+     the nearest grid line left of the hero center, plus N whole cells */
+  left: calc(round(down, 50%, 56px) + (var(--spark-col) * 56px));
+  top: calc(var(--spark-row) * 56px);
   background: radial-gradient(
     70% 70% at 50% 50%,
     color-mix(in oklab, var(--primary) 26%, transparent) 0%,
@@ -281,6 +285,7 @@
   animation: aron-spark 15s ease-in-out infinite;
   will-change: opacity;
 }
+
 
 @utility grid-spark-violet {
   background: radial-gradient(
