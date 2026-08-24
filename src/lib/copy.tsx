@@ -39,7 +39,7 @@ export const copy = {
           </>
         ),
       },
-      ctaBuy: "Acquista la mod",
+      ctaBuy: "Acquista la Mod",
       ctaDiscord: "Entra nel Discord",
       supportValue: "",
       supportLabel: "",
@@ -175,7 +175,7 @@ export const copy = {
         "Aggiornamento automatico e supporto IT / EN nel loader",
       ],
       download: "Download",
-      buyLicense: "Acquista la licenza",
+      buyLicense: "Acquista la Mod",
     },
     faq: [
       {
@@ -284,7 +284,7 @@ export const copy = {
           </>
         ),
       },
-      ctaBuy: "Buy the mod",
+      ctaBuy: "Buy the Mod",
       ctaDiscord: "Join Discord",
       supportValue: "",
       supportLabel: "",
@@ -419,7 +419,7 @@ export const copy = {
         "Automatic updates and IT / EN support inside the loader",
       ],
       download: "Download",
-      buyLicense: "Buy the license",
+      buyLicense: "Buy the Mod",
     },
     faq: [
       {
