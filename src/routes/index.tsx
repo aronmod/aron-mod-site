@@ -21,6 +21,9 @@ import {
   X,
   HelpCircle,
   ZoomIn,
+  FlaskConical,
+  Wrench,
+  ScanLine,
 } from "lucide-react";
 
 import shot1 from "@/assets/shot-1.jpg";
