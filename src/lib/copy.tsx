@@ -23,7 +23,7 @@ export const copy = {
       langEn: "EN",
     },
     hero: {
-      badge: "Solo retro server autorizzati",
+      badge: "",
       title: (
         <>
           Domina Metin con <span className="text-gradient">Aron Mod</span>
@@ -40,11 +40,11 @@ export const copy = {
       ),
       ctaBuy: "Acquista la mod",
       ctaDiscord: "Entra nel Discord",
-      supportValue: "24/7",
-      supportLabel: "Supporto ticket Discord",
+      supportValue: "",
+      supportLabel: "",
     },
     features: {
-      eyebrow: "Funzioni",
+      eyebrow: "",
       title: "Tutto quello che serve per dominare",
       text: "Ogni modulo è attivabile singolarmente e configurabile in tempo reale dall'overlay in-game.",
       items: [
@@ -101,7 +101,7 @@ export const copy = {
     },
 
     pricing: {
-      eyebrow: "Prezzi",
+      eyebrow: "",
       title: "Scegli il tuo piano",
       subtitle:
         "Nessun carrello e nessun pagamento automatico: seleziona il pacchetto su Discord e lo staff completa l'acquisto con te.",
@@ -131,7 +131,7 @@ export const copy = {
       getMod: "Come ottenere Aron Mod",
     },
     showcase: {
-      eyebrow: "Gallery",
+      eyebrow: "",
       title: "Immagini e video dimostrativi",
       text: "Guarda Aron Mod in azione: scopri tutte le sue funzioni.",
       videoLabel: "Video demo · Auto farm 1h",
@@ -148,7 +148,7 @@ export const copy = {
         launchAlt: "Schermata di avvio del client nel loader di Aron Mod",
         launchCaption: "Avvio del client e multi-client",
       },
-      eyebrow: "Loader",
+      eyebrow: "",
       title: "Il loader di Aron Mod",
       description:
         "Un'interfaccia essenziale in italiano e inglese: inserisci la chiave di licenza, avvia il client e tieni sotto controllo la scadenza del tuo piano. Il download avviene esclusivamente tramite il Discord ufficiale.",
@@ -188,7 +188,7 @@ export const copy = {
       },
     ],
     support: {
-      eyebrow: "Supporto",
+      eyebrow: "",
       title: "Domande frequenti",
       ticketTitle: "Assistenza tramite ticket Discord",
       ticketText:
