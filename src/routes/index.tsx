@@ -666,7 +666,7 @@ function Servers({ lang }: { lang: Lang }) {
             </div>
 
             {/* Desktop table */}
-            <div className="mt-5 hidden overflow-x-auto rounded-2xl border border-border/60 md:block">
+            <div className="mt-8 hidden overflow-x-auto rounded-2xl border border-border/60 md:block">
               <table className="w-full text-left text-sm">
                 <thead>
                   <tr className="bg-secondary/50">
