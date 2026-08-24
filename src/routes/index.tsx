@@ -293,7 +293,6 @@ function Hero({ lang }: { lang: Lang }) {
           </div>
         </div>
 
-
         <h1
           className="reveal mt-6 text-4xl leading-tight font-bold sm:text-6xl"
           style={{ animationDelay: "140ms" }}
@@ -326,7 +325,6 @@ function Hero({ lang }: { lang: Lang }) {
             <MessageCircle className="h-5 w-5 text-discord" /> {t.hero.ctaDiscord}
           </a>
         </div>
-
       </div>
     </section>
   );
@@ -837,7 +835,6 @@ function DownloadSection({ openDownload, lang }: { openDownload: () => void; lan
       <div className="absolute inset-0 bg-[image:var(--gradient-hero)] opacity-70" />
       <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 py-20 sm:px-6 sm:py-24 lg:grid-cols-2">
         <div>
-          
           <h2 className="mt-3 text-3xl font-bold sm:text-4xl">{t.title}</h2>
           <p className="mt-4 text-muted-foreground">{t.description}</p>
           <ul className="mt-6 space-y-2 text-sm text-muted-foreground">
