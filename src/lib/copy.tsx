@@ -46,8 +46,8 @@ export const copy = {
     },
     features: {
       eyebrow: "",
-      title: "Tutto quello che serve per dominare",
-      text: "Ogni modulo è attivabile singolarmente e configurabile in tempo reale dall'overlay in-game.",
+      title: "Funzioni avanzate",
+      text: "Attiva i moduli che ti servono per automatizzare il gameplay.",
       items: [
         {
           title: "Auto Dungeon",
