@@ -81,7 +81,7 @@ export const copy = {
       notSupported: "Non supportato",
       unknown: "Da verificare",
       reset: "Azzera filtri",
-      filtersLabel: "Filtra per funzione",
+      filtersLabel: "Filtri:",
       filters: {
         all: "Tutti",
         autoDungeon: "AutoDungeon",
@@ -314,7 +314,7 @@ export const copy = {
       notSupported: "Not supported",
       unknown: "To be confirmed",
       reset: "Clear filters",
-      filtersLabel: "Filter by feature",
+      filtersLabel: "Filters:",
       filters: {
         all: "All",
         autoDungeon: "AutoDungeon",

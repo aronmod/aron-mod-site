@@ -525,7 +525,7 @@ function Servers({ lang }: { lang: Lang }) {
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder={t.servers.searchPlaceholder}
                   aria-label={t.servers.searchPlaceholder}
-                  className="font-clean w-full rounded-xl border border-border bg-background/60 py-3 pr-4 pl-11 text-sm text-foreground placeholder:text-muted-foreground/70 outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/50"
+                  className="font-clean w-full rounded-xl border border-border bg-background/60 py-2 pr-4 pl-11 text-sm text-foreground placeholder:text-muted-foreground/70 outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/50"
                 />
               </div>
             </div>
