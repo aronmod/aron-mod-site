@@ -66,7 +66,7 @@ export const copy = {
           text: "Captcha Solver, Relogin, Auto Skill, Switch Ammalia, Wall Hack e molte altre funzioni.",
         },
         {
-          title: "Protezione avanzata",
+          title: "Anti Ban",
           text: "Funzioni progettate per ridurre il rischio durante l'utilizzo, incluso HWID Spoofer. Nessun sistema può garantire l'assenza di ban.",
         },
         {
@@ -74,7 +74,7 @@ export const copy = {
           text: "Rileva la presenza di membri dello staff e giocatori nelle vicinanze e attiva gli avvisi configurati.",
         },
         {
-          title: "Controllo remoto",
+          title: "Telegram Bot",
           text: "Gestisci e monitora Aron Mod tramite Telegram: avvia o interrompi le funzioni e ricevi avvisi in tempo reale.",
         },
         {
@@ -311,7 +311,7 @@ export const copy = {
           text: "Captcha Solver, Relogin, Auto Skill, Auto Enchant, Wall Hack and many other features.",
         },
         {
-          title: "Advanced Protection",
+          title: "Anti Ban",
           text: "Features designed to reduce risk during use, including HWID Spoofer. No system can guarantee protection from bans.",
         },
         {
@@ -319,7 +319,7 @@ export const copy = {
           text: "Detects nearby staff members and players and triggers your configured alerts.",
         },
         {
-          title: "Remote Control",
+          title: "Telegram Bot",
           text: "Manage and monitor Aron Mod through Telegram: start or stop features and receive real-time alerts.",
         },
         {
