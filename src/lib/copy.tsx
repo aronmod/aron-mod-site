@@ -1,4 +1,4 @@
-import { LINKS } from "@/config/links";
+
 
 export type Lang = "it" | "en";
 
