@@ -298,25 +298,28 @@ function Hero({ lang }: { lang: Lang }) {
   return (
     <section id="top" className="relative overflow-hidden bg-background">
       <div className="absolute inset-0 bg-[image:radial-gradient(120%_90%_at_50%_0%,color-mix(in_oklab,var(--primary)_12%,transparent)_0%,transparent_60%),radial-gradient(80%_60%_at_85%_20%,color-mix(in_oklab,var(--violet)_10%,transparent)_0%,transparent_65%)]" />
-      <div className="surface-grid absolute inset-0 opacity-60" />
+      <div className="surface-grid animate-grid-breathe absolute inset-0 opacity-60" />
       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent" />
 
       <div className="relative mx-auto max-w-4xl px-4 py-24 text-center sm:px-6 sm:py-32">
         <div className="reveal flex justify-center">
           <div className="relative">
-            <div className="animate-pulse-glow absolute inset-0 rounded-full bg-violet/40 blur-3xl" />
+            <div
+              aria-hidden
+              className="animate-halo pointer-events-none absolute -inset-6 rounded-full bg-[image:radial-gradient(circle_at_50%_50%,color-mix(in_oklab,var(--primary)_45%,transparent)_0%,color-mix(in_oklab,var(--violet)_35%,transparent)_45%,transparent_72%)] blur-2xl"
+            />
             <img
               src="/aron-logo.png"
               alt="Logo Aron Mod"
               width={160}
               height={160}
-              className="animate-float relative h-28 w-28 sm:h-40 sm:w-40"
+              className="animate-float-slow relative h-28 w-28 sm:h-40 sm:w-40"
             />
           </div>
         </div>
 
         <h1
-          className="reveal mt-6 text-4xl leading-tight font-bold sm:text-6xl"
+          className="reveal title-shimmer mt-6 text-4xl leading-tight font-bold sm:text-6xl"
           style={{ animationDelay: "140ms" }}
         >
           {t.hero.title}
