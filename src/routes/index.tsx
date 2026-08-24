@@ -49,6 +49,13 @@ export const Route = createFileRoute("/")({
 
 const featureIcons: LucideIcon[] = [Swords, Bot, ShieldCheck, Send];
 
+const featureTones = [
+  "var(--accent)",
+  "var(--violet)",
+  "var(--success)",
+  "var(--magenta)",
+] as const;
+
 type ModalHandlers = {
   openTicket: () => void;
   openGuide: () => void;
