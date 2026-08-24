@@ -1,5 +1,3 @@
-import { LINKS } from "@/config/links";
-
 export type Lang = "it" | "en";
 
 export const copy = {
@@ -194,16 +192,10 @@ export const copy = {
       nav: [
         ["Funzioni", "#funzioni"],
         ["Server supportati", "#server"],
+        ["Prezzi", "#prezzi"],
+        ["Galleria", "#galleria"],
         ["Loader", "#download"],
-        ["FAQ", "#faq"],
-      ],
-      legalTitle: "Legale e contatti",
-      legal: [
-        ["Termini di servizio", "#faq"],
-        ["Privacy policy", "#faq"],
-        ["Politica di rimborso", "#faq"],
-        ["Ticket assistenza (IT)", LINKS.ticketIt],
-        ["Discord ufficiale", LINKS.discordInvite],
+        ["Supporto", "#faq"],
       ],
       copyright: "© {year} Aron Mod. Tutti i diritti riservati.",
       risk: "Uso a proprio rischio. Vietata la rivendita delle licenze.",
@@ -425,16 +417,10 @@ export const copy = {
       nav: [
         ["Features", "#funzioni"],
         ["Supported servers", "#server"],
+        ["Pricing", "#prezzi"],
+        ["Gallery", "#galleria"],
         ["Loader", "#download"],
-        ["FAQ", "#faq"],
-      ],
-      legalTitle: "Legal and contacts",
-      legal: [
-        ["Terms of service", "#faq"],
-        ["Privacy policy", "#faq"],
-        ["Refund policy", "#faq"],
-        ["Support ticket (IT)", LINKS.ticketIt],
-        ["Official Discord", LINKS.discordInvite],
+        ["Support", "#faq"],
       ],
       copyright: "© {year} Aron Mod. All rights reserved.",
       risk: "Use at your own risk. Reselling licenses is prohibited.",
