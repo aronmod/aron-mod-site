@@ -260,3 +260,114 @@
   background-clip: text;
   color: transparent;
 }
+
+@utility animate-float-slow {
+  animation: aron-float-slow 9s ease-in-out infinite;
+  will-change: transform;
+}
+
+@utility animate-halo {
+  animation: aron-halo 7s ease-in-out infinite;
+  will-change: opacity, transform;
+}
+
+@utility animate-grid-breathe {
+  animation: aron-grid-breathe 14s ease-in-out infinite;
+}
+
+@utility title-shimmer {
+  & .text-gradient {
+    background: linear-gradient(
+      100deg,
+      var(--primary) 0%,
+      var(--violet) 30%,
+      color-mix(in oklab, white 65%, var(--violet)) 48%,
+      var(--violet) 66%,
+      var(--primary) 100%
+    );
+    background-size: 260% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: aron-shimmer 11s linear infinite;
+  }
+}
+
+@utility hover-lift-glow {
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s ease,
+    border-color 0.35s ease,
+    background-color 0.35s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+@utility section-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklab, var(--primary) 55%, transparent) 25%,
+    color-mix(in oklab, var(--violet) 65%, transparent) 50%,
+    color-mix(in oklab, var(--primary) 55%, transparent) 75%,
+    transparent
+  );
+}
+
+@keyframes aron-float-slow {
+  0%,
+  100% {
+    transform: translateY(-2px);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+@keyframes aron-halo {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.97);
+  }
+  50% {
+    opacity: 0.68;
+    transform: scale(1.03);
+  }
+}
+
+@keyframes aron-grid-breathe {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.72;
+  }
+}
+
+@keyframes aron-shimmer {
+  0% {
+    background-position: 130% 0;
+  }
+  100% {
+    background-position: -130% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float-slow,
+  .animate-halo,
+  .animate-grid-breathe,
+  .title-shimmer .text-gradient {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .hover-lift-glow:hover {
+    transform: none !important;
+  }
+}

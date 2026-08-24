@@ -298,25 +298,28 @@ function Hero({ lang }: { lang: Lang }) {
   return (
     <section id="top" className="relative overflow-hidden bg-background">
       <div className="absolute inset-0 bg-[image:radial-gradient(120%_90%_at_50%_0%,color-mix(in_oklab,var(--primary)_12%,transparent)_0%,transparent_60%),radial-gradient(80%_60%_at_85%_20%,color-mix(in_oklab,var(--violet)_10%,transparent)_0%,transparent_65%)]" />
-      <div className="surface-grid absolute inset-0 opacity-60" />
+      <div className="surface-grid animate-grid-breathe absolute inset-0 opacity-60" />
       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent" />
 
       <div className="relative mx-auto max-w-4xl px-4 py-24 text-center sm:px-6 sm:py-32">
         <div className="reveal flex justify-center">
           <div className="relative">
-            <div className="animate-pulse-glow absolute inset-0 rounded-full bg-violet/40 blur-3xl" />
+            <div
+              aria-hidden
+              className="animate-halo pointer-events-none absolute -inset-6 rounded-full bg-[image:radial-gradient(circle_at_50%_50%,color-mix(in_oklab,var(--primary)_45%,transparent)_0%,color-mix(in_oklab,var(--violet)_35%,transparent)_45%,transparent_72%)] blur-2xl"
+            />
             <img
               src="/aron-logo.png"
               alt="Logo Aron Mod"
               width={160}
               height={160}
-              className="animate-float relative h-28 w-28 sm:h-40 sm:w-40"
+              className="animate-float-slow relative h-28 w-28 sm:h-40 sm:w-40"
             />
           </div>
         </div>
 
         <h1
-          className="reveal mt-6 text-4xl leading-tight font-bold sm:text-6xl"
+          className="reveal title-shimmer mt-6 text-4xl leading-tight font-bold sm:text-6xl"
           style={{ animationDelay: "140ms" }}
         >
           {t.hero.title}
@@ -340,14 +343,14 @@ function Hero({ lang }: { lang: Lang }) {
         >
           <a
             href="#prezzi"
-            className="glow-ring inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-accent)] px-7 py-3.5 font-display text-base font-bold text-primary-foreground transition-transform hover:scale-105 sm:w-auto"
+            className="glow-ring hover-lift-glow inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-accent)] px-7 py-3.5 font-display text-base font-bold text-primary-foreground hover:shadow-[0_0_0_1px_color-mix(in_oklab,var(--violet)_45%,transparent),0_18px_50px_-16px_color-mix(in_oklab,var(--primary)_80%,transparent)] sm:w-auto"
           >
             <ShoppingCart className="h-5 w-5" /> {t.hero.ctaBuy}
           </a>
           <a
             href={LINKS.discordInvite}
             {...EXTERNAL_LINK_PROPS}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card/70 px-7 py-3.5 font-display text-base font-bold text-foreground transition-all hover:border-discord hover:bg-discord/15 sm:w-auto"
+            className="hover-lift-glow inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card/70 px-7 py-3.5 font-display text-base font-bold text-foreground hover:border-discord hover:bg-discord/15 hover:shadow-[0_14px_40px_-18px_color-mix(in_oklab,var(--discord)_75%,transparent)] sm:w-auto"
           >
             <MessageCircle className="h-5 w-5 text-discord" /> {t.hero.ctaDiscord}
           </a>
@@ -801,6 +804,7 @@ function Pricing({ lang }: { lang: Lang }) {
         <PlanCard plan={t.base} highlight={false} />
         <PlanCard plan={t.plus} highlight={true} />
       </div>
+      <div aria-hidden className="section-divider mx-auto mt-16 w-2/3 max-w-md sm:mt-20" />
     </section>
   );
 }
@@ -813,47 +817,53 @@ function Showcase({ lang }: { lang: Lang }) {
   ];
 
   return (
-    <section id="galleria" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
-      <SectionTitle title={t.showcase.title} text={t.showcase.text} />
+    <section id="galleria" className="relative">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[image:linear-gradient(180deg,color-mix(in_oklab,var(--primary)_5%,transparent)_0%,color-mix(in_oklab,var(--violet)_4%,transparent)_55%,transparent_100%)]"
+      />
+      <div className="relative mx-auto max-w-6xl px-4 pt-16 pb-20 sm:px-6 sm:pt-20 sm:pb-24">
+        <SectionTitle title={t.showcase.title} text={t.showcase.text} />
 
-      <div className="mt-12 grid gap-4 lg:grid-cols-3">
-        <a
-          href={LINKS.discordInvite}
-          {...EXTERNAL_LINK_PROPS}
-          className="glass-card group relative col-span-1 overflow-hidden rounded-2xl lg:col-span-2"
-        >
-          <img
-            src={shot2}
-            alt={t.showcase.videoSub}
-            loading="lazy"
-            width={1280}
-            height={800}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center">
-            <span className="glow-ring inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary/25 backdrop-blur">
-              <Play className="h-6 w-6 fill-current text-accent" />
-            </span>
-            <span className="font-display text-lg font-bold">{t.showcase.videoLabel}</span>
-            <span className="text-xs text-muted-foreground">{t.showcase.videoSub}</span>
+        <div className="mt-12 grid gap-4 lg:grid-cols-3">
+          <a
+            href={LINKS.discordInvite}
+            {...EXTERNAL_LINK_PROPS}
+            className="glass-card group relative col-span-1 overflow-hidden rounded-2xl lg:col-span-2"
+          >
+            <img
+              src={shot2}
+              alt={t.showcase.videoSub}
+              loading="lazy"
+              width={1280}
+              height={800}
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center">
+              <span className="glow-ring inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary/25 backdrop-blur">
+                <Play className="h-6 w-6 fill-current text-accent" />
+              </span>
+              <span className="font-display text-lg font-bold">{t.showcase.videoLabel}</span>
+              <span className="text-xs text-muted-foreground">{t.showcase.videoSub}</span>
+            </div>
+          </a>
+
+          <div className="grid gap-4">
+            {shots.map((s) => (
+              <figure key={s.alt} className="glass-card overflow-hidden rounded-2xl">
+                <img
+                  src={s.src}
+                  alt={s.alt}
+                  loading="lazy"
+                  width={1280}
+                  height={800}
+                  className="h-40 w-full object-cover sm:h-48"
+                />
+                <figcaption className="px-4 py-3 text-xs text-muted-foreground">{s.alt}</figcaption>
+              </figure>
+            ))}
           </div>
-        </a>
-
-        <div className="grid gap-4">
-          {shots.map((s) => (
-            <figure key={s.alt} className="glass-card overflow-hidden rounded-2xl">
-              <img
-                src={s.src}
-                alt={s.alt}
-                loading="lazy"
-                width={1280}
-                height={800}
-                className="h-40 w-full object-cover sm:h-48"
-              />
-              <figcaption className="px-4 py-3 text-xs text-muted-foreground">{s.alt}</figcaption>
-            </figure>
-          ))}
         </div>
       </div>
     </section>
