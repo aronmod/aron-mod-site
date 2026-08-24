@@ -404,11 +404,11 @@ function SupportCell({
 }: {
   value: Support;
   lang: Lang;
-  size?: "sm" | "md";
+  size?: "xs" | "sm" | "md";
 }) {
   const t = copy[lang].servers;
-  const pad = size === "sm" ? "p-1" : "p-1.5";
-  const icon = size === "sm" ? "h-3 w-3" : "h-4 w-4";
+  const pad = size === "xs" ? "p-0.5" : size === "sm" ? "p-1" : "p-1.5";
+  const icon = size === "xs" ? "h-3 w-3" : size === "sm" ? "h-3 w-3" : "h-4 w-4";
   if (value === true) {
     return (
       <span
@@ -510,8 +510,8 @@ function Servers({ lang }: { lang: Lang }) {
       <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
         <SectionTitle title={t.servers.title} text={t.servers.text} />
 
-        <div className="spectrum-frame mt-12">
-          <div className="spectrum-inner p-4 sm:p-7">
+        <div className="spectrum-frame mx-auto mt-10 w-full lg:max-w-4xl">
+          <div className="spectrum-inner p-4 sm:p-5">
             {/* Toolbar */}
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div className="relative w-full lg:max-w-sm">
@@ -531,7 +531,7 @@ function Servers({ lang }: { lang: Lang }) {
             </div>
 
             {/* Filter chips */}
-            <div className="mt-5 flex flex-wrap items-center gap-2">
+            <div className="mt-4 flex flex-wrap items-center gap-2">
               <span className="font-clean mr-1 text-xs tracking-wide text-muted-foreground uppercase">
                 {t.servers.filtersLabel}
               </span>
@@ -565,20 +565,20 @@ function Servers({ lang }: { lang: Lang }) {
             </div>
 
             {/* Desktop table */}
-            <div className="mt-6 hidden overflow-x-auto rounded-2xl border border-border/60 md:block">
+            <div className="mt-5 hidden overflow-x-auto rounded-2xl border border-border/60 md:block">
               <table className="w-full text-left text-sm">
                 <thead>
                   <tr className="bg-secondary/50">
-                    <th className="px-5 py-3 font-display text-xs font-bold tracking-wider uppercase">
+                    <th className="px-4 py-2.5 font-display text-xs font-bold tracking-wider uppercase">
                       {t.servers.colServer}
                     </th>
-                    <th className="px-5 py-3 font-display text-xs font-bold tracking-wider uppercase">
+                    <th className="px-4 py-2.5 font-display text-xs font-bold tracking-wider uppercase">
                       {t.servers.colStatus}
                     </th>
-                    <th className="px-4 py-3 text-center font-display text-xs font-bold tracking-wider uppercase">
+                    <th className="px-4 py-2.5 text-center font-display text-xs font-bold tracking-wider uppercase">
                       {t.servers.colBase}
                     </th>
-                    <th className="px-4 py-3 text-center font-display text-xs font-bold tracking-wider uppercase">
+                    <th className="px-4 py-2.5 text-center font-display text-xs font-bold tracking-wider uppercase">
                       {t.servers.colPlus}
                     </th>
                   </tr>
@@ -589,7 +589,7 @@ function Servers({ lang }: { lang: Lang }) {
                       key={row.name}
                       className="border-t border-border/40 transition-colors hover:bg-primary/10"
                     >
-                      <td className="px-5 py-4">
+                      <td className="px-4 py-3">
                         <a
                           href={row.url}
                           {...EXTERNAL_LINK_PROPS}
@@ -603,13 +603,13 @@ function Servers({ lang }: { lang: Lang }) {
                           />
                         </a>
                       </td>
-                      <td className="px-5 py-4">
+                      <td className="px-4 py-3">
                         <StatusBadge status={row.status} lang={lang} />
                       </td>
-                      <td className="px-4 py-4 text-center">
+                      <td className="px-4 py-3 text-center">
                         <SupportCell value={row.base} lang={lang} />
                       </td>
-                      <td className="px-4 py-4 text-center">
+                      <td className="px-4 py-3 text-center">
                         <SupportCell value={row.plus} lang={lang} />
                       </td>
                     </tr>
@@ -619,7 +619,7 @@ function Servers({ lang }: { lang: Lang }) {
             </div>
 
             {/* Mobile cards */}
-            <div className="mt-6 grid gap-4 md:hidden">
+            <div className="mt-5 grid gap-4 md:hidden">
               {filtered.map((row) => (
                 <article key={row.name} className="glass-card rounded-2xl p-4">
                   <div className="flex items-start justify-between gap-3">
@@ -676,13 +676,12 @@ function Servers({ lang }: { lang: Lang }) {
             ) : null}
 
             {/* Legend */}
-            <div className="mt-6 flex flex-wrap items-center gap-4 border-t border-border/50 pt-5 text-xs">
-              <span className="font-clean font-bold text-foreground">{t.servers.legendTitle}</span>
+            <div className="mt-5 flex flex-wrap items-center gap-4 border-t border-border/50 pt-4 text-xs">
               <span className="font-clean flex items-center gap-2 text-muted-foreground">
-                <SupportCell value={true} lang={lang} size="sm" /> {t.servers.legendYes}
+                <SupportCell value={true} lang={lang} size="xs" /> {t.servers.legendYes}
               </span>
               <span className="font-clean flex items-center gap-2 text-muted-foreground">
-                <SupportCell value={false} lang={lang} size="sm" /> {t.servers.legendNo}
+                <SupportCell value={false} lang={lang} size="xs" /> {t.servers.legendNo}
               </span>
             </div>
           </div>
