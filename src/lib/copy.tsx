@@ -120,8 +120,8 @@ export const copy = {
         cta15: "Acquista 15 giorni — 11 €",
         cta30: "Acquista 30 giorni — 20 €",
         includesTitle: "",
-        includesIntro: "Rispetto al pacchetto BASE, il PLUS include:",
-        includes: ["AutoDungeon", "AutoAlchimia", "SwitchBonus Ammalia"],
+        includesIntro: "In base al server, il PLUS include:",
+        includes: ["AutoDungeon", "AutoAlchimia", "SwitchBonus Ammalia", "HWID Spoofer"],
       },
       commonPerks: [
         "Tutte le funzioni della mod incluse",
@@ -360,8 +360,8 @@ export const copy = {
         cta15: "Buy 15 days — €11",
         cta30: "Buy 30 days — €20",
         includesTitle: "",
-        includesIntro: "Compared to the BASE package, PLUS includes:",
-        includes: ["AutoDungeon", "AutoAlchimia", "SwitchBonus Ammalia"],
+        includesIntro: "Depending on the server, PLUS includes:",
+        includes: ["AutoDungeon", "AutoAlchimia", "SwitchBonus Ammalia", "HWID Spoofer"],
       },
       commonPerks: [
         "All mod features included",
