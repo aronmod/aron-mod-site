@@ -576,14 +576,7 @@ function Servers({ lang }: { lang: Lang }) {
                     <th className="px-4 py-3 text-center font-display text-xs font-bold tracking-wider uppercase">
                       {t.servers.colPlus}
                     </th>
-                    {SERVER_FEATURES.map((f) => (
-                      <th
-                        key={f}
-                        className="px-4 py-3 text-center font-display text-xs font-bold tracking-wider uppercase"
-                      >
-                        {featureLabels[f]}
-                      </th>
-                    ))}
+
                   </tr>
                 </thead>
                 <tbody>
