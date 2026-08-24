@@ -75,7 +75,7 @@ export const copy = {
         },
         {
           title: "Telegram Bot",
-          text: "Gestisci e monitora Aron Mod tramite Telegram: avvia o interrompi le funzioni e ricevi avvisi in tempo reale.",
+          text: "Gestisci e monitora Aron Mod tramite Telegram: avvia o interrompi le funzioni e ricevi avvisi in tempo reale ovunque tu sia.",
         },
         {
           title: "Assistenza Discord",
@@ -320,7 +320,7 @@ export const copy = {
         },
         {
           title: "Telegram Bot",
-          text: "Manage and monitor Aron Mod through Telegram: start or stop features and receive real-time alerts.",
+          text: "Manage and monitor Aron Mod through Telegram: start or stop features and receive real-time alerts wherever you are.",
         },
         {
           title: "Discord Support",
