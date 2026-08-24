@@ -343,14 +343,14 @@ function Hero({ lang }: { lang: Lang }) {
         >
           <a
             href="#prezzi"
-            className="glow-ring inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-accent)] px-7 py-3.5 font-display text-base font-bold text-primary-foreground transition-transform hover:scale-105 sm:w-auto"
+            className="glow-ring hover-lift-glow inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-accent)] px-7 py-3.5 font-display text-base font-bold text-primary-foreground hover:shadow-[0_0_0_1px_color-mix(in_oklab,var(--violet)_45%,transparent),0_18px_50px_-16px_color-mix(in_oklab,var(--primary)_80%,transparent)] sm:w-auto"
           >
             <ShoppingCart className="h-5 w-5" /> {t.hero.ctaBuy}
           </a>
           <a
             href={LINKS.discordInvite}
             {...EXTERNAL_LINK_PROPS}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card/70 px-7 py-3.5 font-display text-base font-bold text-foreground transition-all hover:border-discord hover:bg-discord/15 sm:w-auto"
+            className="hover-lift-glow inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card/70 px-7 py-3.5 font-display text-base font-bold text-foreground hover:border-discord hover:bg-discord/15 hover:shadow-[0_14px_40px_-18px_color-mix(in_oklab,var(--discord)_75%,transparent)] sm:w-auto"
           >
             <MessageCircle className="h-5 w-5 text-discord" /> {t.hero.ctaDiscord}
           </a>
