@@ -788,7 +788,7 @@ function Showcase({ lang }: { lang: Lang }) {
   ];
 
   return (
-    <section id="media" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
+    <section id="galleria" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
       <SectionTitle title={t.showcase.title} text={t.showcase.text} />
 
       <div className="mt-12 grid gap-4 lg:grid-cols-3">
