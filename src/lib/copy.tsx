@@ -164,23 +164,15 @@ export const copy = {
     faq: [
       {
         q: "Aron Mod è sicuro da usare?",
-        a: "Aron Mod è pensata esclusivamente per retro server e server privati autorizzati. Consigliamo sempre un uso moderato e responsabile, nel rispetto delle regole del server su cui giochi.",
+        a: "Aron Mod è pensata esclusivamente per retro server e server privati autorizzati. Consigliamo sempre un utilizzo moderato e responsabile, nel rispetto delle regole del server su cui giochi. L'utilizzo della mod avviene sotto la responsabilità esclusiva dell'utente: dopo l'acquisto, Aron Mod e il suo staff non sono responsabili di ban, sospensioni, perdita dell'account, di oggetti o progressi di gioco, né di altri provvedimenti o conseguenze derivanti dal suo utilizzo.",
       },
       {
         q: "Come funziona l'acquisto?",
         a: "Per acquistare Aron Mod, entra nel nostro Discord ufficiale e apri un ticket nella sezione italiana o inglese. Lo staff ti fornirà tutte le informazioni necessarie e ti guiderà durante l'acquisto.",
       },
       {
-        q: "Su quali server funziona?",
-        a: "Aron Mod è attualmente disponibile per I-Longju. Consulta la sezione Server supportati per accedere al sito del server. Ulteriori compatibilità verranno comunicate sul nostro Discord ufficiale.",
-      },
-      {
         q: "Posso usarla su più PC?",
         a: "La licenza è legata a un singolo HWID. Puoi richiedere un reset gratuito al mese aprendo un ticket sul Discord ufficiale.",
-      },
-      {
-        q: "Quali sono i requisiti?",
-        a: "Windows 10 o 11 a 64 bit, client del retro server aggiornato e antivirus configurato con un'eccezione per il loader.",
       },
       {
         q: "Come ricevo gli aggiornamenti?",
@@ -189,7 +181,7 @@ export const copy = {
     ],
     support: {
       eyebrow: "",
-      title: "Domande frequenti",
+      title: "Supporto",
       ticketTitle: "Assistenza tramite ticket Discord",
       ticketText:
         "Apri un ticket nella sezione italiana o inglese del nostro server: lo staff ti segue durante l'acquisto e per qualsiasi problema tecnico.",
@@ -404,23 +396,15 @@ export const copy = {
     faq: [
       {
         q: "Is Aron Mod safe to use?",
-        a: "Aron Mod is designed exclusively for retro servers and authorized private servers. We always recommend moderate and responsible use, respecting the rules of the server you play on.",
+        a: "Aron Mod is intended exclusively for retro servers and authorized private servers. We always recommend moderate and responsible use, respecting the rules of the server you play on. Use of the mod is under the sole responsibility of the user: after purchase, Aron Mod and its staff are not responsible for bans, suspensions, loss of account, items or game progress, nor any other measures or consequences resulting from its use.",
       },
       {
         q: "How does the purchase work?",
         a: "To buy Aron Mod, join our official Discord and open a ticket in the Italian or English section. Our staff will provide all the necessary information and guide you through the purchase.",
       },
       {
-        q: "Which servers does it work on?",
-        a: "Aron Mod is currently available for I-Longju. Visit the Supported servers section to access the server website. Further compatibility will be announced on our official Discord.",
-      },
-      {
         q: "Can I use it on multiple PCs?",
         a: "The license is tied to a single HWID. You can request one free reset per month by opening a ticket on the official Discord.",
-      },
-      {
-        q: "What are the requirements?",
-        a: "Windows 10 or 11 64-bit, updated retro server client and antivirus configured with an exception for the loader.",
       },
       {
         q: "How do I receive updates?",
@@ -429,7 +413,7 @@ export const copy = {
     ],
     support: {
       eyebrow: "",
-      title: "Frequently asked questions",
+      title: "Support",
       ticketTitle: "Support via Discord ticket",
       ticketText:
         "Open a ticket in the Italian or English section of our server: our staff will assist you with the purchase and any technical issue.",
