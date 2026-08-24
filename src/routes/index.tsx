@@ -346,15 +346,18 @@ function Hero({ lang }: { lang: Lang }) {
   );
 }
 
-function SectionTitle({ eyebrow, title, text }: { eyebrow: string; title: string; text?: string }) {
+function SectionTitle({ eyebrow, title, text }: { eyebrow?: string; title: string; text?: string }) {
   return (
     <div className="mx-auto max-w-2xl text-center">
-      <p className="text-xs font-bold tracking-[0.25em] text-accent uppercase">{eyebrow}</p>
+      {eyebrow ? (
+        <p className="text-xs font-bold tracking-[0.25em] text-accent uppercase">{eyebrow}</p>
+      ) : null}
       <h2 className="mt-3 text-3xl font-bold sm:text-4xl">{title}</h2>
       {text ? <p className="mt-4 text-muted-foreground">{text}</p> : null}
     </div>
   );
 }
+
 
 function Features({ lang }: { lang: Lang }) {
   const t = copy[lang];
