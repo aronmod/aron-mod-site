@@ -432,6 +432,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-float-loader,
   .animate-float-slow,
   .animate-halo,
   .animate-grid-breathe,
