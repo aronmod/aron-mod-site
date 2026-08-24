@@ -49,7 +49,23 @@ export const Route = createFileRoute("/")({
       { name: "description", content: copy.it.meta.description },
       { property: "og:title", content: copy.it.meta.ogTitle },
       { property: "og:description", content: copy.it.meta.ogDescription },
+      { property: "og:url", content: "https://aronmod.net/" },
+      { property: "og:image", content: "https://aronmod.net/og-aron-mod.png" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      {
+        property: "og:image:alt",
+        content: "Aron Mod — Automazione avanzata per Metin2",
+      },
+      { name: "twitter:title", content: copy.it.meta.ogTitle },
+      { name: "twitter:description", content: copy.it.meta.ogDescription },
+      { name: "twitter:image", content: "https://aronmod.net/og-aron-mod.png" },
+      {
+        name: "twitter:image:alt",
+        content: "Aron Mod — Automazione avanzata per Metin2",
+      },
     ],
+    links: [{ rel: "canonical", href: "https://aronmod.net/" }],
   }),
   component: Index,
 });
