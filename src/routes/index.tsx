@@ -260,20 +260,20 @@ function Header({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
   const t = copy[lang];
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
-      <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 sm:px-6">
-        <a href="#top" className="flex min-w-0 items-center gap-3">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-3 sm:grid sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-4 sm:px-6">
+        <a href="#top" className="flex shrink-0 items-center gap-2 sm:gap-3">
           <img
             src="/aron-logo.png"
             alt="Logo Aron Mod"
             width={40}
             height={40}
-            className="h-10 w-10 shrink-0 drop-shadow-[0_0_12px_color-mix(in_oklab,var(--violet)_70%,transparent)]"
+            className="h-9 w-9 shrink-0 drop-shadow-[0_0_12px_color-mix(in_oklab,var(--violet)_70%,transparent)] sm:h-10 sm:w-10"
           />
-          <span className="truncate font-display text-lg font-bold tracking-wide">
+          <span className="whitespace-nowrap font-display text-base font-bold tracking-wide sm:text-lg">
             ARON<span className="text-gradient"> MOD</span>
           </span>
         </a>
-        <nav className="flex items-center gap-3 sm:gap-6">
+        <nav className="flex shrink-0 items-center gap-1.5 sm:gap-3">
           <div className="hidden items-center gap-5 text-[15px] font-semibold text-foreground/85 md:flex lg:gap-6">
             <a href="#funzioni" className="transition-colors hover:text-foreground">
               {t.header.functions}
@@ -301,7 +301,7 @@ function Header({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
               onClick={() => setLang("it")}
               aria-pressed={lang === "it"}
               aria-label={lang === "it" ? "Lingua italiana selezionata" : "Passa all'italiano"}
-              className={`flex items-center gap-1.5 rounded-md px-1.5 py-1 text-xs font-bold transition-colors sm:px-2 ${
+              className={`flex items-center gap-1 rounded-md px-1 py-1 text-xs font-bold transition-colors sm:gap-1.5 sm:px-1.5 ${
                 lang === "it"
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground"
@@ -315,7 +315,7 @@ function Header({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
               onClick={() => setLang("en")}
               aria-pressed={lang === "en"}
               aria-label={lang === "en" ? "English language selected" : "Switch to English"}
-              className={`flex items-center gap-1.5 rounded-md px-1.5 py-1 text-xs font-bold transition-colors sm:px-2 ${
+              className={`flex items-center gap-1 rounded-md px-1 py-1 text-xs font-bold transition-colors sm:gap-1.5 sm:px-1.5 ${
                 lang === "en"
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground"
@@ -328,7 +328,7 @@ function Header({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
 
           <a
             href="#prezzi"
-            className="shrink-0 rounded-lg bg-[image:var(--gradient-accent)] px-3.5 py-1.5 text-[14px] font-semibold text-primary-foreground transition-transform hover:scale-105"
+            className="shrink-0 rounded-lg bg-[image:var(--gradient-accent)] px-2 py-1 text-[13px] font-semibold text-primary-foreground transition-transform hover:scale-105 max-[420px]:px-1.5 max-[420px]:py-0.5 max-[420px]:text-[12px] sm:px-3.5 sm:py-1.5 sm:text-[14px]"
           >
             {t.header.buy}
           </a>
@@ -666,7 +666,7 @@ function Servers({ lang }: { lang: Lang }) {
             </div>
 
             {/* Desktop table */}
-            <div className="mt-5 hidden overflow-x-auto rounded-2xl border border-border/60 md:block">
+            <div className="mt-8 hidden overflow-x-auto rounded-2xl border border-border/60 md:block">
               <table className="w-full text-left text-sm">
                 <thead>
                   <tr className="bg-secondary/50">
