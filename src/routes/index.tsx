@@ -865,6 +865,7 @@ function Showcase({ lang }: { lang: Lang }) {
           ))}
         </div>
       </div>
+      </div>
     </section>
   );
 }
