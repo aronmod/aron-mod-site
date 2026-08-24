@@ -191,7 +191,7 @@ export const copy = {
       navTitle: "Navigazione",
       nav: [
         ["Funzioni", "#funzioni"],
-        ["Server supportati", "#server"],
+        ["Lista server", "#server"],
         ["Prezzi", "#prezzi"],
         ["Galleria", "#galleria"],
         ["Loader", "#download"],
@@ -416,7 +416,7 @@ export const copy = {
       navTitle: "Navigation",
       nav: [
         ["Features", "#funzioni"],
-        ["Supported servers", "#server"],
+        ["Server list", "#server"],
         ["Pricing", "#prezzi"],
         ["Gallery", "#galleria"],
         ["Loader", "#download"],
