@@ -21,6 +21,9 @@ import {
   X,
   HelpCircle,
   ZoomIn,
+  FlaskConical,
+  Wrench,
+  ScanLine,
 } from "lucide-react";
 
 import shot1 from "@/assets/shot-1.jpg";
@@ -50,13 +53,26 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const featureIcons: LucideIcon[] = [Swords, Bot, ShieldCheck, Send];
+const featureIcons: LucideIcon[] = [
+  Swords,
+  Bot,
+  FlaskConical,
+  Wrench,
+  ShieldCheck,
+  ScanLine,
+  Send,
+  MessageCircle,
+];
 
 const featureTones = [
   "var(--accent)",
   "var(--violet)",
-  "var(--success)",
   "var(--magenta)",
+  "var(--warning)",
+  "var(--success)",
+  "var(--danger)",
+  "var(--primary)",
+  "var(--discord)",
 ] as const;
 
 type ModalHandlers = {

@@ -51,19 +51,35 @@ export const copy = {
       items: [
         {
           title: "Auto Dungeon",
-          text: "Completa i dungeon in automatico con sequenze ottimizzate, gestione delle fasi e ripetizione dei run senza presidiare il PC.",
+          text: "Completa automaticamente i dungeon tramite sequenze ottimizzate.",
         },
         {
-          title: "Auto Farm",
-          text: "Farming automatico di metin, mob e boss con rotte personalizzabili.",
+          title: "FarmBot",
+          text: "Automatizza il farming di Metin e mob con percorsi, range, raccolta automatica, protezione No KS e filtri personalizzabili.",
         },
         {
-          title: "Anti Ban",
-          text: "Comportamenti configurabili con pause e tempistiche naturali, pensati per un utilizzo prudente e responsabile sul server.",
+          title: "Auto Alchimia",
+          text: "Crea e raffina automaticamente la tua Alchimia della Pietra del Drago.",
         },
         {
-          title: "Controllo Remoto",
-          text: "Gestisci e monitora la mod ovunque tu sia: avvio, stop e stato delle sessioni direttamente da Telegram.",
+          title: "Utility",
+          text: "Captcha Solver, Relogin, Auto Skill, Switch Ammalia, Wall Hack e molte altre funzioni.",
+        },
+        {
+          title: "Protezione avanzata",
+          text: "Funzioni progettate per ridurre il rischio durante l'utilizzo, incluso HWID Spoofer. Nessun sistema può garantire l'assenza di ban.",
+        },
+        {
+          title: "GM Detector",
+          text: "Rileva la presenza di membri dello staff e giocatori nelle vicinanze e attiva gli avvisi configurati.",
+        },
+        {
+          title: "Controllo remoto",
+          text: "Gestisci e monitora Aron Mod tramite Telegram: avvia o interrompi le funzioni e ricevi avvisi in tempo reale.",
+        },
+        {
+          title: "Assistenza Discord",
+          text: "Ricevi supporto su Discord per l'acquisto, la configurazione e gli eventuali problemi tecnici.",
         },
       ],
     },
@@ -280,19 +296,35 @@ export const copy = {
       items: [
         {
           title: "Auto Dungeon",
-          text: "Complete dungeons automatically with optimized sequences, phase management and run repetition without keeping your PC on standby.",
+          text: "Automatically completes dungeons using optimized sequences.",
         },
         {
-          title: "Auto Farm",
-          text: "Automatic farming for metin, mobs and bosses with custom routes.",
+          title: "FarmBot",
+          text: "Automates Metin and mob farming with routes, range, auto pickup, No KS protection and customizable filters.",
         },
         {
-          title: "Anti Ban",
-          text: "Configurable behavior with pauses and natural timings, designed for prudent and responsible use on the server.",
+          title: "Auto Alchemy",
+          text: "Automatically creates and refines your Dragon Stone Alchemy.",
+        },
+        {
+          title: "Utility",
+          text: "Captcha Solver, Relogin, Auto Skill, Auto Enchant, Wall Hack and many other features.",
+        },
+        {
+          title: "Advanced Protection",
+          text: "Features designed to reduce risk during use, including HWID Spoofer. No system can guarantee protection from bans.",
+        },
+        {
+          title: "GM Detector",
+          text: "Detects nearby staff members and players and triggers your configured alerts.",
         },
         {
           title: "Remote Control",
-          text: "Manage and monitor the mod from anywhere: start, stop and check session status directly from Telegram.",
+          text: "Manage and monitor Aron Mod through Telegram: start or stop features and receive real-time alerts.",
+        },
+        {
+          title: "Discord Support",
+          text: "Get support on Discord for purchases, configuration and technical issues.",
         },
       ],
     },
