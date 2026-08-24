@@ -99,8 +99,8 @@ function Index() {
   useEffect(() => {
     document.title =
       lang === "it"
-        ? "Aron Mod - La Mod per metin sui server privati!"
-        : "Aron Mod - The Mod for Metin private servers!";
+        ? "Aron Mod - Il Bot di Metin per Server Privati"
+        : "Aron Mod - The Metin Bot for Private Servers";
   }, [lang]);
 
   const [openFaq, setOpenFaq] = useState<number | null>(null);
