@@ -510,8 +510,8 @@ function Servers({ lang }: { lang: Lang }) {
       <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
         <SectionTitle title={t.servers.title} text={t.servers.text} />
 
-        <div className="spectrum-frame mt-12">
-          <div className="spectrum-inner p-4 sm:p-7">
+        <div className="spectrum-frame mx-auto mt-10 w-full lg:max-w-4xl">
+          <div className="spectrum-inner p-4 sm:p-5">
             {/* Toolbar */}
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div className="relative w-full lg:max-w-sm">
