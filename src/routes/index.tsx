@@ -1017,7 +1017,7 @@ function Footer({ lang }: { lang: Lang }) {
   return (
     <footer className="border-t border-border/60 bg-card/30">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-        <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
+        <div className="grid gap-10 md:grid-cols-[1.4fr_1fr]">
           <div>
             <div className="flex items-center gap-3">
               <img
@@ -1038,7 +1038,7 @@ function Footer({ lang }: { lang: Lang }) {
             <h3 className="font-display text-sm font-bold tracking-wider uppercase">
               {t.footer.navTitle}
             </h3>
-            <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+            <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2 text-sm text-muted-foreground sm:grid-cols-1">
               {t.footer.nav.map(([label, href]) => (
                 <li key={label}>
                   <a href={href} className="transition-colors hover:text-foreground">
@@ -1046,28 +1046,6 @@ function Footer({ lang }: { lang: Lang }) {
                   </a>
                 </li>
               ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-display text-sm font-bold tracking-wider uppercase">
-              {t.footer.legalTitle}
-            </h3>
-            <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-              {t.footer.legal.map(([label, href]) => {
-                const isExternal = href.startsWith("http");
-                return (
-                  <li key={label}>
-                    <a
-                      href={href}
-                      {...(isExternal ? EXTERNAL_LINK_PROPS : {})}
-                      className="transition-colors hover:text-foreground"
-                    >
-                      {label}
-                    </a>
-                  </li>
-                );
-              })}
             </ul>
           </div>
         </div>
