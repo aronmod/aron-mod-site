@@ -346,7 +346,15 @@ function Hero({ lang }: { lang: Lang }) {
   );
 }
 
-function SectionTitle({ eyebrow, title, text }: { eyebrow?: string; title: string; text?: string }) {
+function SectionTitle({
+  eyebrow,
+  title,
+  text,
+}: {
+  eyebrow?: string;
+  title: string;
+  text?: string;
+}) {
   return (
     <div className="mx-auto max-w-2xl text-center">
       {eyebrow ? (
@@ -357,7 +365,6 @@ function SectionTitle({ eyebrow, title, text }: { eyebrow?: string; title: strin
     </div>
   );
 }
-
 
 function Features({ lang }: { lang: Lang }) {
   const t = copy[lang];
@@ -445,7 +452,6 @@ function SupportCell({
     </span>
   );
 }
-
 
 function StatusBadge({ status, lang }: { status: ServerStatus; lang: Lang }) {
   const t = copy[lang].servers.status;
@@ -535,7 +541,6 @@ function Servers({ lang }: { lang: Lang }) {
               </div>
             </div>
 
-
             {/* Filter chips */}
             <div className="mt-5 flex flex-wrap items-center gap-2">
               <span className="font-clean mr-1 text-xs tracking-wide text-muted-foreground uppercase">
@@ -587,7 +592,6 @@ function Servers({ lang }: { lang: Lang }) {
                     <th className="px-4 py-3 text-center font-display text-xs font-bold tracking-wider uppercase">
                       {t.servers.colPlus}
                     </th>
-
                   </tr>
                 </thead>
                 <tbody>
@@ -619,7 +623,6 @@ function Servers({ lang }: { lang: Lang }) {
                       <td className="px-4 py-4 text-center">
                         <SupportCell value={row.plus} lang={lang} />
                       </td>
-
                     </tr>
                   ))}
                 </tbody>
@@ -663,7 +666,6 @@ function Servers({ lang }: { lang: Lang }) {
                       </div>
                     ))}
                   </dl>
-
                 </article>
               ))}
             </div>
@@ -694,7 +696,6 @@ function Servers({ lang }: { lang: Lang }) {
                 <SupportCell value={false} lang={lang} size="sm" /> {t.servers.legendNo}
               </span>
             </div>
-
           </div>
         </div>
       </div>
