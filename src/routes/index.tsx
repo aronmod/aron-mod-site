@@ -804,6 +804,7 @@ function Pricing({ lang }: { lang: Lang }) {
         <PlanCard plan={t.base} highlight={false} />
         <PlanCard plan={t.plus} highlight={true} />
       </div>
+      <div aria-hidden className="section-divider mx-auto mt-16 w-2/3 max-w-md sm:mt-20" />
     </section>
   );
 }
