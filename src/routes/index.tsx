@@ -293,13 +293,6 @@ function Hero({ lang }: { lang: Lang }) {
           </div>
         </div>
 
-        <p
-          className="reveal mt-8 inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-4 py-1.5 text-xs font-semibold tracking-[0.2em] text-accent uppercase"
-          style={{ animationDelay: "80ms" }}
-        >
-          <ShieldCheck className="h-3.5 w-3.5" /> {t.hero.badge}
-        </p>
-
         <h1
           className="reveal mt-6 text-4xl leading-tight font-bold sm:text-6xl"
           style={{ animationDelay: "140ms" }}
@@ -332,15 +325,6 @@ function Hero({ lang }: { lang: Lang }) {
             <MessageCircle className="h-5 w-5 text-discord" /> {t.hero.ctaDiscord}
           </a>
         </div>
-
-        <div className="reveal mt-14 flex justify-center" style={{ animationDelay: "320ms" }}>
-          <div className="glass-card w-full max-w-xs rounded-xl px-6 py-4 text-center">
-            <p className="font-display text-xl font-bold text-accent sm:text-2xl">
-              {t.hero.supportValue}
-            </p>
-            <p className="mt-1 text-xs text-muted-foreground sm:text-sm">{t.hero.supportLabel}</p>
-          </div>
-        </div>
       </div>
     </section>
   );
@@ -370,7 +354,7 @@ function Features({ lang }: { lang: Lang }) {
   const t = copy[lang];
   return (
     <section id="funzioni" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
-      <SectionTitle eyebrow={t.features.eyebrow} title={t.features.title} text={t.features.text} />
+      <SectionTitle title={t.features.title} text={t.features.text} />
       <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {t.features.items.map((f, i) => {
           const Icon = featureIcons[i] ?? featureIcons[0]!;
@@ -779,7 +763,7 @@ function Pricing({ lang }: { lang: Lang }) {
 
   return (
     <section id="prezzi" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
-      <SectionTitle eyebrow={t.eyebrow} title={t.title} text={t.subtitle} />
+      <SectionTitle title={t.title} text={t.subtitle} />
       <div className="mx-auto mt-12 grid max-w-4xl gap-5 md:grid-cols-2">
         <PlanCard plan={t.base} highlight={false} />
         <PlanCard plan={t.plus} highlight={true} />
@@ -797,7 +781,7 @@ function Showcase({ lang }: { lang: Lang }) {
 
   return (
     <section id="media" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
-      <SectionTitle eyebrow={t.showcase.eyebrow} title={t.showcase.title} text={t.showcase.text} />
+      <SectionTitle title={t.showcase.title} text={t.showcase.text} />
 
       <div className="mt-12 grid gap-4 lg:grid-cols-3">
         <a
@@ -851,7 +835,6 @@ function DownloadSection({ openDownload, lang }: { openDownload: () => void; lan
       <div className="absolute inset-0 bg-[image:var(--gradient-hero)] opacity-70" />
       <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 py-20 sm:px-6 sm:py-24 lg:grid-cols-2">
         <div>
-          <p className="text-xs font-bold tracking-[0.25em] text-accent uppercase">{t.eyebrow}</p>
           <h2 className="mt-3 text-3xl font-bold sm:text-4xl">{t.title}</h2>
           <p className="mt-4 text-muted-foreground">{t.description}</p>
           <ul className="mt-6 space-y-2 text-sm text-muted-foreground">
@@ -928,7 +911,7 @@ function Faq({
   const t = copy[lang];
   return (
     <section id="faq" className="mx-auto max-w-3xl px-4 py-20 sm:px-6 sm:py-24">
-      <SectionTitle eyebrow={t.support.eyebrow} title={t.support.title} />
+      <SectionTitle title={t.support.title} />
       <div className="mt-10 space-y-3">
         {t.faq.map((item, i) => {
           const isOpen = open === i;

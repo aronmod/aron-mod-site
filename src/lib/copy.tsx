@@ -23,7 +23,7 @@ export const copy = {
       langEn: "EN",
     },
     hero: {
-      badge: "Solo retro server autorizzati",
+      badge: "",
       title: (
         <>
           Domina Metin con <span className="text-gradient">Aron Mod</span>
@@ -40,11 +40,11 @@ export const copy = {
       ),
       ctaBuy: "Acquista la mod",
       ctaDiscord: "Entra nel Discord",
-      supportValue: "24/7",
-      supportLabel: "Supporto ticket Discord",
+      supportValue: "",
+      supportLabel: "",
     },
     features: {
-      eyebrow: "Funzioni",
+      eyebrow: "",
       title: "Tutto quello che serve per dominare",
       text: "Ogni modulo è attivabile singolarmente e configurabile in tempo reale dall'overlay in-game.",
       items: [
@@ -101,7 +101,7 @@ export const copy = {
     },
 
     pricing: {
-      eyebrow: "Prezzi",
+      eyebrow: "",
       title: "Scegli il tuo piano",
       subtitle:
         "Nessun carrello e nessun pagamento automatico: seleziona il pacchetto su Discord e lo staff completa l'acquisto con te.",
@@ -131,7 +131,7 @@ export const copy = {
       getMod: "Come ottenere Aron Mod",
     },
     showcase: {
-      eyebrow: "Gallery",
+      eyebrow: "",
       title: "Immagini e video dimostrativi",
       text: "Guarda Aron Mod in azione: scopri tutte le sue funzioni.",
       videoLabel: "Video demo · Auto farm 1h",
@@ -148,7 +148,7 @@ export const copy = {
         launchAlt: "Schermata di avvio del client nel loader di Aron Mod",
         launchCaption: "Avvio del client e multi-client",
       },
-      eyebrow: "Loader",
+      eyebrow: "",
       title: "Il loader di Aron Mod",
       description:
         "Un'interfaccia essenziale in italiano e inglese: inserisci la chiave di licenza, avvia il client e tieni sotto controllo la scadenza del tuo piano. Il download avviene esclusivamente tramite il Discord ufficiale.",
@@ -188,7 +188,7 @@ export const copy = {
       },
     ],
     support: {
-      eyebrow: "Supporto",
+      eyebrow: "",
       title: "Domande frequenti",
       ticketTitle: "Assistenza tramite ticket Discord",
       ticketText:
@@ -264,7 +264,7 @@ export const copy = {
       langEn: "EN",
     },
     hero: {
-      badge: "Authorized retro servers only",
+      badge: "",
       title: (
         <>
           Dominate Metin with <span className="text-gradient">Aron Mod</span>
@@ -281,11 +281,11 @@ export const copy = {
       ),
       ctaBuy: "Buy the mod",
       ctaDiscord: "Join Discord",
-      supportValue: "24/7",
-      supportLabel: "Discord ticket support",
+      supportValue: "",
+      supportLabel: "",
     },
     features: {
-      eyebrow: "Features",
+      eyebrow: "",
       title: "Everything you need to dominate",
       text: "Every module can be toggled individually and configured in real time from the in-game overlay.",
       items: [
@@ -341,7 +341,7 @@ export const copy = {
       legendNo: "Not supported",
     },
     pricing: {
-      eyebrow: "Pricing",
+      eyebrow: "",
       title: "Choose your plan",
       subtitle:
         "No cart and no automatic payment: select the package on Discord and our staff will complete the purchase with you.",
@@ -371,7 +371,7 @@ export const copy = {
       getMod: "How to get Aron Mod",
     },
     showcase: {
-      eyebrow: "Gallery",
+      eyebrow: "",
       title: "Images and demo videos",
       text: "Watch Aron Mod in action: discover all its features.",
       videoLabel: "Demo video · Auto farm 1h",
@@ -388,7 +388,7 @@ export const copy = {
         launchAlt: "Aron Mod loader client launch screen",
         launchCaption: "Client launch and multi-client",
       },
-      eyebrow: "Loader",
+      eyebrow: "",
       title: "The Aron Mod loader",
       description:
         "A clean interface in Italian and English: enter your license key, launch the client and keep track of your plan's expiration. Download is only available through the official Discord.",
@@ -428,7 +428,7 @@ export const copy = {
       },
     ],
     support: {
-      eyebrow: "Support",
+      eyebrow: "",
       title: "Frequently asked questions",
       ticketTitle: "Support via Discord ticket",
       ticketText:
