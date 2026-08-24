@@ -298,7 +298,16 @@
   );
   box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--primary) 22%, transparent);
   animation: aron-spark 12s ease-in-out infinite;
+  animation-delay: var(--spark-delay, 0s);
   will-change: opacity;
+}
+
+/* phones: fewer cells are visible, so speed up the cycle to stay perceivable */
+@media (max-width: 639px) {
+  .grid-spark {
+    animation-duration: 8.5s;
+    animation-delay: calc(var(--spark-delay, 0s) * 0.5);
+  }
 }
 
 
