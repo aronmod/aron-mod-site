@@ -36,6 +36,7 @@ import {
 import { LinkModal } from "@/components/LinkModal";
 import { ImageLightbox } from "@/components/ImageLightbox";
 import { copy, type Lang } from "@/lib/copy";
+import { useLang } from "@/hooks/use-lang";
 
 export const Route = createFileRoute("/")({
   head: () => ({
