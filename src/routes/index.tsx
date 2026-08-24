@@ -216,6 +216,28 @@ function Index() {
   );
 }
 
+function FlagIt() {
+  return (
+    <svg aria-hidden viewBox="0 0 16 12" className="h-3 w-4 shrink-0 rounded-[2px]">
+      <rect width="16" height="12" fill="#f1f2f1" />
+      <rect width="5.34" height="12" fill="#009246" />
+      <rect x="10.66" width="5.34" height="12" fill="#ce2b37" />
+    </svg>
+  );
+}
+
+function FlagGb() {
+  return (
+    <svg aria-hidden viewBox="0 0 16 12" className="h-3 w-4 shrink-0 rounded-[2px]">
+      <rect width="16" height="12" fill="#012169" />
+      <path d="M0 0l16 12M16 0L0 12" stroke="#fff" strokeWidth="2.4" />
+      <path d="M0 0l16 12M16 0L0 12" stroke="#c8102e" strokeWidth="1.2" />
+      <path d="M8 0v12M0 6h16" stroke="#fff" strokeWidth="4" />
+      <path d="M8 0v12M0 6h16" stroke="#c8102e" strokeWidth="2.4" />
+    </svg>
+  );
+}
+
 function Header({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
   const t = copy[lang];
   return (
@@ -234,7 +256,7 @@ function Header({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
           </span>
         </a>
         <nav className="flex items-center gap-3 sm:gap-6">
-          <div className="hidden items-center gap-5 text-[14px] font-semibold text-foreground/85 md:flex lg:gap-6">
+          <div className="hidden items-center gap-5 text-[15px] font-semibold text-foreground/85 md:flex lg:gap-6">
             <a href="#funzioni" className="transition-colors hover:text-foreground">
               {t.header.functions}
             </a>
@@ -260,24 +282,28 @@ function Header({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
               type="button"
               onClick={() => setLang("it")}
               aria-pressed={lang === "it"}
-              className={`rounded-md px-2 py-1 text-xs font-bold transition-colors ${
+              aria-label={lang === "it" ? "Lingua italiana selezionata" : "Passa all'italiano"}
+              className={`flex items-center gap-1.5 rounded-md px-1.5 py-1 text-xs font-bold transition-colors sm:px-2 ${
                 lang === "it"
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
+              <FlagIt />
               {t.header.langIt}
             </button>
             <button
               type="button"
               onClick={() => setLang("en")}
               aria-pressed={lang === "en"}
-              className={`rounded-md px-2 py-1 text-xs font-bold transition-colors ${
+              aria-label={lang === "en" ? "English language selected" : "Switch to English"}
+              className={`flex items-center gap-1.5 rounded-md px-1.5 py-1 text-xs font-bold transition-colors sm:px-2 ${
                 lang === "en"
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
+              <FlagGb />
               {t.header.langEn}
             </button>
           </div>
@@ -320,7 +346,7 @@ function Hero({ lang }: { lang: Lang }) {
               {
                 "--spark-col": c.col,
                 "--spark-row": c.row,
-                animationDelay: c.delay,
+                "--spark-delay": c.delay,
               } as CSSProperties
             }
           />
