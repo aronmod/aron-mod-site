@@ -182,7 +182,7 @@ export const copy = {
     support: {
       eyebrow: "",
       title: "Supporto",
-      ticketTitle: "Assistenza tramite ticket Discord",
+      ticketTitle: "Assistenza tramite Discord",
       ticketText:
         "Apri un ticket nella sezione italiana o inglese del nostro server: lo staff ti segue durante l'acquisto e per qualsiasi problema tecnico.",
       ctaTicket: "Apri un ticket",
@@ -414,7 +414,7 @@ export const copy = {
     support: {
       eyebrow: "",
       title: "Support",
-      ticketTitle: "Support via Discord ticket",
+      ticketTitle: "Support via Discord",
       ticketText:
         "Open a ticket in the Italian or English section of our server: our staff will assist you with the purchase and any technical issue.",
       ctaTicket: "Open a ticket",
