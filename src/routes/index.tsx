@@ -95,6 +95,14 @@ type ModalHandlers = {
 function Index() {
   const [lang, setLang] = useLang("it");
   const t = copy[lang];
+
+  useEffect(() => {
+    document.title =
+      lang === "it"
+        ? "Aron Mod - La Mod per metin sui server privati!"
+        : "Aron Mod - The Mod for Metin private servers!";
+  }, [lang]);
+
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [ticketOpen, setTicketOpen] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
