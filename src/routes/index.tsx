@@ -18,11 +18,20 @@ import {
   ExternalLink,
   Search,
   Check,
+  X,
+  HelpCircle,
 } from "lucide-react";
 
 import shot1 from "@/assets/shot-1.jpg";
 import shot2 from "@/assets/shot-2.jpg";
 import { LINKS, EXTERNAL_LINK_PROPS } from "@/config/links";
+import {
+  SERVERS,
+  SERVER_FEATURES,
+  type ServerFeature,
+  type ServerStatus,
+  type Support,
+} from "@/config/servers";
 import { LinkModal } from "@/components/LinkModal";
 import { copy, type Lang } from "@/lib/copy";
 
