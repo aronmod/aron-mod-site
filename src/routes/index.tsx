@@ -302,16 +302,20 @@ function Hero({ lang }: { lang: Lang }) {
       <div className="surface-grid animate-grid-breathe absolute inset-0 opacity-60" />
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
         {[
-          { col: -2, row: 2, delay: "0s", violet: false },
-          { col: 1, row: 1, delay: "2.6s", violet: true },
-          { col: -1, row: 4, delay: "5.4s", violet: false },
-          { col: 1, row: 3, delay: "8.1s", violet: true },
-          { col: -2, row: 3, delay: "11s", violet: true },
-          { col: 0, row: 4, delay: "13.2s", violet: false },
+          /* always visible: free strip above the content (hero padding starts at 96px) */
+          { col: -2, row: 0, delay: "0s", violet: false, wide: false },
+          { col: 1, row: 0, delay: "7.5s", violet: true, wide: false },
+          /* wide viewports only: left / right gutters outside the max-w-4xl content column */
+          { col: -11, row: 1, delay: "1.9s", violet: true, wide: true },
+          { col: 9, row: 2, delay: "3.8s", violet: false, wide: true },
+          { col: -9, row: 5, delay: "5.6s", violet: false, wide: true },
+          { col: 10, row: 6, delay: "9.4s", violet: true, wide: true },
+          { col: -10, row: 8, delay: "11.3s", violet: true, wide: true },
+          { col: 11, row: 8, delay: "13.1s", violet: false, wide: true },
         ].map((c) => (
           <span
             key={`${c.col}-${c.row}`}
-            className={`grid-spark ${c.violet ? "grid-spark-violet" : ""}`}
+            className={`grid-spark ${c.violet ? "grid-spark-violet" : ""} ${c.wide ? "grid-spark-wide" : ""}`}
             style={
               {
                 "--spark-col": c.col,
