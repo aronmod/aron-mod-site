@@ -261,18 +261,13 @@ export const copy = {
         </>
       ),
       subtitle: (
-        <>
-          <span className="block text-lg font-semibold sm:text-xl">
-            The premium mod for Metin2 private servers.
-          </span>
-          <span className="mt-2.5 block text-sm leading-relaxed font-normal text-foreground/85 sm:text-base">
-            <span className="text-gradient font-medium">AutoDungeon</span>,{" "}
-            <span className="text-gradient font-medium">FarmBot</span>,{" "}
-            <span className="text-gradient font-medium">AutoAlchimia</span>, and remote control via{" "}
-            <span className="text-gradient font-medium">Telegram</span>. Everything in one
-            lightweight, always up-to-date interface.
-          </span>
-        </>
+        <span className="block text-base leading-relaxed font-medium text-foreground/90 sm:text-lg">
+          <span className="text-gradient font-semibold">AutoDungeon</span>,{" "}
+          <span className="text-gradient font-semibold">FarmBot</span>,{" "}
+          <span className="text-gradient font-semibold">Auto Alchemy</span>, remote control via{" "}
+          <span className="text-gradient font-semibold">Telegram</span>, and many other advanced
+          features.
+        </span>
       ),
       ctaBuy: "Buy the mod",
       ctaDiscord: "Join Discord",
