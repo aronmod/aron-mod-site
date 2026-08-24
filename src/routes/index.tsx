@@ -363,113 +363,307 @@ function Features({ lang }: { lang: Lang }) {
   );
 }
 
-const SERVER_ROWS = [{ name: "I-Longju", url: LINKS.server.url, base: true, plus: true }] as const;
+function SupportCell({ value, lang }: { value: Support; lang: Lang }) {
+  const t = copy[lang].servers;
+  if (value === true) {
+    return (
+      <span
+        className="inline-flex items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--success)_18%,transparent)] p-1.5 ring-1 ring-[color-mix(in_oklab,var(--success)_45%,transparent)]"
+        title={t.legendYes}
+      >
+        <Check className="h-4 w-4 text-[var(--success)]" aria-hidden="true" />
+        <span className="sr-only">{t.legendYes}</span>
+      </span>
+    );
+  }
+  if (value === false) {
+    return (
+      <span
+        className="inline-flex items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--danger)_16%,transparent)] p-1.5 ring-1 ring-[color-mix(in_oklab,var(--danger)_40%,transparent)]"
+        title={t.legendNo}
+      >
+        <X className="h-4 w-4 text-[var(--danger)]" aria-hidden="true" />
+        <span className="sr-only">{t.legendNo}</span>
+      </span>
+    );
+  }
+  return (
+    <span
+      className="inline-flex items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--warning)_16%,transparent)] p-1.5 ring-1 ring-[color-mix(in_oklab,var(--warning)_40%,transparent)]"
+      title={t.legendUnknown}
+    >
+      <HelpCircle className="h-4 w-4 text-[var(--warning)]" aria-hidden="true" />
+      <span className="sr-only">{t.legendUnknown}</span>
+    </span>
+  );
+}
+
+function StatusBadge({ status, lang }: { status: ServerStatus; lang: Lang }) {
+  const t = copy[lang].servers.status;
+  const map: Record<ServerStatus, { label: string; color: string }> = {
+    working: { label: t.working, color: "var(--success)" },
+    partial: { label: t.partial, color: "var(--warning)" },
+    down: { label: t.down, color: "var(--danger)" },
+    unknown: { label: t.unknown, color: "var(--muted-foreground)" },
+  };
+  const { label, color } = map[status];
+  return (
+    <span
+      className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold"
+      style={{
+        color,
+        background: `color-mix(in oklab, ${color} 14%, transparent)`,
+        boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${color} 38%, transparent)`,
+      }}
+    >
+      <span
+        className="h-1.5 w-1.5 rounded-full animate-pulse-glow"
+        style={{ background: color }}
+        aria-hidden="true"
+      />
+      <span className="font-clean">{label}</span>
+    </span>
+  );
+}
 
 function Servers({ lang }: { lang: Lang }) {
   const t = copy[lang];
   const [query, setQuery] = useState("");
-  const filtered = SERVER_ROWS.filter((row) =>
-    row.name.toLowerCase().includes(query.toLowerCase()),
+  const [activeFilters, setActiveFilters] = useState<ServerFeature[]>([]);
+
+  const toggleFilter = (f: ServerFeature) =>
+    setActiveFilters((prev) => (prev.includes(f) ? prev.filter((x) => x !== f) : [...prev, f]));
+
+  const filtered = SERVERS.filter(
+    (row) =>
+      row.name.toLowerCase().includes(query.trim().toLowerCase()) &&
+      activeFilters.every((f) => row.features[f] !== false),
   );
 
+  const hasFilters = query.trim().length > 0 || activeFilters.length > 0;
+  const reset = () => {
+    setQuery("");
+    setActiveFilters([]);
+  };
+
+  const featureLabels: Record<ServerFeature, string> = {
+    autoDungeon: t.servers.filters.autoDungeon,
+    switchAmmalia: t.servers.filters.switchAmmalia,
+    autoAlchimia: t.servers.filters.autoAlchimia,
+    captcha: t.servers.filters.captcha,
+  };
+
   return (
-    <section id="server" className="relative border-y border-border/60 bg-card/30">
-      <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
+    <section id="server" className="relative border-y border-border/60">
+      <div
+        className="pointer-events-none absolute inset-0 opacity-70"
+        style={{
+          background:
+            "radial-gradient(70% 60% at 15% 0%, color-mix(in oklab, var(--violet) 14%, transparent) 0%, transparent 60%), radial-gradient(70% 60% at 90% 100%, color-mix(in oklab, var(--accent) 12%, transparent) 0%, transparent 60%)",
+        }}
+        aria-hidden="true"
+      />
+      <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
         <SectionTitle eyebrow={t.servers.eyebrow} title={t.servers.title} text={t.servers.text} />
 
-        <div className="mx-auto mt-12 max-w-2xl">
-          <div className="relative">
-            <Search
-              className="pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-              aria-hidden="true"
-            />
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder={t.servers.searchPlaceholder}
-              className="w-full rounded-xl border border-border bg-card/70 py-3 pr-4 pl-11 text-sm text-foreground placeholder:text-muted-foreground/70 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
-              aria-label={t.servers.searchPlaceholder}
-            />
-          </div>
+        <div className="spectrum-frame mt-12">
+          <div className="spectrum-inner p-4 sm:p-7">
+            {/* Toolbar */}
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div className="relative w-full lg:max-w-sm">
+                <Search
+                  className="pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-accent"
+                  aria-hidden="true"
+                />
+                <input
+                  type="search"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder={t.servers.searchPlaceholder}
+                  aria-label={t.servers.searchPlaceholder}
+                  className="font-clean w-full rounded-xl border border-border bg-background/60 py-3 pr-4 pl-11 text-sm text-foreground placeholder:text-muted-foreground/70 outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/50"
+                />
+              </div>
+              <p className="font-clean text-xs text-muted-foreground">
+                <span className="font-bold text-foreground">{filtered.length}</span>{" "}
+                {t.servers.countLabel}
+              </p>
+            </div>
 
-          <div className="mt-5 overflow-x-auto rounded-2xl border border-border/60 bg-card/40 backdrop-blur-sm">
-            <table className="w-full min-w-[320px] text-left text-sm">
-              <thead>
-                <tr className="border-b border-border/60 bg-secondary/40">
-                  <th className="px-4 py-3 font-display font-bold text-foreground sm:px-6">
-                    {t.servers.colServer}
-                  </th>
-                  <th className="px-4 py-3 text-center font-display font-bold text-foreground sm:px-6">
-                    {t.servers.colBase}
-                  </th>
-                  <th className="px-4 py-3 text-center font-display font-bold text-foreground sm:px-6">
-                    {t.servers.colPlus}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((row) => (
-                  <tr
-                    key={row.name}
-                    className="border-b border-border/40 last:border-b-0 transition-colors hover:bg-primary/5"
+            {/* Filter chips */}
+            <div className="mt-5 flex flex-wrap items-center gap-2">
+              <span className="font-clean mr-1 text-xs tracking-wide text-muted-foreground uppercase">
+                {t.servers.filtersLabel}
+              </span>
+              {SERVER_FEATURES.map((f) => {
+                const active = activeFilters.includes(f);
+                return (
+                  <button
+                    key={f}
+                    type="button"
+                    onClick={() => toggleFilter(f)}
+                    aria-pressed={active}
+                    className={`font-clean rounded-full px-3 py-1.5 text-xs font-semibold transition-all focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none ${
+                      active
+                        ? "bg-[image:var(--gradient-spectrum)] text-primary-foreground shadow-[var(--shadow-glow)]"
+                        : "border border-border bg-background/50 text-muted-foreground hover:border-primary/60 hover:text-foreground"
+                    }`}
                   >
-                    <td className="px-4 py-3.5 sm:px-6">
-                      <a
-                        href={row.url}
-                        {...EXTERNAL_LINK_PROPS}
-                        className="inline-flex items-center gap-2 font-semibold text-foreground transition-colors hover:text-accent"
-                      >
-                        <Server className="h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
-                        <span className="font-clean">{row.name}</span>
-                        <ExternalLink className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                      </a>
-                    </td>
+                    {featureLabels[f]}
+                  </button>
+                );
+              })}
+              {hasFilters ? (
+                <button
+                  type="button"
+                  onClick={reset}
+                  className="font-clean rounded-full px-3 py-1.5 text-xs font-semibold text-accent underline-offset-4 transition-colors hover:underline focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+                >
+                  {t.servers.reset}
+                </button>
+              ) : null}
+            </div>
 
-                    <td className="px-4 py-3.5 text-center sm:px-6">
-                      {row.base ? (
-                        <span
-                          className="inline-flex items-center justify-center rounded-full bg-accent/15 p-1.5"
-                          aria-label={t.servers.baseLabel}
-                          title={t.servers.baseLabel}
-                        >
-                          <Check className="h-4 w-4 text-accent" aria-hidden="true" />
-                        </span>
-                      ) : (
-                        <span className="text-muted-foreground" aria-label={t.servers.noResults}>
-                          —
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3.5 text-center sm:px-6">
-                      {row.plus ? (
-                        <span
-                          className="inline-flex items-center justify-center rounded-full bg-primary/15 p-1.5"
-                          aria-label={t.servers.plusLabel}
-                          title={t.servers.plusLabel}
-                        >
-                          <Check className="h-4 w-4 text-primary" aria-hidden="true" />
-                        </span>
-                      ) : (
-                        <span className="text-muted-foreground" aria-label={t.servers.noResults}>
-                          —
-                        </span>
-                      )}
-                    </td>
+            {/* Desktop table */}
+            <div className="mt-6 hidden overflow-x-auto rounded-2xl border border-border/60 md:block">
+              <table className="w-full text-left text-sm">
+                <thead>
+                  <tr className="bg-secondary/50">
+                    <th className="px-5 py-3 font-display text-xs font-bold tracking-wider uppercase">
+                      {t.servers.colServer}
+                    </th>
+                    <th className="px-5 py-3 font-display text-xs font-bold tracking-wider uppercase">
+                      {t.servers.colStatus}
+                    </th>
+                    <th className="px-4 py-3 text-center font-display text-xs font-bold tracking-wider uppercase">
+                      {t.servers.colBase}
+                    </th>
+                    <th className="px-4 py-3 text-center font-display text-xs font-bold tracking-wider uppercase">
+                      {t.servers.colPlus}
+                    </th>
+                    {SERVER_FEATURES.map((f) => (
+                      <th
+                        key={f}
+                        className="px-4 py-3 text-center font-display text-xs font-bold tracking-wider uppercase"
+                      >
+                        {featureLabels[f]}
+                      </th>
+                    ))}
                   </tr>
-                ))}
-                {filtered.length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan={3}
-                      className="px-4 py-8 text-center text-sm text-muted-foreground sm:px-6"
+                </thead>
+                <tbody>
+                  {filtered.map((row) => (
+                    <tr
+                      key={row.name}
+                      className="border-t border-border/40 transition-colors hover:bg-primary/10"
                     >
-                      {t.servers.noResults}
-                    </td>
-                  </tr>
-                ) : null}
-              </tbody>
-            </table>
+                      <td className="px-5 py-4">
+                        <a
+                          href={row.url}
+                          {...EXTERNAL_LINK_PROPS}
+                          className="inline-flex items-center gap-2 font-semibold text-foreground transition-colors hover:text-accent focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+                        >
+                          <Server className="h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
+                          <span className="font-clean">{row.name}</span>
+                          <ExternalLink
+                            className="h-3.5 w-3.5 shrink-0 text-muted-foreground"
+                            aria-hidden="true"
+                          />
+                        </a>
+                      </td>
+                      <td className="px-5 py-4">
+                        <StatusBadge status={row.status} lang={lang} />
+                      </td>
+                      <td className="px-4 py-4 text-center">
+                        <SupportCell value={row.base} lang={lang} />
+                      </td>
+                      <td className="px-4 py-4 text-center">
+                        <SupportCell value={row.plus} lang={lang} />
+                      </td>
+                      {SERVER_FEATURES.map((f) => (
+                        <td key={f} className="px-4 py-4 text-center">
+                          <SupportCell value={row.features[f]} lang={lang} />
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile cards */}
+            <div className="mt-6 grid gap-4 md:hidden">
+              {filtered.map((row) => (
+                <article key={row.name} className="glass-card rounded-2xl p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <a
+                      href={row.url}
+                      {...EXTERNAL_LINK_PROPS}
+                      className="inline-flex items-center gap-2 font-semibold text-foreground hover:text-accent"
+                    >
+                      <Server className="h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
+                      <span className="font-clean">{row.name}</span>
+                      <ExternalLink
+                        className="h-3.5 w-3.5 shrink-0 text-muted-foreground"
+                        aria-hidden="true"
+                      />
+                    </a>
+                    <StatusBadge status={row.status} lang={lang} />
+                  </div>
+                  <dl className="mt-4 grid grid-cols-2 gap-3 text-xs">
+                    {(
+                      [
+                        [t.servers.colBase, row.base],
+                        [t.servers.colPlus, row.plus],
+                        ...SERVER_FEATURES.map(
+                          (f) => [featureLabels[f], row.features[f]] as [string, Support],
+                        ),
+                      ] as [string, Support][]
+                    ).map(([label, value]) => (
+                      <div
+                        key={label}
+                        className="flex items-center justify-between gap-2 rounded-xl border border-border/50 bg-background/40 px-3 py-2"
+                      >
+                        <dt className="font-clean text-muted-foreground">{label}</dt>
+                        <dd>
+                          <SupportCell value={value} lang={lang} />
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                </article>
+              ))}
+            </div>
+
+            {filtered.length === 0 ? (
+              <div className="mt-6 rounded-2xl border border-dashed border-border/70 px-4 py-10 text-center">
+                <p className="font-display font-bold text-foreground">{t.servers.noResults}</p>
+                <p className="font-clean mt-1 text-sm text-muted-foreground">
+                  {t.servers.noResultsHint}
+                </p>
+                <button
+                  type="button"
+                  onClick={reset}
+                  className="font-clean mt-4 rounded-xl border border-border px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:border-primary"
+                >
+                  {t.servers.reset}
+                </button>
+              </div>
+            ) : null}
+
+            {/* Legend */}
+            <div className="mt-6 flex flex-wrap items-center gap-4 border-t border-border/50 pt-5 text-xs">
+              <span className="font-clean font-bold text-foreground">{t.servers.legendTitle}</span>
+              <span className="font-clean flex items-center gap-2 text-muted-foreground">
+                <SupportCell value={true} lang={lang} /> {t.servers.legendYes}
+              </span>
+              <span className="font-clean flex items-center gap-2 text-muted-foreground">
+                <SupportCell value={false} lang={lang} /> {t.servers.legendNo}
+              </span>
+              <span className="font-clean flex items-center gap-2 text-muted-foreground">
+                <SupportCell value={null} lang={lang} /> {t.servers.legendUnknown}
+              </span>
+            </div>
           </div>
         </div>
       </div>
