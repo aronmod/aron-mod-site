@@ -287,6 +287,17 @@
 }
 
 
+/* only shown on wide viewports where the side gutters are truly free */
+@utility grid-spark-wide {
+  display: none;
+}
+
+@media (min-width: 1280px) {
+  .grid-spark-wide {
+    display: block;
+  }
+}
+
 @utility grid-spark-violet {
   background: radial-gradient(
     70% 70% at 50% 50%,
