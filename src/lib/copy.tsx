@@ -33,9 +33,9 @@ export const copy = {
         <span className="block text-base leading-relaxed font-medium text-foreground/90 sm:text-lg">
           <span className="text-gradient font-semibold">Auto Dungeon</span>,{" "}
           <span className="text-gradient font-semibold">FarmBot</span>,{" "}
-          <span className="text-gradient font-semibold">Auto Alchimia</span>, controllo remoto tramite{" "}
-          <span className="text-gradient font-semibold">Telegram</span> e molte altre funzioni
-          avanzate.
+          <span className="text-gradient font-semibold">Auto Alchimia</span>, controllo remoto
+          tramite <span className="text-gradient font-semibold">Telegram</span> e molte altre
+          funzioni avanzate.
         </span>
       ),
       ctaBuy: "Acquista la mod",
@@ -154,6 +154,7 @@ export const copy = {
         "Windows 10 / 11 · 64 bit",
         "Verifica della chiave di licenza con opzione «Memorizza key»",
         "Avvio automatico del client con multi-client integrato",
+        "Memorizzazione dei percorsi recenti per avviare più rapidamente il gioco",
         "Aggiornamento automatico e supporto IT / EN nel loader",
       ],
       download: "Download",
@@ -384,6 +385,7 @@ export const copy = {
         "Windows 10 / 11 · 64 bit",
         "License key verification with «Remember key» option",
         "Automatic client launch with built-in multi-client",
+        "Recent path history for faster game launch",
         "Automatic updates and IT / EN support inside the loader",
       ],
       download: "Download",
