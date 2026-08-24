@@ -402,9 +402,14 @@
   .animate-float-slow,
   .animate-halo,
   .animate-grid-breathe,
+  .grid-spark,
   .title-shimmer .text-gradient {
     animation: none !important;
     transform: none !important;
+  }
+
+  .grid-spark {
+    opacity: 0 !important;
   }
 
   .hover-lift-glow:hover {
