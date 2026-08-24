@@ -13,7 +13,6 @@ import {
   ChevronDown,
   Ticket,
   Mail,
-  Server,
   BookOpen,
   Download,
   ExternalLink,
