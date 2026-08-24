@@ -386,7 +386,7 @@ function Features({ lang }: { lang: Lang }) {
   return (
     <section id="funzioni" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
       <SectionTitle title={t.features.title} text={t.features.text} />
-      <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-12 grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
         {t.features.items.map((f, i) => {
           const Icon = featureIcons[i] ?? featureIcons[0]!;
           const tone = featureTones[i % featureTones.length]!;
