@@ -31,11 +31,16 @@ export const copy = {
       ),
       subtitle: (
         <>
-          La mod premium per i retro server di Metin2:{" "}
-          <span className="text-gradient">AutoDungeon</span>,{" "}
-          <span className="text-gradient">FarmBot</span>, gestione da remoto con{" "}
-          <span className="text-gradient">Telegram</span> e bot avanzato in un'unica interfaccia
-          leggera e sempre aggiornata.
+          <span className="block text-lg font-semibold sm:text-xl">
+            La mod premium per i retro server di Metin2.
+          </span>
+          <span className="mt-2.5 block text-sm leading-relaxed font-normal text-foreground/85 sm:text-base">
+            <span className="text-gradient font-medium">AutoDungeon</span>,{" "}
+            <span className="text-gradient font-medium">FarmBot</span>,{" "}
+            <span className="text-gradient font-medium">AutoAlchimia</span> e controllo remoto
+            tramite <span className="text-gradient font-medium">Telegram</span>. Tutto in un'unica
+            interfaccia leggera e sempre aggiornata.
+          </span>
         </>
       ),
       ctaBuy: "Acquista la mod",
