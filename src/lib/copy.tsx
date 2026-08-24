@@ -275,8 +275,8 @@ export const copy = {
     },
     features: {
       eyebrow: "",
-      title: "Everything you need to dominate",
-      text: "Every module can be toggled individually and configured in real time from the in-game overlay.",
+      title: "Advanced Features",
+      text: "Activate the modules you need to automate your gameplay.",
       items: [
         {
           title: "Auto Dungeon",
