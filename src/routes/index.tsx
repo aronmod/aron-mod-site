@@ -713,22 +713,14 @@ function Pricing({ lang }: { lang: Lang }) {
         <a
           href={guideUrl}
           {...EXTERNAL_LINK_PROPS}
-          className={`inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3.5 font-display font-bold transition-transform hover:scale-105 ${
-            highlight
-              ? "bg-[image:var(--gradient-accent)] text-primary-foreground"
-              : "border border-border bg-card/70 text-foreground hover:border-primary"
-          }`}
+          className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card/70 px-5 py-3.5 font-display font-bold text-foreground transition-all hover:scale-105 hover:border-primary"
         >
           <ExternalLink className="h-4 w-4" /> {plan.cta15}
         </a>
         <a
           href={guideUrl}
           {...EXTERNAL_LINK_PROPS}
-          className={`inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3.5 font-display font-bold transition-transform hover:scale-105 ${
-            highlight
-              ? "border border-border bg-card/70 text-foreground hover:border-primary"
-              : "bg-[image:var(--gradient-accent)] text-primary-foreground"
-          }`}
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-accent)] px-5 py-3.5 font-display font-bold text-primary-foreground transition-transform hover:scale-105"
         >
           <ExternalLink className="h-4 w-4" /> {plan.cta30}
         </a>
@@ -736,15 +728,17 @@ function Pricing({ lang }: { lang: Lang }) {
 
       {"includes" in plan ? (
         <div className="mt-6 rounded-xl bg-primary/10 p-4">
-          <p className="font-display text-sm font-bold text-accent">{plan.includesTitle}</p>
-          <p className="mt-1 text-xs text-muted-foreground">{plan.includesIntro}</p>
+          <p className="mt-1 text-xs font-bold text-foreground">{plan.includesIntro}</p>
           <ul className="mt-3 space-y-1.5">
             {plan.includes.map((item) => (
               <li
                 key={item}
                 className="flex items-center gap-2 text-sm font-semibold text-foreground"
               >
-                <ShieldCheck className="h-4 w-4 text-accent" /> {item}
+                <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[image:var(--gradient-accent)]">
+                  <ShieldCheck className="h-3 w-3 text-white" />
+                </span>
+                {item}
               </li>
             ))}
           </ul>
@@ -754,7 +748,7 @@ function Pricing({ lang }: { lang: Lang }) {
       <ul className="mt-6 flex-1 space-y-2 text-sm text-muted-foreground">
         {t.commonPerks.map((perk) => (
           <li key={perk} className="flex items-start gap-2">
-            <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+            <CircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
             {perk}
           </li>
         ))}
