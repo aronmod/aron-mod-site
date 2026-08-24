@@ -306,12 +306,17 @@ function Hero({ lang }: { lang: Lang }) {
           {t.hero.title}
         </h1>
 
-        <p
-          className="reveal mx-auto mt-7 max-w-3xl px-4 text-center text-base leading-relaxed font-medium text-foreground/90 sm:text-lg"
+        <div
+          className="reveal mx-auto mt-7 max-w-2xl space-y-2 px-4 text-center"
           style={{ animationDelay: "200ms" }}
         >
-          {t.hero.subtitle}
-        </p>
+          <p className="text-base leading-relaxed font-bold text-foreground/90 sm:text-lg">
+            {t.hero.subtitle.line1}
+          </p>
+          <p className="text-base leading-relaxed font-medium text-foreground/90 sm:text-lg">
+            {t.hero.subtitle.line2}
+          </p>
+        </div>
 
         <div
           className="reveal mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row"

@@ -23,20 +23,22 @@ export const copy = {
     },
     hero: {
       badge: "",
-      title: (
-        <>
-          Domina Metin con <span className="text-gradient">Aron Mod</span>
-        </>
-      ),
-      subtitle: (
-        <>
-          <span className="font-semibold text-accent">Auto Dungeon</span>,{" "}
-          <span className="font-semibold text-accent">FarmBot</span>,{" "}
-          <span className="font-semibold text-accent">Auto Alchimia</span>, controllo remoto tramite{" "}
-          <span className="font-semibold text-violet">Telegram</span> e molte altre funzioni
-          avanzate.
-        </>
-      ),
+      title: <span className="text-gradient">ARON MOD</span>,
+      subtitle: {
+        line1: (
+          <>
+            Domina Metin con <span className="font-bold">AUTO DUNGEON</span>,{" "}
+            <span className="font-bold">AUTO ALCHIMIA</span> e{" "}
+            <span className="font-bold">FARMBOT</span>.
+          </>
+        ),
+        line2: (
+          <>
+            Controllo remoto tramite <span className="font-bold">TELEGRAM</span> e molte altre
+            funzioni avanzate.
+          </>
+        ),
+      },
       ctaBuy: "Acquista la mod",
       ctaDiscord: "Entra nel Discord",
       supportValue: "",
@@ -250,20 +252,22 @@ export const copy = {
     },
     hero: {
       badge: "",
-      title: (
-        <>
-          Dominate Metin with <span className="text-gradient">Aron Mod</span>
-        </>
-      ),
-      subtitle: (
-        <>
-          <span className="font-semibold text-accent">Auto Dungeon</span>,{" "}
-          <span className="font-semibold text-accent">FarmBot</span>,{" "}
-          <span className="font-semibold text-accent">Auto Alchemy</span>, remote control via{" "}
-          <span className="font-semibold text-violet">Telegram</span>, and many other advanced
-          features.
-        </>
-      ),
+      title: <span className="text-gradient">ARON MOD</span>,
+      subtitle: {
+        line1: (
+          <>
+            Dominate Metin with <span className="font-bold">AUTO DUNGEON</span>,{" "}
+            <span className="font-bold">AUTO ALCHEMY</span> and{" "}
+            <span className="font-bold">FARMBOT</span>.
+          </>
+        ),
+        line2: (
+          <>
+            Remote control via <span className="font-bold">TELEGRAM</span> and many other advanced
+            features.
+          </>
+        ),
+      },
       ctaBuy: "Buy the mod",
       ctaDiscord: "Join Discord",
       supportValue: "",
