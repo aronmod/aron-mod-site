@@ -735,9 +735,12 @@ function Pricing({ lang }: { lang: Lang }) {
                 key={item}
                 className="flex items-center gap-2 text-sm font-semibold text-foreground"
               >
-                <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[image:var(--gradient-accent)]">
-                  <ShieldCheck className="h-3 w-3 text-white" />
-                </span>
+                <Check
+                  className="h-4 w-4 shrink-0"
+                  style={{
+                    color: "color-mix(in oklab, var(--accent) 60%, var(--violet))",
+                  }}
+                />
                 {item}
               </li>
             ))}
