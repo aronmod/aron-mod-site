@@ -283,7 +283,7 @@ function Header({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
 
           <a
             href="#prezzi"
-            className="shrink-0 rounded-xl bg-[image:var(--gradient-accent)] px-5 py-2 text-[13px] font-bold text-primary-foreground transition-transform hover:scale-105"
+            className="shrink-0 rounded-lg bg-[image:var(--gradient-accent)] px-3.5 py-1.5 text-[14px] font-semibold text-primary-foreground transition-transform hover:scale-105"
           >
             {t.header.buy}
           </a>
@@ -863,8 +863,6 @@ function Showcase({ lang }: { lang: Lang }) {
 function DownloadSection({ lang }: { lang: Lang }) {
   const t = copy[lang].loader;
   const [zoom, setZoom] = useState<{ src: string; alt: string } | null>(null);
-  const guideUrl = lang === "it" ? LINKS.guideIt : LINKS.guideEn;
-  const downloadUrl = lang === "it" ? LINKS.downloadIt : LINKS.downloadEn;
   return (
     <section id="download" className="relative overflow-hidden border-y border-border/60">
       <div className="absolute inset-0 bg-[image:var(--gradient-hero)] opacity-70" />
@@ -882,15 +880,7 @@ function DownloadSection({ lang }: { lang: Lang }) {
           </ul>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <a
-              href={downloadUrl}
-              {...EXTERNAL_LINK_PROPS}
-              className="glow-ring inline-flex items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-accent)] px-7 py-3.5 font-display font-bold text-primary-foreground transition-transform hover:scale-105"
-            >
-              <Download className="h-5 w-5" /> {t.download}
-            </a>
-            <a
-              href={guideUrl}
-              {...EXTERNAL_LINK_PROPS}
+              href="#prezzi"
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card/70 px-7 py-3.5 font-display font-bold transition-colors hover:border-primary"
             >
               <ShoppingCart className="h-5 w-5 text-accent" /> {t.buyLicense}
