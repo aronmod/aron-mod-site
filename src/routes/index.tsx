@@ -260,24 +260,28 @@ function Header({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
               type="button"
               onClick={() => setLang("it")}
               aria-pressed={lang === "it"}
-              className={`rounded-md px-2 py-1 text-xs font-bold transition-colors ${
+              aria-label={lang === "it" ? "Lingua italiana selezionata" : "Passa all'italiano"}
+              className={`flex items-center gap-1.5 rounded-md px-1.5 py-1 text-xs font-bold transition-colors sm:px-2 ${
                 lang === "it"
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
+              <FlagIt />
               {t.header.langIt}
             </button>
             <button
               type="button"
               onClick={() => setLang("en")}
               aria-pressed={lang === "en"}
-              className={`rounded-md px-2 py-1 text-xs font-bold transition-colors ${
+              aria-label={lang === "en" ? "English language selected" : "Switch to English"}
+              className={`flex items-center gap-1.5 rounded-md px-1.5 py-1 text-xs font-bold transition-colors sm:px-2 ${
                 lang === "en"
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
+              <FlagGb />
               {t.header.langEn}
             </button>
           </div>
