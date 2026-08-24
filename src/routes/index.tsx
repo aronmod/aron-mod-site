@@ -234,7 +234,7 @@ function Header({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
           </span>
         </a>
         <nav className="flex items-center gap-3 sm:gap-6">
-          <div className="hidden items-center gap-5 text-[14px] font-semibold text-foreground/85 md:flex lg:gap-6">
+          <div className="hidden items-center gap-5 text-[15px] font-semibold text-foreground/85 md:flex lg:gap-6">
             <a href="#funzioni" className="transition-colors hover:text-foreground">
               {t.header.functions}
             </a>
