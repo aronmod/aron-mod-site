@@ -85,6 +85,17 @@
     0 0 0 1px color-mix(in oklab, var(--primary) 35%, transparent),
     0 18px 60px -18px color-mix(in oklab, var(--primary) 65%, transparent);
   --shadow-violet: 0 18px 60px -18px color-mix(in oklab, var(--violet) 70%, transparent);
+  --gradient-spectrum: linear-gradient(
+    100deg,
+    var(--accent),
+    var(--primary),
+    var(--violet),
+    var(--magenta)
+  );
+  --shadow-spectrum:
+    0 0 0 1px color-mix(in oklab, var(--violet) 30%, transparent),
+    0 30px 80px -30px color-mix(in oklab, var(--magenta) 55%, transparent),
+    0 20px 60px -30px color-mix(in oklab, var(--primary) 60%, transparent);
 }
 
 @layer base {
