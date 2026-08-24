@@ -36,6 +36,7 @@ import {
 import { LinkModal } from "@/components/LinkModal";
 import { ImageLightbox } from "@/components/ImageLightbox";
 import { copy, type Lang } from "@/lib/copy";
+import { useLang } from "@/hooks/use-lang";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -65,7 +66,7 @@ type ModalHandlers = {
 };
 
 function Index() {
-  const [lang, setLang] = useState<Lang>("it");
+  const [lang, setLang] = useLang("it");
   const t = copy[lang];
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [ticketOpen, setTicketOpen] = useState(false);
