@@ -690,15 +690,13 @@ function Servers({ lang }: { lang: Lang }) {
             <div className="mt-6 flex flex-wrap items-center gap-4 border-t border-border/50 pt-5 text-xs">
               <span className="font-clean font-bold text-foreground">{t.servers.legendTitle}</span>
               <span className="font-clean flex items-center gap-2 text-muted-foreground">
-                <SupportCell value={true} lang={lang} /> {t.servers.legendYes}
+                <SupportCell value={true} lang={lang} size="sm" /> {t.servers.legendYes}
               </span>
               <span className="font-clean flex items-center gap-2 text-muted-foreground">
-                <SupportCell value={false} lang={lang} /> {t.servers.legendNo}
-              </span>
-              <span className="font-clean flex items-center gap-2 text-muted-foreground">
-                <SupportCell value={null} lang={lang} /> {t.servers.legendUnknown}
+                <SupportCell value={false} lang={lang} size="sm" /> {t.servers.legendNo}
               </span>
             </div>
+
           </div>
         </div>
       </div>
