@@ -357,13 +357,32 @@ function Features({ lang }: { lang: Lang }) {
       <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {t.features.items.map((f, i) => {
           const Icon = featureIcons[i] ?? featureIcons[0]!;
+          const tone = featureTones[i % featureTones.length]!;
           return (
-            <article key={f.title} className="glass-card rounded-2xl p-6">
-              <div className="glow-ring inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/15">
-                <Icon className="h-5 w-5 text-accent" />
+            <article key={f.title} className="glass-card relative overflow-hidden rounded-2xl p-6">
+              <span
+                className="pointer-events-none absolute -top-10 -right-10 h-28 w-28 rounded-full blur-2xl"
+                style={{ background: `color-mix(in oklab, ${tone} 35%, transparent)` }}
+                aria-hidden="true"
+              />
+              <div
+                className="relative inline-flex h-11 w-11 items-center justify-center rounded-xl"
+                style={{
+                  background: `color-mix(in oklab, ${tone} 18%, transparent)`,
+                  boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${tone} 45%, transparent), 0 12px 30px -14px color-mix(in oklab, ${tone} 70%, transparent)`,
+                }}
+              >
+                <Icon className="h-5 w-5" style={{ color: tone }} />
               </div>
-              <h3 className="mt-4 text-lg font-bold">{f.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.text}</p>
+              <h3 className="relative mt-4 text-lg font-bold">{f.title}</h3>
+              <p className="relative mt-2 text-sm leading-relaxed text-muted-foreground">
+                {f.text}
+              </p>
+              <span
+                className="absolute bottom-0 left-0 h-0.5 w-full opacity-70"
+                style={{ background: `linear-gradient(90deg, ${tone}, transparent)` }}
+                aria-hidden="true"
+              />
             </article>
           );
         })}
