@@ -571,7 +571,7 @@ function Servers({ lang }: { lang: Lang }) {
                     <th className="px-4 py-2.5 font-display text-xs font-bold tracking-wider uppercase">
                       {t.servers.colServer}
                     </th>
-                    <th className="px-4 py-2.5 font-display text-xs font-bold tracking-wider uppercase">
+                    <th className="px-4 py-2.5 text-center font-display text-xs font-bold tracking-wider uppercase">
                       {t.servers.colStatus}
                     </th>
                     <th className="px-4 py-2.5 text-center font-display text-xs font-bold tracking-wider uppercase">
@@ -601,7 +601,7 @@ function Servers({ lang }: { lang: Lang }) {
                           />
                         </a>
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-3 text-center">
                         <StatusBadge status={row.status} lang={lang} />
                       </td>
                       <td className="px-4 py-3 text-center">
@@ -707,9 +707,8 @@ function Pricing({ lang }: { lang: Lang }) {
           {plan.bestValueLabel}
         </span>
       ) : null}
-      <h3 className="font-display text-lg font-bold">{plan.name}</h3>
-      <p className="mt-1 text-sm text-muted-foreground">{plan.description}</p>
-      <div className="mt-5 flex flex-col gap-3">
+      <h3 className="font-display text-2xl font-bold">{plan.name}</h3>
+      <div className="mt-4 flex flex-col gap-3">
         <a
           href={guideUrl}
           {...EXTERNAL_LINK_PROPS}
