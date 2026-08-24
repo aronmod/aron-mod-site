@@ -20,6 +20,7 @@ import {
   Check,
   X,
   HelpCircle,
+  ZoomIn,
 } from "lucide-react";
 
 import shot1 from "@/assets/shot-1.jpg";
@@ -33,6 +34,7 @@ import {
   type Support,
 } from "@/config/servers";
 import { LinkModal } from "@/components/LinkModal";
+import { ImageLightbox } from "@/components/ImageLightbox";
 import { copy, type Lang } from "@/lib/copy";
 
 export const Route = createFileRoute("/")({
@@ -65,7 +67,7 @@ type ModalHandlers = {
 function Index() {
   const [lang, setLang] = useState<Lang>("it");
   const t = copy[lang];
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [ticketOpen, setTicketOpen] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
   const [downloadOpen, setDownloadOpen] = useState(false);
@@ -835,6 +837,7 @@ function Showcase({ lang }: { lang: Lang }) {
 
 function DownloadSection({ openDownload, lang }: { openDownload: () => void; lang: Lang }) {
   const t = copy[lang].loader;
+  const [zoom, setZoom] = useState<{ src: string; alt: string } | null>(null);
   const guideUrl = lang === "it" ? LINKS.guideIt : LINKS.guideEn;
   return (
     <section id="download" className="relative overflow-hidden border-y border-border/60">
@@ -872,35 +875,55 @@ function DownloadSection({ openDownload, lang }: { openDownload: () => void; lan
         <div className="relative mx-auto w-full max-w-xl">
           <div className="animate-pulse-glow absolute inset-8 rounded-full bg-violet/25 blur-3xl" />
           <div className="relative grid grid-cols-2 items-center gap-4 sm:gap-6">
-            <figure className="glass-card animate-float overflow-hidden rounded-2xl p-2 sm:translate-y-4">
-              <img
-                src="/loader-login.png"
-                alt={t.images.loginAlt}
-                loading="lazy"
-                width={400}
-                height={580}
-                className="w-full rounded-xl"
-              />
-              <figcaption className="px-2 py-2 text-center text-[11px] text-muted-foreground">
-                {t.images.loginCaption}
-              </figcaption>
-            </figure>
-            <figure className="glass-card glow-ring overflow-hidden rounded-2xl p-2 sm:-translate-y-4">
-              <img
-                src="/loader-launch.png"
-                alt={t.images.launchAlt}
-                loading="lazy"
-                width={400}
-                height={580}
-                className="w-full rounded-xl"
-              />
-              <figcaption className="px-2 py-2 text-center text-[11px] text-muted-foreground">
-                {t.images.launchCaption}
-              </figcaption>
-            </figure>
+            {[
+              {
+                src: "/loader-login.png",
+                alt: t.images.loginAlt,
+                caption: t.images.loginCaption,
+                cls: "glass-card animate-float overflow-hidden rounded-2xl p-2 sm:translate-y-4",
+              },
+              {
+                src: "/loader-launch.png",
+                alt: t.images.launchAlt,
+                caption: t.images.launchCaption,
+                cls: "glass-card glow-ring overflow-hidden rounded-2xl p-2 sm:-translate-y-4",
+              },
+            ].map((img) => (
+              <figure key={img.src} className={img.cls}>
+                <button
+                  type="button"
+                  onClick={() => setZoom(img)}
+                  aria-label={img.alt}
+                  className="group relative block w-full overflow-hidden rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                >
+                  <img
+                    src={img.src}
+                    alt={img.alt}
+                    loading="lazy"
+                    width={400}
+                    height={580}
+                    className="w-full rounded-xl transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <span className="pointer-events-none absolute right-2 top-2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-border/60 bg-background/60 opacity-0 backdrop-blur transition-opacity duration-300 group-hover:opacity-100">
+                    <ZoomIn className="h-4 w-4 text-accent" />
+                  </span>
+                </button>
+                <figcaption className="px-2 py-2 text-center text-[11px] text-muted-foreground">
+                  {img.caption}
+                </figcaption>
+              </figure>
+            ))}
           </div>
         </div>
       </div>
+      {zoom && (
+        <ImageLightbox
+          src={zoom.src}
+          alt={zoom.alt}
+          label={lang === "it" ? "Chiudi" : "Close"}
+          onClose={() => setZoom(null)}
+        />
+      )}
     </section>
   );
 }
@@ -942,7 +965,7 @@ function Faq({
                 }`}
               >
                 <div className="overflow-hidden">
-                  <p className="px-5 pb-5 text-sm leading-relaxed text-muted-foreground">
+                  <p className="px-5 pb-5 text-[0.9375rem] leading-7 text-foreground/85">
                     {item.a}
                   </p>
                 </div>

@@ -34,7 +34,7 @@ export function ImageLightbox({
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={label}
+      aria-label={alt}
       onClick={onClose}
       className="fixed inset-0 z-[100] flex items-center justify-center bg-background/85 p-4 backdrop-blur-md sm:p-8"
     >
