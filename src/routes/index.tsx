@@ -992,13 +992,13 @@ function Support({ openTicket, lang }: { openTicket: () => void; lang: Lang }) {
           <h2 className="mt-5 text-3xl font-bold">{t.support.ticketTitle}</h2>
           <p className="mx-auto mt-4 max-w-xl text-muted-foreground">{t.support.ticketText}</p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <button
-              type="button"
-              onClick={openTicket}
+            <a
+              href={lang === "it" ? LINKS.ticketIt : LINKS.ticketEn}
+              {...EXTERNAL_LINK_PROPS}
               className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-discord px-7 py-3.5 font-display font-bold text-primary-foreground transition-transform hover:scale-105 sm:w-auto"
             >
               <MessageCircle className="h-5 w-5" /> {t.support.ctaTicket}
-            </button>
+            </a>
             <a
               href={LINKS.discordInvite}
               {...EXTERNAL_LINK_PROPS}
