@@ -262,9 +262,49 @@
 }
 
 @utility animate-float-slow {
-  animation: aron-float-slow 9s ease-in-out infinite;
+  animation: aron-float-slow 6s ease-in-out infinite;
   will-change: transform;
 }
+
+@utility grid-spark {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  border-radius: 6px;
+  opacity: 0;
+  background: radial-gradient(
+    70% 70% at 50% 50%,
+    color-mix(in oklab, var(--primary) 26%, transparent) 0%,
+    transparent 75%
+  );
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--primary) 22%, transparent);
+  animation: aron-spark 15s ease-in-out infinite;
+  will-change: opacity;
+}
+
+@utility grid-spark-violet {
+  background: radial-gradient(
+    70% 70% at 50% 50%,
+    color-mix(in oklab, var(--violet) 26%, transparent) 0%,
+    transparent 75%
+  );
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--violet) 22%, transparent);
+}
+
+@keyframes aron-spark {
+  0%,
+  8% {
+    opacity: 0;
+  }
+  3% {
+    opacity: 0.85;
+  }
+  14%,
+  100% {
+    opacity: 0;
+  }
+}
+
 
 @utility animate-halo {
   animation: aron-halo 7s ease-in-out infinite;
@@ -323,7 +363,7 @@
     transform: translateY(-2px);
   }
   50% {
-    transform: translateY(3px);
+    transform: translateY(2px);
   }
 }
 
@@ -362,9 +402,14 @@
   .animate-float-slow,
   .animate-halo,
   .animate-grid-breathe,
+  .grid-spark,
   .title-shimmer .text-gradient {
     animation: none !important;
     transform: none !important;
+  }
+
+  .grid-spark {
+    opacity: 0 !important;
   }
 
   .hover-lift-glow:hover {

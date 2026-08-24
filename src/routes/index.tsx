@@ -299,6 +299,22 @@ function Hero({ lang }: { lang: Lang }) {
     <section id="top" className="relative overflow-hidden bg-background">
       <div className="absolute inset-0 bg-[image:radial-gradient(120%_90%_at_50%_0%,color-mix(in_oklab,var(--primary)_12%,transparent)_0%,transparent_60%),radial-gradient(80%_60%_at_85%_20%,color-mix(in_oklab,var(--violet)_10%,transparent)_0%,transparent_65%)]" />
       <div className="surface-grid animate-grid-breathe absolute inset-0 opacity-60" />
+      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+        {[
+          { left: "38%", top: "14%", delay: "0s", violet: false },
+          { left: "56%", top: "10%", delay: "2.6s", violet: true },
+          { left: "44%", top: "26%", delay: "5.4s", violet: false },
+          { left: "62%", top: "22%", delay: "8.1s", violet: true },
+          { left: "34%", top: "20%", delay: "11s", violet: true },
+          { left: "52%", top: "30%", delay: "13.2s", violet: false },
+        ].map((c) => (
+          <span
+            key={`${c.left}-${c.top}`}
+            className={`grid-spark ${c.violet ? "grid-spark-violet" : ""}`}
+            style={{ left: c.left, top: c.top, animationDelay: c.delay }}
+          />
+        ))}
+      </div>
       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent" />
 
       <div className="relative mx-auto max-w-4xl px-4 py-24 text-center sm:px-6 sm:py-32">
