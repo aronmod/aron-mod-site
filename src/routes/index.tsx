@@ -1038,7 +1038,7 @@ function Footer({ lang }: { lang: Lang }) {
             <h3 className="font-display text-sm font-bold tracking-wider uppercase">
               {t.footer.navTitle}
             </h3>
-            <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2 text-sm text-muted-foreground sm:grid-cols-1">
+            <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
               {t.footer.nav.map(([label, href]) => (
                 <li key={label}>
                   <a href={href} className="transition-colors hover:text-foreground">
