@@ -826,45 +826,45 @@ function Showcase({ lang }: { lang: Lang }) {
         <SectionTitle title={t.showcase.title} text={t.showcase.text} />
 
         <div className="mt-12 grid gap-4 lg:grid-cols-3">
-        <a
-          href={LINKS.discordInvite}
-          {...EXTERNAL_LINK_PROPS}
-          className="glass-card group relative col-span-1 overflow-hidden rounded-2xl lg:col-span-2"
-        >
-          <img
-            src={shot2}
-            alt={t.showcase.videoSub}
-            loading="lazy"
-            width={1280}
-            height={800}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center">
-            <span className="glow-ring inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary/25 backdrop-blur">
-              <Play className="h-6 w-6 fill-current text-accent" />
-            </span>
-            <span className="font-display text-lg font-bold">{t.showcase.videoLabel}</span>
-            <span className="text-xs text-muted-foreground">{t.showcase.videoSub}</span>
-          </div>
-        </a>
+          <a
+            href={LINKS.discordInvite}
+            {...EXTERNAL_LINK_PROPS}
+            className="glass-card group relative col-span-1 overflow-hidden rounded-2xl lg:col-span-2"
+          >
+            <img
+              src={shot2}
+              alt={t.showcase.videoSub}
+              loading="lazy"
+              width={1280}
+              height={800}
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center">
+              <span className="glow-ring inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary/25 backdrop-blur">
+                <Play className="h-6 w-6 fill-current text-accent" />
+              </span>
+              <span className="font-display text-lg font-bold">{t.showcase.videoLabel}</span>
+              <span className="text-xs text-muted-foreground">{t.showcase.videoSub}</span>
+            </div>
+          </a>
 
-        <div className="grid gap-4">
-          {shots.map((s) => (
-            <figure key={s.alt} className="glass-card overflow-hidden rounded-2xl">
-              <img
-                src={s.src}
-                alt={s.alt}
-                loading="lazy"
-                width={1280}
-                height={800}
-                className="h-40 w-full object-cover sm:h-48"
-              />
-              <figcaption className="px-4 py-3 text-xs text-muted-foreground">{s.alt}</figcaption>
-            </figure>
-          ))}
+          <div className="grid gap-4">
+            {shots.map((s) => (
+              <figure key={s.alt} className="glass-card overflow-hidden rounded-2xl">
+                <img
+                  src={s.src}
+                  alt={s.alt}
+                  loading="lazy"
+                  width={1280}
+                  height={800}
+                  className="h-40 w-full object-cover sm:h-48"
+                />
+                <figcaption className="px-4 py-3 text-xs text-muted-foreground">{s.alt}</figcaption>
+              </figure>
+            ))}
+          </div>
         </div>
-      </div>
       </div>
     </section>
   );
