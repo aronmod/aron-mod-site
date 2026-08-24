@@ -87,7 +87,7 @@ function Index() {
         <Servers lang={lang} />
         <Pricing lang={lang} />
         <Showcase lang={lang} />
-        <DownloadSection openDownload={handlers.openDownload} lang={lang} />
+        <DownloadSection lang={lang} />
         <Faq open={openFaq} setOpen={setOpenFaq} lang={lang} />
         <Support openTicket={handlers.openTicket} lang={lang} />
       </main>
@@ -835,10 +835,11 @@ function Showcase({ lang }: { lang: Lang }) {
   );
 }
 
-function DownloadSection({ openDownload, lang }: { openDownload: () => void; lang: Lang }) {
+function DownloadSection({ lang }: { lang: Lang }) {
   const t = copy[lang].loader;
   const [zoom, setZoom] = useState<{ src: string; alt: string } | null>(null);
   const guideUrl = lang === "it" ? LINKS.guideIt : LINKS.guideEn;
+  const downloadUrl = lang === "it" ? LINKS.downloadIt : LINKS.downloadEn;
   return (
     <section id="download" className="relative overflow-hidden border-y border-border/60">
       <div className="absolute inset-0 bg-[image:var(--gradient-hero)] opacity-70" />
@@ -855,13 +856,13 @@ function DownloadSection({ openDownload, lang }: { openDownload: () => void; lan
             ))}
           </ul>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <button
-              type="button"
-              onClick={openDownload}
+            <a
+              href={downloadUrl}
+              {...EXTERNAL_LINK_PROPS}
               className="glow-ring inline-flex items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-accent)] px-7 py-3.5 font-display font-bold text-primary-foreground transition-transform hover:scale-105"
             >
               <Download className="h-5 w-5" /> {t.download}
-            </button>
+            </a>
             <a
               href={guideUrl}
               {...EXTERNAL_LINK_PROPS}
@@ -1017,7 +1018,7 @@ function Footer({ lang }: { lang: Lang }) {
   return (
     <footer className="border-t border-border/60 bg-card/30">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-        <div className="grid gap-10 md:grid-cols-[1.4fr_1fr]">
+        <div className="grid gap-10 md:grid-cols-[1.4fr_1fr] md:gap-x-20 lg:gap-x-28">
           <div>
             <div className="flex items-center gap-3">
               <img
