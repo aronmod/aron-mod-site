@@ -934,16 +934,22 @@ function DownloadSection({ lang }: { lang: Lang }) {
                 src: "/loader-login.png",
                 alt: t.images.loginAlt,
                 caption: t.images.loginCaption,
-                cls: "glass-card animate-float overflow-hidden rounded-2xl p-2 sm:translate-y-4",
+                delay: "0s",
+                offset: "sm:top-4",
               },
               {
                 src: "/loader-launch.png",
                 alt: t.images.launchAlt,
                 caption: t.images.launchCaption,
-                cls: "glass-card glow-ring overflow-hidden rounded-2xl p-2 sm:-translate-y-4",
+                delay: "3s",
+                offset: "sm:-top-4",
               },
             ].map((img) => (
-              <figure key={img.src} className={img.cls}>
+              <figure
+                key={img.src}
+                className={`glass-card glow-ring relative overflow-hidden rounded-2xl p-2 animate-float-loader ${img.offset}`}
+                style={{ animationDelay: img.delay }}
+              >
                 <button
                   type="button"
                   onClick={() => setZoom(img)}

@@ -175,6 +175,11 @@
   animation: aron-float 6s ease-in-out infinite;
 }
 
+@utility animate-float-loader {
+  animation: aron-float-loader 6s ease-in-out infinite;
+  will-change: transform;
+}
+
 @utility animate-pulse-glow {
   animation: aron-pulse 3.5s ease-in-out infinite;
 }
@@ -192,6 +197,16 @@
   }
   50% {
     transform: translateY(-12px);
+  }
+}
+
+@keyframes aron-float-loader {
+  0%,
+  100% {
+    transform: translateY(-2.5px);
+  }
+  50% {
+    transform: translateY(2.5px);
   }
 }
 
@@ -417,6 +432,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-float-loader,
   .animate-float-slow,
   .animate-halo,
   .animate-grid-breathe,
