@@ -304,14 +304,14 @@ function Hero({ lang }: { lang: Lang }) {
         {[
           /* always visible: free strip above the content (hero padding starts at 96px) */
           { col: -2, row: 0, delay: "0s", violet: false, wide: false },
-          { col: 1, row: 0, delay: "7.5s", violet: true, wide: false },
+          { col: 1, row: 0, delay: "6s", violet: true, wide: false },
           /* wide viewports only: left / right gutters outside the max-w-4xl content column */
-          { col: -11, row: 1, delay: "1.9s", violet: true, wide: true },
-          { col: 9, row: 2, delay: "3.8s", violet: false, wide: true },
-          { col: -9, row: 5, delay: "5.6s", violet: false, wide: true },
-          { col: 10, row: 6, delay: "9.4s", violet: true, wide: true },
-          { col: -10, row: 8, delay: "11.3s", violet: true, wide: true },
-          { col: 11, row: 8, delay: "13.1s", violet: false, wide: true },
+          { col: -11, row: 1, delay: "1.5s", violet: true, wide: true },
+          { col: 9, row: 2, delay: "3s", violet: false, wide: true },
+          { col: -9, row: 5, delay: "4.5s", violet: false, wide: true },
+          { col: 10, row: 6, delay: "7.5s", violet: true, wide: true },
+          { col: -10, row: 8, delay: "9s", violet: true, wide: true },
+          { col: 11, row: 8, delay: "10.5s", violet: false, wide: true },
         ].map((c) => (
           <span
             key={`${c.col}-${c.row}`}
