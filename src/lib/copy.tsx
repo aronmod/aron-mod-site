@@ -316,8 +316,8 @@ export const copy = {
       filters: {
         all: "All",
         autoDungeon: "AutoDungeon",
-        switchAmmalia: "Switch Ammalia",
-        autoAlchimia: "AutoAlchimia",
+        switchAmmalia: "Auto Enchant",
+        autoAlchimia: "Auto Alchemy",
         captcha: "Captcha",
       },
       status: {
@@ -349,7 +349,7 @@ export const copy = {
         cta30: "Buy 30 days — €20",
         includesTitle: "",
         includesIntro: "Depending on the server, PLUS includes:",
-        includes: ["AutoDungeon", "AutoAlchimia", "SwitchBonus Ammalia", "HWID Spoofer"],
+        includes: ["AutoDungeon", "Auto Alchemy", "Auto Enchant", "HWID Spoofer"],
       },
       commonPerks: [
         "All mod features included",
