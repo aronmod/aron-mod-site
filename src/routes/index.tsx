@@ -765,7 +765,14 @@ function Pricing({ lang }: { lang: Lang }) {
 
   return (
     <section id="prezzi" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
-      <SectionTitle title={t.title} text={t.subtitle} />
+      <SectionTitle
+        title={t.title}
+        text={
+          <p className="mx-auto max-w-xl text-base leading-relaxed font-normal text-foreground/90 sm:text-lg">
+            {t.subtitle}
+          </p>
+        }
+      />
       <div className="mx-auto mt-12 grid max-w-4xl gap-5 md:grid-cols-2">
         <PlanCard plan={t.base} highlight={false} />
         <PlanCard plan={t.plus} highlight={true} />
