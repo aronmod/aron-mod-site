@@ -335,10 +335,12 @@ function SectionTitle({
   eyebrow,
   title,
   text,
+  textClassName,
 }: {
   eyebrow?: string;
   title: string;
-  text?: string;
+  text?: React.ReactNode;
+  textClassName?: string;
 }) {
   return (
     <div className="mx-auto max-w-2xl text-center">
@@ -346,7 +348,7 @@ function SectionTitle({
         <p className="text-xs font-bold tracking-[0.25em] text-accent uppercase">{eyebrow}</p>
       ) : null}
       <h2 className="mt-3 text-3xl font-bold sm:text-4xl">{title}</h2>
-      {text ? <p className="mt-4 text-muted-foreground">{text}</p> : null}
+      {text ? <div className={`mt-4 ${textClassName ?? "text-muted-foreground"}`}>{text}</div> : null}
     </div>
   );
 }
