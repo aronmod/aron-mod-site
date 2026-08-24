@@ -33,9 +33,9 @@ export const copy = {
         <span className="block text-base leading-relaxed font-medium text-foreground/90 sm:text-lg">
           <span className="text-gradient font-semibold">Auto Dungeon</span>,{" "}
           <span className="text-gradient font-semibold">FarmBot</span>,{" "}
-          <span className="text-gradient font-semibold">Auto Alchimia</span>, controllo remoto tramite{" "}
-          <span className="text-gradient font-semibold">Telegram</span> e molte altre funzioni
-          avanzate.
+          <span className="text-gradient font-semibold">Auto Alchimia</span>, controllo remoto
+          tramite <span className="text-gradient font-semibold">Telegram</span> e molte altre
+          funzioni avanzate.
         </span>
       ),
       ctaBuy: "Acquista la mod",
