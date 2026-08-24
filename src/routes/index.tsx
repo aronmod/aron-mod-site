@@ -650,9 +650,6 @@ function Servers({ lang }: { lang: Lang }) {
                       [
                         [t.servers.colBase, row.base],
                         [t.servers.colPlus, row.plus],
-                        ...SERVER_FEATURES.map(
-                          (f) => [featureLabels[f], row.features[f]] as [string, Support],
-                        ),
                       ] as [string, Support][]
                     ).map(([label, value]) => (
                       <div
@@ -666,6 +663,7 @@ function Servers({ lang }: { lang: Lang }) {
                       </div>
                     ))}
                   </dl>
+
                 </article>
               ))}
             </div>
