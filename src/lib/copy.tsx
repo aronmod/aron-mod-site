@@ -1,5 +1,3 @@
-
-
 export type Lang = "it" | "en";
 
 export const copy = {
