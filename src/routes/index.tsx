@@ -708,20 +708,20 @@ function Pricing({ lang }: { lang: Lang }) {
         </span>
       ) : null}
       <h3 className="font-display text-2xl font-bold">{plan.name}</h3>
-      <div className="mt-4 flex flex-col gap-3">
+      <div className="mt-6 flex flex-col gap-3.5">
         <a
           href={guideUrl}
           {...EXTERNAL_LINK_PROPS}
-          className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card/70 px-5 py-3.5 font-display font-bold text-foreground transition-all hover:scale-105 hover:border-primary"
+          className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card/70 px-5 py-2.5 font-display text-sm font-bold text-foreground transition-all hover:scale-105 hover:border-primary"
         >
-          <ExternalLink className="h-4 w-4" /> {plan.cta15}
+          <ExternalLink className="h-3.5 w-3.5" /> {plan.cta15}
         </a>
         <a
           href={guideUrl}
           {...EXTERNAL_LINK_PROPS}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-accent)] px-5 py-3.5 font-display font-bold text-primary-foreground transition-transform hover:scale-105"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-accent)] px-5 py-2.5 font-display text-sm font-bold text-primary-foreground transition-transform hover:scale-105"
         >
-          <ExternalLink className="h-4 w-4" /> {plan.cta30}
+          <ExternalLink className="h-3.5 w-3.5" /> {plan.cta30}
         </a>
       </div>
 
