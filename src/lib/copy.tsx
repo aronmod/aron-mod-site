@@ -10,7 +10,7 @@ export const copy = {
         "Aron Mod: mod premium per retro server Metin2 autorizzati. Pacchetti BASE e PLUS, server supportati, guide e assistenza tramite ticket sul Discord ufficiale.",
       ogTitle: "Aron Mod — Domina Metin con Aron Mod",
       ogDescription:
-        "AutoDungeon, FarmBot e controllo remoto per retro server Metin2 autorizzati. Pacchetti BASE e PLUS, guide e ticket sul Discord ufficiale.",
+        "Auto Dungeon, FarmBot e controllo remoto per retro server Metin2 autorizzati. Pacchetti BASE e PLUS, guide e ticket sul Discord ufficiale.",
     },
     header: {
       functions: "Funzioni",
@@ -31,9 +31,9 @@ export const copy = {
       ),
       subtitle: (
         <span className="block text-base leading-relaxed font-medium text-foreground/90 sm:text-lg">
-          <span className="text-gradient font-semibold">AutoDungeon</span>,{" "}
+          <span className="text-gradient font-semibold">Auto Dungeon</span>,{" "}
           <span className="text-gradient font-semibold">FarmBot</span>,{" "}
-          <span className="text-gradient font-semibold">AutoAlchimia</span>, controllo remoto tramite{" "}
+          <span className="text-gradient font-semibold">Auto Alchimia</span>, controllo remoto tramite{" "}
           <span className="text-gradient font-semibold">Telegram</span> e molte altre funzioni
           avanzate.
         </span>
@@ -84,9 +84,9 @@ export const copy = {
       filtersLabel: "Filtri:",
       filters: {
         all: "Tutti",
-        autoDungeon: "AutoDungeon",
+        autoDungeon: "Auto Dungeon",
         switchAmmalia: "Switch Ammalia",
-        autoAlchimia: "AutoAlchimia",
+        autoAlchimia: "Auto Alchimia",
         captcha: "Captcha",
       },
       status: {
@@ -119,7 +119,7 @@ export const copy = {
         cta30: "Acquista 30 giorni — 20 €",
         includesTitle: "",
         includesIntro: "In base al server, il PLUS include:",
-        includes: ["AutoDungeon", "AutoAlchimia", "SwitchBonus Ammalia", "HWID Spoofer"],
+        includes: ["Auto Dungeon", "Auto Alchimia", "Switch Ammalia", "HWID Spoofer"],
       },
       commonPerks: [
         "Tutte le funzioni della mod incluse",
@@ -241,7 +241,7 @@ export const copy = {
         "Aron Mod: premium mod for authorized Metin2 retro servers. BASE and PLUS packages, supported servers, guides and ticket support on the official Discord.",
       ogTitle: "Aron Mod — Dominate Metin with Aron Mod",
       ogDescription:
-        "AutoDungeon, FarmBot and remote control for authorized Metin2 retro servers. BASE and PLUS packages, guides and ticket support on the official Discord.",
+        "Auto Dungeon, FarmBot and remote control for authorized Metin2 retro servers. BASE and PLUS packages, guides and ticket support on the official Discord.",
     },
     header: {
       functions: "Features",
@@ -262,7 +262,7 @@ export const copy = {
       ),
       subtitle: (
         <span className="block text-base leading-relaxed font-medium text-foreground/90 sm:text-lg">
-          <span className="text-gradient font-semibold">AutoDungeon</span>,{" "}
+          <span className="text-gradient font-semibold">Auto Dungeon</span>,{" "}
           <span className="text-gradient font-semibold">FarmBot</span>,{" "}
           <span className="text-gradient font-semibold">Auto Alchemy</span>, remote control via{" "}
           <span className="text-gradient font-semibold">Telegram</span>, and many other advanced
@@ -315,7 +315,7 @@ export const copy = {
       filtersLabel: "Filters:",
       filters: {
         all: "All",
-        autoDungeon: "AutoDungeon",
+        autoDungeon: "Auto Dungeon",
         switchAmmalia: "Auto Enchant",
         autoAlchimia: "Auto Alchemy",
         captcha: "Captcha",
@@ -349,7 +349,7 @@ export const copy = {
         cta30: "Buy 30 days — €20",
         includesTitle: "",
         includesIntro: "Depending on the server, PLUS includes:",
-        includes: ["AutoDungeon", "Auto Alchemy", "Auto Enchant", "HWID Spoofer"],
+        includes: ["Auto Dungeon", "Auto Alchemy", "Auto Enchant", "HWID Spoofer"],
       },
       commonPerks: [
         "All mod features included",
