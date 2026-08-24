@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import type { CSSProperties } from "react";
 import { useState } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -316,7 +317,7 @@ function Hero({ lang }: { lang: Lang }) {
                 "--spark-col": c.col,
                 "--spark-row": c.row,
                 animationDelay: c.delay,
-              } as React.CSSProperties
+              } as CSSProperties
             }
           />
         ))}
