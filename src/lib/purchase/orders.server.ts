@@ -65,7 +65,7 @@ export async function getOrderByToken(token: string) {
   const { data } = await supabase
     .from("purchase_orders")
     .select(
-      "id, plan, days, amount_cents, currency, status, checkout_expires_at, paypal_order_id, discord_ticket_channel_id",
+      "id, plan, days, amount_cents, currency, status, checkout_expires_at, paypal_order_id, discord_ticket_channel_id, locale",
     )
     .eq("checkout_token_hash", tokenHash)
     .maybeSingle();
