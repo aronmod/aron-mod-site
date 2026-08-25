@@ -129,6 +129,7 @@ export async function fulfillOrder(
     const res = await sendChannelMessage(channelId, {
       content: (needsReview ? reviewMessage : paidMessage)(
         orderId,
+        captureId,
         String(row.plan),
         Number(row.days),
         Number(row.amount_cents),
@@ -138,20 +139,21 @@ export async function fulfillOrder(
     });
     if (!res.ok) {
       await alertStaff(
-        `⚠️ Pagamento confermato ma messaggio non inviato nel ticket per l'ordine \`${shortId(orderId)}\`. Assegnare manualmente la KeyAuth key.`,
+        `⚠️ Pagamento confermato ma messaggio non inviato nel ticket. ${orderRefInline(orderId, captureId)}. Assegnare manualmente la KeyAuth key.`,
       );
     }
   } else {
     await alertStaff(
-      `⚠️ Pagamento confermato per l'ordine \`${shortId(orderId)}\` senza canale ticket. Contattare il cliente manualmente.`,
+      `⚠️ Pagamento confermato senza canale ticket. ${orderRefInline(orderId, captureId)}. Contattare il cliente manualmente.`,
     );
   }
 
   if (needsReview) {
     await alertStaff(
-      `🕵️ Ordine \`${shortId(orderId)}\` in **revisione manuale** — seller protection PayPal: \`${risk.status}\`${risk.reason ? ` (\`${risk.reason}\`)` : ""}. Approvare la consegna nel ticket prima di assegnare la KeyAuth key.`,
+      `🕵️ ${orderRefInline(orderId, captureId)} in **revisione manuale** — seller protection PayPal: \`${risk.status}\`${risk.reason ? ` (\`${risk.reason}\`)` : ""}. Approvare la consegna nel ticket prima di assegnare la KeyAuth key.`,
     );
   }
+
 
   if (!needsReview && userId) await addCustomerRole(userId);
 
