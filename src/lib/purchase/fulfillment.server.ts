@@ -22,8 +22,22 @@ export type FulfillResult =
   | { status: "already_processed" }
   | { status: "order_not_found" };
 
+/** Human-readable, non-sensitive cross-reference between our order and PayPal. */
+function orderRefLines(orderId: string, captureId: string | null): string[] {
+  return [
+    `Ordine Aron: \`${shortId(orderId)}\``,
+    `PayPal Capture: \`${captureId && captureId.length > 0 ? captureId : "n/d"}\``,
+  ];
+}
+
+/** Compact one-line reference for staff alerts. */
+function orderRefInline(orderId: string, captureId: string | null): string {
+  return `Ordine Aron \`${shortId(orderId)}\` · PayPal Capture \`${captureId && captureId.length > 0 ? captureId : "n/d"}\``;
+}
+
 function paidMessage(
   orderId: string,
+  captureId: string,
   plan: string,
   days: number,
   amountCents: number,
@@ -33,7 +47,7 @@ function paidMessage(
     userId ? `<@${userId}>` : "",
     "✅ **Pagamento confermato / Payment confirmed**",
     `Piano / Plan: **${String(plan).toUpperCase()}** · ${days} giorni / days · ${formatEur(amountCents)}`,
-    `Ordine / Order: \`${shortId(orderId)}\``,
+    ...orderRefLines(orderId, captureId),
     "",
     "🔑 La KeyAuth key verrà assegnata dallo staff in questo ticket.",
     "_Your KeyAuth key will be assigned by the staff in this ticket._",
@@ -44,6 +58,7 @@ function paidMessage(
 
 function reviewMessage(
   orderId: string,
+  captureId: string,
   plan: string,
   days: number,
   amountCents: number,
@@ -53,7 +68,7 @@ function reviewMessage(
     userId ? `<@${userId}>` : "",
     "✅ **Pagamento confermato / Payment confirmed**",
     `Piano / Plan: **${String(plan).toUpperCase()}** · ${days} giorni / days · ${formatEur(amountCents)}`,
-    `Ordine / Order: \`${shortId(orderId)}\``,
+    ...orderRefLines(orderId, captureId),
     "",
     "🕵️ **Verifica manuale in corso** — questo pagamento richiede una revisione di sicurezza prima della consegna della KeyAuth key. Nessuna azione richiesta da parte tua: lo staff completerà il controllo al più presto.",
     "_🕵️ **Manual review in progress** — this payment requires a security review before the KeyAuth key is delivered. No action needed from you: the staff will complete the check shortly._",
@@ -113,6 +128,7 @@ export async function fulfillOrder(
     const res = await sendChannelMessage(channelId, {
       content: (needsReview ? reviewMessage : paidMessage)(
         orderId,
+        captureId,
         String(row.plan),
         Number(row.days),
         Number(row.amount_cents),
@@ -122,18 +138,18 @@ export async function fulfillOrder(
     });
     if (!res.ok) {
       await alertStaff(
-        `⚠️ Pagamento confermato ma messaggio non inviato nel ticket per l'ordine \`${shortId(orderId)}\`. Assegnare manualmente la KeyAuth key.`,
+        `⚠️ Pagamento confermato ma messaggio non inviato nel ticket. ${orderRefInline(orderId, captureId)}. Assegnare manualmente la KeyAuth key.`,
       );
     }
   } else {
     await alertStaff(
-      `⚠️ Pagamento confermato per l'ordine \`${shortId(orderId)}\` senza canale ticket. Contattare il cliente manualmente.`,
+      `⚠️ Pagamento confermato senza canale ticket. ${orderRefInline(orderId, captureId)}. Contattare il cliente manualmente.`,
     );
   }
 
   if (needsReview) {
     await alertStaff(
-      `🕵️ Ordine \`${shortId(orderId)}\` in **revisione manuale** — seller protection PayPal: \`${risk.status}\`${risk.reason ? ` (\`${risk.reason}\`)` : ""}. Approvare la consegna nel ticket prima di assegnare la KeyAuth key.`,
+      `🕵️ ${orderRefInline(orderId, captureId)} in **revisione manuale** — seller protection PayPal: \`${risk.status}\`${risk.reason ? ` (\`${risk.reason}\`)` : ""}. Approvare la consegna nel ticket prima di assegnare la KeyAuth key.`,
     );
   }
 
