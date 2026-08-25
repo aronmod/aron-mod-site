@@ -194,8 +194,28 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
           };
         }
 
-        const allOk = Object.values(result).every((r) => r.ok);
-        return new Response(JSON.stringify({ ok: allOk, panels: result }), {
+        // Independent re-scan: assert exactly one correct panel per channel
+        // and zero cross-locale panels.
+        const verify: Record<Locale, { it: number; en: number }> = {
+          it: { it: 0, en: 0 },
+          en: { it: 0, en: 0 },
+        };
+        for (const locale of ["it", "en"] as const) {
+          const rescan = await discordFetch(`/channels/${channels[locale]}/messages?limit=100`, {
+            method: "GET",
+          });
+          const messages: PanelMessage[] = Array.isArray(rescan.json) ? rescan.json : [];
+          for (const message of messages) {
+            const ids = idsOf(message);
+            if (ids.includes(panels.it.customId)) verify[locale].it += 1;
+            if (ids.includes(panels.en.customId)) verify[locale].en += 1;
+          }
+        }
+
+        const verified =
+          verify.it.it === 1 && verify.it.en === 0 && verify.en.en === 1 && verify.en.it === 0;
+        const allOk = Object.values(result).every((r) => r.ok) && verified;
+        return new Response(JSON.stringify({ ok: allOk, panels: result, verify, channels }), {
           status: allOk ? 200 : 502,
           headers: { "content-type": "application/json" },
         });
