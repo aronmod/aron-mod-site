@@ -42,6 +42,11 @@ export async function editChannelMessage(channelId: string, messageId: string, b
   return discordFetch(`/channels/${channelId}/messages/${messageId}`, { method: "PATCH", body });
 }
 
+export async function deleteChannelMessage(channelId: string, messageId: string) {
+  return discordFetch(`/channels/${channelId}/messages/${messageId}`, { method: "DELETE" });
+}
+
+
 
 export async function addCustomerRole(userId: string) {
   const guildId = process.env["DISCORD_GUILD_ID"];
