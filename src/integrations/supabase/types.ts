@@ -14,13 +14,215 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      license_audit: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          license_id: string | null
+          metadata_minimal: Json
+          source: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          license_id?: string | null
+          metadata_minimal?: Json
+          source: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          license_id?: string | null
+          metadata_minimal?: Json
+          source?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "license_audit_license_id_fkey"
+            columns: ["license_id"]
+            isOneToOne: false
+            referencedRelation: "licenses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      licenses: {
+        Row: {
+          created_at: string
+          discord_user_id: string
+          expires_at: string
+          first_bound_at: string | null
+          hwid_hash: string | null
+          id: string
+          key_hash: string
+          key_last4: string
+          last_hwid_reset_at: string | null
+          last_validated_at: string | null
+          plan: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          discord_user_id: string
+          expires_at: string
+          first_bound_at?: string | null
+          hwid_hash?: string | null
+          id?: string
+          key_hash: string
+          key_last4: string
+          last_hwid_reset_at?: string | null
+          last_validated_at?: string | null
+          plan: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          discord_user_id?: string
+          expires_at?: string
+          first_bound_at?: string | null
+          hwid_hash?: string | null
+          id?: string
+          key_hash?: string
+          key_last4?: string
+          last_hwid_reset_at?: string | null
+          last_validated_at?: string | null
+          plan?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      payment_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          payload_minimal: Json
+          paypal_capture_id: string | null
+          paypal_event_id: string
+          processed_at: string | null
+          purchase_order_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          payload_minimal?: Json
+          paypal_capture_id?: string | null
+          paypal_event_id: string
+          processed_at?: string | null
+          purchase_order_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          payload_minimal?: Json
+          paypal_capture_id?: string | null
+          paypal_event_id?: string
+          processed_at?: string | null
+          purchase_order_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_events_purchase_order_id_fkey"
+            columns: ["purchase_order_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      purchase_orders: {
+        Row: {
+          amount_cents: number
+          checkout_expires_at: string
+          checkout_token_hash: string
+          created_at: string
+          currency: string
+          days: number
+          discord_ticket_channel_id: string | null
+          discord_user_id: string
+          id: string
+          license_id: string | null
+          paid_at: string | null
+          paypal_capture_id: string | null
+          paypal_order_id: string | null
+          plan: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount_cents: number
+          checkout_expires_at: string
+          checkout_token_hash: string
+          created_at?: string
+          currency?: string
+          days: number
+          discord_ticket_channel_id?: string | null
+          discord_user_id: string
+          id?: string
+          license_id?: string | null
+          paid_at?: string | null
+          paypal_capture_id?: string | null
+          paypal_order_id?: string | null
+          plan: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number
+          checkout_expires_at?: string
+          checkout_token_hash?: string
+          created_at?: string
+          currency?: string
+          days?: number
+          discord_ticket_channel_id?: string | null
+          discord_user_id?: string
+          id?: string
+          license_id?: string | null
+          paid_at?: string | null
+          paypal_capture_id?: string | null
+          paypal_order_id?: string | null
+          plan?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_orders_license_id_fkey"
+            columns: ["license_id"]
+            isOneToOne: false
+            referencedRelation: "licenses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      finalize_paid_order: {
+        Args: {
+          _capture_id: string
+          _new_key_hash: string
+          _new_key_last4: string
+          _order_id: string
+          _source: string
+        }
+        Returns: {
+          expires_at: string
+          is_new_license: boolean
+          license_id: string
+          result: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
