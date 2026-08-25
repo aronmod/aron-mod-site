@@ -69,6 +69,87 @@ function page(options: {
   });
 }
 
+/**
+ * Bridge page shown right after the ticket + order exist. All ids come from the
+ * server (guild id from env, channel id from the freshly created ticket) and the
+ * checkout URL from the new order; nothing is taken from the query string.
+ */
+function bridgePage(options: {
+  locale: "it" | "en";
+  guildId: string;
+  channelId: string;
+  checkoutUrl: string;
+}) {
+  const c =
+    options.locale === "it"
+      ? {
+          title: "Ticket creato",
+          text: "Sto aprendo il tuo ticket Discord…",
+          open: "Apri ticket Discord",
+          pay: "Vai al pagamento",
+        }
+      : {
+          title: "Ticket created",
+          text: "Opening your Discord ticket…",
+          open: "Open Discord ticket",
+          pay: "Go to payment",
+        };
+  const appLink = `discord://-/channels/${options.guildId}/${options.channelId}`;
+  const webLink = `https://discord.com/channels/${options.guildId}/${options.channelId}`;
+  const html = `<!doctype html>
+<html lang="${options.locale}">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>${escapeHtml(c.title)} · Aron Mod</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background: radial-gradient(70% 60% at 15% 0%, #16224a 0%, #05070f 60%), #05070f;
+    color:#e8ecf8; font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; padding:24px; }
+  main { width:100%; max-width:520px; background:rgba(16,22,40,.75); border:1px solid rgba(120,150,255,.25);
+    border-radius:20px; padding:32px 28px; box-shadow:0 30px 80px -40px rgba(60,110,255,.7); }
+  h1 { font-size:1.4rem; margin:0 0 12px; letter-spacing:.2px; }
+  p { margin:0 0 22px; line-height:1.6; color:#b7c0da; }
+  a { display:flex; align-items:center; justify-content:center; text-decoration:none; font-weight:700;
+    padding:13px 18px; border-radius:12px; margin-top:10px; }
+  .primary { background:linear-gradient(120deg,#3f6bff,#22d3ee); color:#05070f; }
+  .ghost { border:1px solid rgba(140,165,255,.35); color:#e8ecf8; }
+  a:focus-visible { outline:2px solid #22d3ee; outline-offset:2px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>${escapeHtml(c.title)}</h1>
+  <p>${escapeHtml(c.text)}</p>
+  <a class="ghost" id="ticket" href="${escapeHtml(webLink)}" target="_blank" rel="noopener noreferrer">${escapeHtml(c.open)}</a>
+  <a class="primary" id="pay" href="${escapeHtml(options.checkoutUrl)}">${escapeHtml(c.pay)}</a>
+</main>
+<script>
+  (function () {
+    var app = ${JSON.stringify(appLink)};
+    var checkout = ${JSON.stringify(options.checkoutUrl)};
+    // Best-effort: ask the OS to focus the Discord client on this exact ticket.
+    // Browsers may block or ignore this; that is not an error, the buttons stay.
+    try {
+      var f = document.createElement("iframe");
+      f.style.display = "none";
+      f.src = app;
+      document.body.appendChild(f);
+    } catch (e) { /* ignore */ }
+    // Always continue to checkout so the buyer never loses the payment step.
+    setTimeout(function () { window.location.replace(checkout); }, 2000);
+  })();
+</script>
+</body>
+</html>`;
+  return new Response(html, {
+    status: 200,
+    headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" },
+  });
+}
+
 const COPY = {
   it: {
     joinTitle: "Devi entrare nel server Aron Mod",
@@ -77,6 +158,9 @@ const COPY = {
     errorTitle: "Qualcosa è andato storto",
     errorText:
       "Non è stato possibile completare l'accesso con Discord. Riprova tra poco: la tua scelta di piano e durata è conservata.",
+    deniedTitle: "Autorizzazione negata",
+    deniedText:
+      "Hai annullato l'autorizzazione Discord. La tua scelta di piano e durata è conservata: premi Riprova quando vuoi continuare.",
     expiredTitle: "Sessione scaduta",
     expiredText: "Il link di accesso è scaduto o non è valido. Torna al sito e riprova l'acquisto.",
   },
@@ -87,10 +171,14 @@ const COPY = {
     errorTitle: "Something went wrong",
     errorText:
       "We could not complete the Discord sign-in. Please try again shortly: your plan and duration are saved.",
+    deniedTitle: "Authorization denied",
+    deniedText:
+      "You cancelled the Discord authorization. Your plan and duration are saved: press Retry whenever you want to continue.",
     expiredTitle: "Session expired",
     expiredText: "This sign-in link expired or is invalid. Go back to the site and start again.",
   },
 } as const;
+
 
 export const Route = createFileRoute("/api/public/discord-oauth-callback")({
   server: {
