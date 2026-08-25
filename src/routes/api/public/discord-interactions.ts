@@ -41,62 +41,103 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
         if (body?.type === 3) {
           const customId: string = String(body?.data?.custom_id ?? "");
           const userId: string | undefined = body?.member?.user?.id ?? body?.user?.id;
+          const discord = await import("@/lib/purchase/discord.server");
+          const { normalizeLocale, t } = await import("@/lib/purchase/discord-copy.server");
+          const tickets = await import("@/lib/purchase/tickets.server");
+          const interactionChannelId: string | null = body?.channel_id
+            ? String(body.channel_id)
+            : null;
+
           if (!userId) return json({ type: 4, data: { content: "Errore utente.", flags: 64 } });
 
-          const discord = await import("@/lib/purchase/discord.server");
-
           try {
-            if (customId === "aron_purchase_start") {
-              const locale: string | null = typeof body?.locale === "string" ? body.locale : null;
+            const startMatch = /^aron_purchase_start(?:_(it|en))?$/.exec(customId);
+            if (startMatch) {
+              const locale = normalizeLocale(startMatch[1] ?? "it");
+              const c = t(locale);
               const channelId = await discord.ensureTicketChannel(userId, locale);
               if (!channelId) {
-                return json({
-                  type: 4,
-                  data: {
-                    content: "⚠️ Impossibile aprire il ticket. Contatta lo staff.",
-                    flags: 64,
-                  },
-                });
+                return json({ type: 4, data: { content: c.ticketFailed, flags: 64 } });
               }
-              await discord.sendChannelMessage(channelId, {
-                content: [
-                  `<@${userId}> 👋 Benvenuto / Welcome!`,
-                  "Scegli il pacchetto / Choose your package:",
-                  "**BASE** — funzioni principali · **PLUS** — include Auto Dungeon, Auto Alchimia, Switch Ammalia e HWID Spoofer (in base al server).",
-                ].join("\n"),
-                components: discord.planButtons(),
-              });
-              return json({
-                type: 4,
-                data: { content: `🎟️ Ticket aperto: <#${channelId}>`, flags: 64 },
-              });
+
+              const existing = await tickets.getTicket(channelId);
+              await tickets.upsertTicket({ channelId, discordUserId: userId, locale });
+              const panel = discord.panelMessage(
+                locale,
+                userId,
+                existing?.selectedPlan ?? null,
+                existing?.selectedDays ?? null,
+              );
+
+              let panelMessageId = existing?.panelMessageId ?? null;
+              if (panelMessageId) {
+                const edited = await discord.editChannelMessage(channelId, panelMessageId, panel);
+                if (!edited.ok) panelMessageId = null;
+              }
+              if (!panelMessageId) {
+                const sent = await discord.sendChannelMessage(channelId, panel);
+                panelMessageId = sent.json?.id ? String(sent.json.id) : null;
+              }
+              await tickets.updateTicket(channelId, { panelMessageId });
+
+              return json({ type: 4, data: { content: c.ticketOpened(channelId), flags: 64 } });
             }
 
             const planMatch = /^aron_plan_(base|plus)$/.exec(customId);
             if (planMatch) {
               const plan = planMatch[1] as "base" | "plus";
-              return json({
-                type: 4,
-                data: {
-                  content: `Piano **${plan.toUpperCase()}** selezionato. Scegli la durata / choose duration:`,
-                  components: discord.daysButtons(plan),
-                },
-              });
+              const ticket = interactionChannelId
+                ? await tickets.getTicket(interactionChannelId)
+                : null;
+              const locale = ticket?.locale ?? "it";
+
+              if (interactionChannelId) {
+                // Switching plan invalidates the previous selection: the old
+                // unpaid order and its summary must disappear.
+                const { cancelPendingOrdersForChannel } = await import(
+                  "@/lib/purchase/orders.server"
+                );
+                await cancelPendingOrdersForChannel(interactionChannelId);
+                if (ticket?.summaryMessageId) {
+                  await discord.deleteChannelMessage(
+                    interactionChannelId,
+                    ticket.summaryMessageId,
+                  );
+                }
+                await tickets.updateTicket(interactionChannelId, {
+                  selectedPlan: plan,
+                  selectedDays: null,
+                  summaryMessageId: null,
+                });
+              }
+
+              return json({ type: 7, data: discord.panelMessage(locale, userId, plan, null) });
             }
 
             const daysMatch = /^aron_days_(base|plus)_(15|30)$/.exec(customId);
             if (daysMatch) {
               const plan = daysMatch[1] as "base" | "plus";
               const days = Number(daysMatch[2]) as 15 | 30;
-              const { createOrder } = await import("@/lib/purchase/orders.server");
+              const ticket = interactionChannelId
+                ? await tickets.getTicket(interactionChannelId)
+                : null;
+              const locale = ticket?.locale ?? "it";
+              const c = t(locale);
+
+              const { createOrder, cancelPendingOrdersForChannel } = await import(
+                "@/lib/purchase/orders.server"
+              );
               const { shortId } = await import("@/lib/purchase/crypto.server");
-              const { formatEur } = await import("@/lib/purchase/pricing");
+
+              // Exactly one active awaiting_payment order per ticket.
+              if (interactionChannelId) await cancelPendingOrdersForChannel(interactionChannelId);
 
               const order = await createOrder({
                 discordUserId: userId,
-                ticketChannelId: body?.channel_id ? String(body.channel_id) : null,
+                ticketChannelId: interactionChannelId,
                 plan,
                 days,
+                locale,
               });
               // In sandbox/dev the stable dev host returns 403 on non-API pages,
               // so point the checkout link at the authenticated preview host.
@@ -105,19 +146,37 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
               const checkoutBase =
                 process.env["PAYPAL_ENV"] === "sandbox" ? SANDBOX_CHECKOUT_ORIGIN : request.url;
               const url = new URL(`/checkout/${order.token}`, checkoutBase).toString();
-              return json({
-                type: 4,
-                data: {
-                  content: [
-                    `🧾 **Ordine / Order** \`${shortId(order.id)}\``,
-                    `Piano / Plan: **${plan.toUpperCase()}** · ${days} giorni / days`,
-                    `Totale / Total: **${formatEur(order.amountCents)}**`,
-                    `⏳ Il link scade tra 30 minuti / link expires in 30 minutes.`,
-                  ].join("\n"),
-                  components: discord.linkButton("Paga con PayPal", url),
-                },
-              });
+
+              const summary = {
+                content: c.summary(shortId(order.id), plan, days, order.amountCents),
+                components: discord.payButton(locale, url),
+              };
+
+              if (interactionChannelId) {
+                let summaryMessageId = ticket?.summaryMessageId ?? null;
+                if (summaryMessageId) {
+                  const edited = await discord.editChannelMessage(
+                    interactionChannelId,
+                    summaryMessageId,
+                    summary,
+                  );
+                  if (!edited.ok) summaryMessageId = null;
+                }
+                if (!summaryMessageId) {
+                  const sent = await discord.sendChannelMessage(interactionChannelId, summary);
+                  summaryMessageId = sent.json?.id ? String(sent.json.id) : null;
+                }
+                await tickets.updateTicket(interactionChannelId, {
+                  selectedPlan: plan,
+                  selectedDays: days,
+                  summaryMessageId,
+                });
+                return json({ type: 7, data: discord.panelMessage(locale, userId, plan, days) });
+              }
+
+              return json({ type: 4, data: { ...summary, flags: 64 } });
             }
+
 
             const uuidRe =
               "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
