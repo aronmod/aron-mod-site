@@ -116,22 +116,35 @@ function shortEur(cents: number): string {
   return `${text} €`;
 }
 
+/** Invisible spacer line: renders as vertical breathing room, shows no glyph. */
+const SPACER = "\u200B";
+
 /**
  * The persistent plan panel: header + plan buttons only, one button per action
- * row so they are never glued together. No selection state is rendered here.
+ * row so they are never glued together. The selected plan turns green.
  */
-export function panelMessage(locale: Locale, userId: string) {
+export function panelMessage(
+  locale: Locale,
+  userId: string,
+  selectedPlan: "base" | "plus" | null = null,
+) {
   const c = t(locale);
-  const lines = [c.welcome(userId), c.panelTitle, "", c.choosePlan];
+  const lines = [c.welcome(userId), c.panelTitle, "", c.choosePlan, SPACER];
+
+  const style = (plan: "base" | "plus") => (selectedPlan === plan ? 3 : 2);
 
   const rows: Array<Record<string, unknown>> = [
     {
       type: 1,
-      components: [{ type: 2, style: 1, label: c.planBase, custom_id: "aron_plan_base" }],
+      components: [
+        { type: 2, style: style("base"), label: c.planBase, custom_id: "aron_plan_base" },
+      ],
     },
     {
       type: 1,
-      components: [{ type: 2, style: 1, label: c.planPlus, custom_id: "aron_plan_plus" }],
+      components: [
+        { type: 2, style: style("plus"), label: c.planPlus, custom_id: "aron_plan_plus" },
+      ],
     },
   ];
 
@@ -142,20 +155,29 @@ export function panelMessage(locale: Locale, userId: string) {
  * The single temporary duration message shown under the plan panel. Changing
  * plan only edits this message (new prices + custom ids), never adds one.
  */
-export function durationMessage(locale: Locale, plan: "base" | "plus") {
+export function durationMessage(
+  locale: Locale,
+  plan: "base" | "plus",
+  selectedDays: 15 | 30 | null = null,
+) {
   const c = t(locale);
   const label15 = `${c.days15} — ${shortEur(priceCents(plan, 15))}`;
   const label30 = `${c.days30} — ${shortEur(priceCents(plan, 30))}`;
+  const style = (days: 15 | 30) => (selectedDays === days ? 3 : 2);
   return {
-    content: c.chooseDuration,
+    content: [SPACER, c.chooseDuration, SPACER].join("\n"),
     components: [
       {
         type: 1,
-        components: [{ type: 2, style: 1, label: label15, custom_id: `aron_days_${plan}_15` }],
+        components: [
+          { type: 2, style: style(15), label: label15, custom_id: `aron_days_${plan}_15` },
+        ],
       },
       {
         type: 1,
-        components: [{ type: 2, style: 1, label: label30, custom_id: `aron_days_${plan}_30` }],
+        components: [
+          { type: 2, style: style(30), label: label30, custom_id: `aron_days_${plan}_30` },
+        ],
       },
     ],
   };
@@ -182,6 +204,7 @@ export function finalOrderMessage(
       c.orderPlanLine(plan, days),
       c.orderTotalLine(amountCents),
       "",
+      SPACER,
     ].join("\n"),
     components: payButton(locale, url),
   };
