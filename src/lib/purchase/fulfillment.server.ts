@@ -101,6 +101,21 @@ function keyMessage(
     .join("\n");
 }
 
+/** Locale persisted on the order, falling back to the ticket's locale. */
+export async function orderLocale(
+  orderId: string,
+  channelId: string | null,
+): Promise<Locale> {
+  const supabase = getServiceClient();
+  const { data } = await supabase
+    .from("purchase_orders")
+    .select("locale")
+    .eq("id", orderId)
+    .maybeSingle();
+  if (data?.locale === "it" || data?.locale === "en") return data.locale;
+  return ticketLocale(channelId);
+}
+
 
 /**
  * Confirms a verified payment exactly once. No license key is generated here and
