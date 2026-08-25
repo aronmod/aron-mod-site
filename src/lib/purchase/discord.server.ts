@@ -45,6 +45,10 @@ export async function deleteChannelMessage(channelId: string, messageId: string)
   return discordFetch(`/channels/${channelId}/messages/${messageId}`, { method: "DELETE" });
 }
 
+export async function getDiscordChannel(channelId: string) {
+  return discordFetch(`/channels/${channelId}`, { method: "GET" });
+}
+
 export async function addCustomerRole(userId: string) {
   const guildId = process.env["DISCORD_GUILD_ID"];
   const roleId = process.env["DISCORD_CUSTOMER_ROLE_ID"];
@@ -66,7 +70,7 @@ export async function ensureTicketChannel(userId: string, locale: Locale): Promi
   const guildId = process.env["DISCORD_GUILD_ID"];
   const itCategory = process.env["DISCORD_TICKET_CATEGORY_ID"];
   const enCategory = process.env["DISCORD_TICKET_CATEGORY_ID_EN"];
-  const categoryId = locale === "it" ? itCategory : (enCategory ?? itCategory);
+  const categoryId = locale === "it" ? itCategory : enCategory;
   if (!guildId || !categoryId) throw new Error("discord_config_missing");
 
   const topicMarker = `aron-order:${userId}`;
@@ -97,7 +101,7 @@ export async function ensureTicketChannel(userId: string, locale: Locale): Promi
       name: `${locale === "it" ? "acquisto" : "order"}-${userId.slice(-4)}`,
       type: 0,
       parent_id: categoryId,
-      topic: `Aron Mod purchase ticket · ${topicMarker}`,
+      topic: `Aron Mod purchase ticket · locale:${locale} · ${topicMarker}`,
       permission_overwrites: overwrites,
     },
   });
@@ -174,7 +178,8 @@ export function linkButton(label: string, url: string) {
 }
 
 /** Staff-only controls. Visibility is cosmetic: authorization is enforced server-side. */
-export function staffKeyButtons(orderId: string) {
+export function staffKeyButtons(orderId: string, locale: Locale = "it") {
+  const c = t(locale);
   return [
     {
       type: 1,
@@ -182,13 +187,13 @@ export function staffKeyButtons(orderId: string) {
         {
           type: 2,
           style: 1,
-          label: "Assegna KeyAuth key (staff)",
+          label: c.staffAssign,
           custom_id: `aron_assign_key_${orderId}`,
         },
         {
           type: 2,
           style: 2,
-          label: "Riprova consegna (staff)",
+          label: c.staffRetry,
           custom_id: `aron_retry_key_delivery_${orderId}`,
         },
       ],
@@ -200,7 +205,8 @@ export function staffKeyButtons(orderId: string) {
  * Shown instead of `staffKeyButtons` when PayPal did not report full seller
  * protection. Authorization for the approval is enforced server-side.
  */
-export function reviewButtons(orderId: string) {
+export function reviewButtons(orderId: string, locale: Locale = "it") {
+  const c = t(locale);
   return [
     {
       type: 1,
@@ -208,7 +214,7 @@ export function reviewButtons(orderId: string) {
         {
           type: 2,
           style: 3,
-          label: "Approva consegna (staff)",
+          label: c.staffApprove,
           custom_id: `aron_approve_delivery_${orderId}`,
         },
       ],
@@ -217,12 +223,13 @@ export function reviewButtons(orderId: string) {
 }
 
 /** Discord modal asking staff to paste the key generated manually in KeyAuth. */
-export function keyAuthModal(orderId: string) {
+export function keyAuthModal(orderId: string, locale: Locale = "it") {
+  const c = t(locale);
   return {
     type: 9,
     data: {
       custom_id: `aron_key_modal_${orderId}`,
-      title: "Assegna KeyAuth key",
+      title: c.modalTitle,
       components: [
         {
           type: 1,
@@ -231,11 +238,11 @@ export function keyAuthModal(orderId: string) {
               type: 4,
               custom_id: "keyauth_key",
               style: 1,
-              label: "KeyAuth key",
+              label: c.modalLabel,
               min_length: 8,
               max_length: 128,
               required: true,
-              placeholder: "Incolla qui la key generata su KeyAuth",
+              placeholder: c.modalPlaceholder,
             },
           ],
         },

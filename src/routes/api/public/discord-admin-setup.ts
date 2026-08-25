@@ -7,6 +7,35 @@ function timingSafeEqual(a: string, b: string): boolean {
   return diff === 0;
 }
 
+const FALLBACK_GUILD_ID = "1530601137462448400";
+const FALLBACK_PURCHASE_CHANNEL_IT = "1530897133719257148";
+const FALLBACK_PURCHASE_CHANNEL_EN = "1530897159820542103";
+
+type Locale = "it" | "en";
+
+function purchaseChannelId(locale: Locale): string | null {
+  if (locale === "it") {
+    return process.env["DISCORD_PURCHASE_CHANNEL_ID"] ?? FALLBACK_PURCHASE_CHANNEL_IT;
+  }
+  return process.env["DISCORD_PURCHASE_CHANNEL_ID_EN"] ?? FALLBACK_PURCHASE_CHANNEL_EN;
+}
+
+function guildId(): string {
+  return process.env["DISCORD_GUILD_ID"] ?? FALLBACK_GUILD_ID;
+}
+
+type PanelMessage = {
+  id?: string;
+  components?: Array<{ components?: Array<{ custom_id?: string }> }>;
+};
+
+function idsOf(message: PanelMessage): string[] {
+  return (Array.isArray(message.components) ? message.components : [])
+    .flatMap((row) => (Array.isArray(row.components) ? row.components : []))
+    .map((component) => String(component.custom_id ?? ""))
+    .filter(Boolean);
+}
+
 /**
  * Publishes / refreshes the "🛒 Acquista Aron Mod" purchase panel.
  * Protected by ADMIN_SETUP_SECRET (Authorization: Bearer <secret>).
@@ -21,8 +50,13 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
           return new Response("unauthorized", { status: 401 });
         }
 
-        const channelId = process.env["DISCORD_PURCHASE_CHANNEL_ID"];
-        if (!channelId) return new Response("channel_not_configured", { status: 400 });
+        const channels = {
+          it: purchaseChannelId("it"),
+          en: purchaseChannelId("en"),
+        } as const;
+        if (!channels.it || !channels.en) {
+          return new Response("channel_not_configured", { status: 400 });
+        }
 
         const { discordFetch, sendChannelMessage, editChannelMessage } =
           await import("@/lib/purchase/discord.server");
@@ -90,30 +124,39 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
           },
         } as const;
 
-        // Reuse existing panels instead of spamming the channel. The legacy
-        // bilingual panel (custom_id `aron_purchase_start`) becomes the IT one.
-        const history = await discordFetch(`/channels/${channelId}/messages?limit=50`, {
-          method: "GET",
-        });
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const messages: any[] = Array.isArray(history.json) ? history.json : [];
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const idsOf = (m: any): string[] =>
-          (Array.isArray(m?.components) ? m.components : [])
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            .flatMap((r: any) => (Array.isArray(r?.components) ? r.components : []))
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            .map((c: any) => String(c?.custom_id ?? ""));
+        const histories: Record<Locale, PanelMessage[]> = { it: [], en: [] };
+        for (const locale of ["it", "en"] as const) {
+          const history = await discordFetch(`/channels/${channels[locale]}/messages?limit=100`, {
+            method: "GET",
+          });
+          histories[locale] = Array.isArray(history.json) ? history.json : [];
+        }
 
-        const findPanel = (wanted: string[]) =>
-          messages.find((m) => idsOf(m).some((id) => wanted.includes(id)));
+        // Remove only misplaced Aron purchase panels from the opposite public channel.
+        for (const message of histories.it) {
+          if (message.id && idsOf(message).includes(panels.en.customId)) {
+            await discordFetch(`/channels/${channels.it}/messages/${message.id}`, { method: "DELETE" });
+          }
+        }
+        for (const message of histories.en) {
+          if (message.id && idsOf(message).includes(panels.it.customId)) {
+            await discordFetch(`/channels/${channels.en}/messages/${message.id}`, { method: "DELETE" });
+          }
+        }
 
-        const result: Record<string, { messageId: string | null; ok: boolean; link: string }> = {};
+        const result: Record<Locale, { messageId: string | null; ok: boolean; link: string }> = {
+          it: { messageId: null, ok: false, link: "" },
+          en: { messageId: null, ok: false, link: "" },
+        };
 
-        for (const [locale, panel] of Object.entries(panels)) {
-          const existing = findPanel(
-            locale === "it" ? [panel.customId, "aron_purchase_start"] : [panel.customId],
-          );
+        for (const locale of ["it", "en"] as const) {
+          const panel = panels[locale];
+          const channelId = channels[locale];
+          const validMessages = histories[locale].filter((message) => {
+            const ids = idsOf(message);
+            return ids.includes(panel.customId) || (locale === "it" && ids.includes("aron_purchase_start"));
+          });
+          const existing = validMessages[0];
           let messageId: string | null = existing?.id ? String(existing.id) : null;
           let ok = false;
           if (messageId) {
@@ -126,11 +169,20 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
             ok = sent.ok;
             messageId = sent.json?.id ? String(sent.json.id) : null;
           }
+
+          for (const duplicate of validMessages.slice(1)) {
+            if (duplicate.id) {
+              await discordFetch(`/channels/${channelId}/messages/${duplicate.id}`, {
+                method: "DELETE",
+              });
+            }
+          }
+
           result[locale] = {
             messageId,
             ok,
             link: messageId
-              ? `https://discord.com/channels/${process.env["DISCORD_GUILD_ID"]}/${channelId}/${messageId}`
+              ? `https://discord.com/channels/${guildId()}/${channelId}/${messageId}`
               : "",
           };
         }

@@ -80,7 +80,8 @@ Il link di checkout viene generato dall'origin della richiesta Discord firmata: 
 | `DISCORD_PUBLIC_KEY` | sì |
 | `DISCORD_BOT_TOKEN` | sì |
 | `DISCORD_GUILD_ID` | sì |
-| `DISCORD_PURCHASE_CHANNEL_ID` | sì |
+| `DISCORD_PURCHASE_CHANNEL_ID` | sì — canale pubblico acquisto IT |
+| `DISCORD_PURCHASE_CHANNEL_ID_EN` | sì — canale pubblico acquisto EN |
 | `DISCORD_TICKET_CATEGORY_ID` | sì |
 | `DISCORD_STAFF_ROLE_ID` | **sì** — senza questo ruolo nessuno può assegnare una KeyAuth key (nessun fallback su owner/username) |
 | `ADMIN_SETUP_SECRET` | sì (protegge l'endpoint di setup del pannello) |

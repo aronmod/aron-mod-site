@@ -79,5 +79,21 @@ export async function updateTicket(
 export async function ticketLocale(channelId: string | null | undefined): Promise<Locale> {
   if (!channelId) return "it";
   const ticket = await getTicket(channelId);
-  return ticket?.locale ?? "it";
+  if (ticket?.locale) return ticket.locale;
+
+  const itCategory = process.env["DISCORD_TICKET_CATEGORY_ID"];
+  const enCategory = process.env["DISCORD_TICKET_CATEGORY_ID_EN"];
+  if (!itCategory && !enCategory) return "it";
+
+  try {
+    const { getDiscordChannel } = await import("./discord.server");
+    const channel = await getDiscordChannel(channelId);
+    const parentId = channel.json?.parent_id ? String(channel.json.parent_id) : null;
+    if (enCategory && parentId === enCategory) return "en";
+    if (itCategory && parentId === itCategory) return "it";
+  } catch {
+    /* If Discord is unavailable, prefer Italian over accidentally using English. */
+  }
+
+  return "it";
 }
