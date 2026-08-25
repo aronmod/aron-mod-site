@@ -71,18 +71,16 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
                   description:
                     "Clicca **Acquista** e scegli il piano e la durata.\n\nDopo la verifica del pagamento, riceverai la key direttamente nel ticket.",
                   color: 0x3b82f6,
-                  fields: [
-                    {
-                      name: "BASE",
-                      value: "**15 giorni** · **9 €**\n**30 giorni** · **15 €**",
-                      inline: false,
-                    },
-                    {
-                      name: "PLUS",
-                      value: "**15 giorni** · **12 €**\n**30 giorni** · **20 €**",
-                      inline: false,
-                    },
-                  ],
+                },
+                {
+                  title: "BASE",
+                  description: "**15 GIORNI · 9 €**\n**30 GIORNI · 15 €**",
+                  color: 0x3b82f6,
+                },
+                {
+                  title: "PLUS",
+                  description: "**15 GIORNI · 12 €**\n**30 GIORNI · 20 €**",
+                  color: 0x3b82f6,
                 },
               ],
               components: [
@@ -109,18 +107,16 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
                   description:
                     "Click **Buy** and choose your plan and duration.\n\nAfter the payment is verified, you will receive the key directly in the ticket.",
                   color: 0x3b82f6,
-                  fields: [
-                    {
-                      name: "BASE",
-                      value: "**15 days** · **€9**\n**30 days** · **€15**",
-                      inline: false,
-                    },
-                    {
-                      name: "PLUS",
-                      value: "**15 days** · **€12**\n**30 days** · **€20**",
-                      inline: false,
-                    },
-                  ],
+                },
+                {
+                  title: "BASE",
+                  description: "**15 DAYS · €9**\n**30 DAYS · €15**",
+                  color: 0x3b82f6,
+                },
+                {
+                  title: "PLUS",
+                  description: "**15 DAYS · €12**\n**30 DAYS · €20**",
+                  color: 0x3b82f6,
                 },
               ],
               components: [
