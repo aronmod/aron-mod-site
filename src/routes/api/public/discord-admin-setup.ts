@@ -76,18 +76,26 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
                 {
                   title: "🛒 Acquista Aron Mod",
                   description:
-                    "Clicca **Acquista** e scegli il piano e la durata.\n\nDopo la verifica del pagamento, riceverai la key direttamente nel ticket.",
+                    "Clicca **Acquista** e scegli il piano e la durata in base alle tue esigenze. Poi completa il pagamento con PayPal.\n\nDopo la verifica del pagamento, riceverai la key direttamente nel ticket.",
                   color: 0x3b82f6,
-                },
-                {
-                  title: "BASE",
-                  description: "**15 GIORNI · 9 €**\n**30 GIORNI · 15 €**",
-                  color: 0x3b82f6,
-                },
-                {
-                  title: "PLUS",
-                  description: "**15 GIORNI · 12 €**\n**30 GIORNI · 20 €**",
-                  color: 0x3b82f6,
+                  fields: [
+                    {
+                      name: "⭐ PLUS — Funzioni extra",
+                      value:
+                        "Auto Dungeon\nAuto Alchimia\nSwitch Ammalia\nHWID Spoofer\n\n*Disponibilità in base al server.*",
+                      inline: false,
+                    },
+                    {
+                      name: "BASE",
+                      value: "**15 giorni** · **9 €**\n**30 giorni** · **15 €**",
+                      inline: false,
+                    },
+                    {
+                      name: "PLUS",
+                      value: "**15 giorni** · **12 €**\n**30 giorni** · **20 €**",
+                      inline: false,
+                    },
+                  ],
                 },
               ],
               components: [
