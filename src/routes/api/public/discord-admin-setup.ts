@@ -333,7 +333,6 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
           }
         }
 
-
         const verified =
           verify.it.it === 1 &&
           verify.it.en === 0 &&
