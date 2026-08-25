@@ -940,8 +940,9 @@ function Pricing({ lang }: { lang: Lang }) {
         }
       />
       <div className="mx-auto mt-12 grid max-w-4xl gap-5.5 md:grid-cols-2 md:gap-x-7.5 md:gap-y-6">
-        <PlanCard plan={t.base} highlight={false} />
-        <PlanCard plan={t.plus} highlight={true} />
+        <PlanCard plan={t.base} planId="base" highlight={false} />
+        <PlanCard plan={t.plus} planId="plus" highlight={true} />
+
       </div>
       <ol className="mx-auto mt-10 grid max-w-4xl gap-3 sm:grid-cols-4">
         {t.steps.map((step, i) => (
