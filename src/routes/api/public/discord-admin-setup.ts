@@ -68,22 +68,21 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
               embeds: [
                 {
                   title: "🛒 Acquista Aron Mod",
-                  description: [
-                    "Clicca **Acquista** e scegli il piano e la durata in base alle tue esigenze. Poi completa il pagamento con PayPal.",
-                    "",
-                    "Dopo la verifica del pagamento, riceverai la key direttamente nel ticket.",
-                    "",
-                    "**PIANO**",
-                    "",
-                    "**BASE**",
-                    "• 15 giorni · 9 €",
-                    "• 30 giorni · 15 €",
-                    "",
-                    "**PLUS**",
-                    "• 15 giorni · 12 €",
-                    "• 30 giorni · 20 €",
-                  ].join("\n"),
+                  description:
+                    "Clicca **Acquista** e scegli il piano e la durata.\n\nDopo la verifica del pagamento, riceverai la key direttamente nel ticket.",
                   color: 0x3b82f6,
+                  fields: [
+                    {
+                      name: "BASE",
+                      value: "**15 giorni** · **9 €**\n**30 giorni** · **15 €**",
+                      inline: false,
+                    },
+                    {
+                      name: "PLUS",
+                      value: "**15 giorni** · **12 €**\n**30 giorni** · **20 €**",
+                      inline: false,
+                    },
+                  ],
                 },
               ],
               components: [
@@ -107,22 +106,21 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
               embeds: [
                 {
                   title: "🛒 Buy Aron Mod",
-                  description: [
-                    "Click **Buy** and choose the plan and duration that best suit your needs. Then complete the payment with PayPal.",
-                    "",
-                    "After the payment is verified, you will receive the key directly in the ticket.",
-                    "",
-                    "**PLAN**",
-                    "",
-                    "**BASE**",
-                    "• 15 days · €9",
-                    "• 30 days · €15",
-                    "",
-                    "**PLUS**",
-                    "• 15 days · €12",
-                    "• 30 days · €20",
-                  ].join("\n"),
+                  description:
+                    "Click **Buy** and choose your plan and duration.\n\nAfter the payment is verified, you will receive the key directly in the ticket.",
                   color: 0x3b82f6,
+                  fields: [
+                    {
+                      name: "BASE",
+                      value: "**15 days** · **€9**\n**30 days** · **€15**",
+                      inline: false,
+                    },
+                    {
+                      name: "PLUS",
+                      value: "**15 days** · **€12**\n**30 days** · **€20**",
+                      inline: false,
+                    },
+                  ],
                 },
               ],
               components: [
