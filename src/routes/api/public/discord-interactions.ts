@@ -333,7 +333,9 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
             /^aron_key_modal_([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$/.exec(
               customId,
             );
-          if (!match) return json({ type: 4, data: { content: fallbackCopy.invalidAction, flags: 64 } });
+          if (!match) {
+            return json({ type: 4, data: { content: fallbackCopy.invalidAction, flags: 64 } });
+          }
 
           const discord = await import("@/lib/purchase/discord.server");
           const orderId = String(match[1]);
@@ -435,7 +437,10 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
           }
         }
 
-        return json({ type: 4, data: { content: "Non supportato.", flags: 64 } });
+        const { t } = await import("@/lib/purchase/discord-copy.server");
+        const tickets = await import("@/lib/purchase/tickets.server");
+        const locale = await tickets.ticketLocale(body?.channel_id ? String(body.channel_id) : null);
+        return json({ type: 4, data: { content: t(locale).unsupported, flags: 64 } });
       },
     },
   },
