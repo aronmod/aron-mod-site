@@ -93,14 +93,15 @@ export const startPaypalOrder = createServerFn({ method: "POST" })
 
 export const finalizePaypalOrder = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => captureSchema.parse(data))
-  .handler(async ({ data }): Promise<{ ok: boolean; error?: string }> => {
+  .handler(async ({ data }): Promise<{ ok: boolean; error?: string; ticketUrl?: string | null }> => {
     const { getOrderByToken } = await import("./purchase/orders.server");
     const { capturePaypalOrder, getPaypalOrder } = await import("./purchase/paypal.server");
     const { fulfillOrder } = await import("./purchase/fulfillment.server");
 
     const order = await getOrderByToken(data.token);
     if (!order) return { ok: false, error: "not_found" };
-    if (order.status === "paid") return { ok: true };
+    if (order.status === "paid")
+      return { ok: true, ticketUrl: buildTicketUrl(order.discord_ticket_channel_id) };
     if (!order.paypal_order_id || order.paypal_order_id !== data.paypalOrderId) {
       return { ok: false, error: "order_mismatch" };
     }
@@ -131,5 +132,5 @@ export const finalizePaypalOrder = createServerFn({ method: "POST" })
       "checkout_capture",
       evaluateCaptureRisk(captureObj),
     );
-    return { ok: true };
+    return { ok: true, ticketUrl: buildTicketUrl(order.discord_ticket_channel_id) };
   });
