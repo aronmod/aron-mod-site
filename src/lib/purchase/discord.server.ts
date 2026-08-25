@@ -70,7 +70,7 @@ export async function ensureTicketChannel(
     const found = existing.json.find(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (c: any) =>
-        c?.parent_id === categoryId &&
+        (c?.parent_id === itCategory || c?.parent_id === enCategory) &&
         typeof c?.topic === "string" &&
         c.topic.includes(topicMarker),
     );
