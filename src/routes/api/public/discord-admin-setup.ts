@@ -24,9 +24,8 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
         const channelId = process.env["DISCORD_PURCHASE_CHANNEL_ID"];
         if (!channelId) return new Response("channel_not_configured", { status: 400 });
 
-        const { discordFetch, sendChannelMessage, editChannelMessage } = await import(
-          "@/lib/purchase/discord.server"
-        );
+        const { discordFetch, sendChannelMessage, editChannelMessage } =
+          await import("@/lib/purchase/discord.server");
 
         const panels = {
           it: {
@@ -142,7 +141,6 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
           headers: { "content-type": "application/json" },
         });
       },
-
     },
   },
 });

@@ -102,10 +102,7 @@ function keyMessage(
 }
 
 /** Locale persisted on the order, falling back to the ticket's locale. */
-export async function orderLocale(
-  orderId: string,
-  channelId: string | null,
-): Promise<Locale> {
+export async function orderLocale(orderId: string, channelId: string | null): Promise<Locale> {
   const supabase = getServiceClient();
   const { data } = await supabase
     .from("purchase_orders")
@@ -115,7 +112,6 @@ export async function orderLocale(
   if (data?.locale === "it" || data?.locale === "en") return data.locale;
   return ticketLocale(channelId);
 }
-
 
 /**
  * Confirms a verified payment exactly once. No license key is generated here and
@@ -251,7 +247,6 @@ export async function deliverPendingKey(orderId: string): Promise<DeliveryResult
       plaintextKey,
       order.discord_user_id ? String(order.discord_user_id) : null,
     ),
-
   });
   if (!res.ok) {
     await failDelivery(`discord_${res.status}`);

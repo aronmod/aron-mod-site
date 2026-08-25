@@ -4,7 +4,6 @@ import { t, type Locale } from "./discord-copy.server";
 
 const API = "https://discord.com/api/v10";
 
-
 function botToken(): string {
   const token = process.env["DISCORD_BOT_TOKEN"];
   if (!token) throw new Error("discord_config_missing");
@@ -46,8 +45,6 @@ export async function deleteChannelMessage(channelId: string, messageId: string)
   return discordFetch(`/channels/${channelId}/messages/${messageId}`, { method: "DELETE" });
 }
 
-
-
 export async function addCustomerRole(userId: string) {
   const guildId = process.env["DISCORD_GUILD_ID"];
   const roleId = process.env["DISCORD_CUSTOMER_ROLE_ID"];
@@ -65,10 +62,7 @@ export async function alertStaff(content: string) {
  * Finds an existing open ticket channel for a user, or creates a private one.
  * The locale comes from the entry point (IT / EN panel) and decides the category.
  */
-export async function ensureTicketChannel(
-  userId: string,
-  locale: Locale,
-): Promise<string | null> {
+export async function ensureTicketChannel(userId: string, locale: Locale): Promise<string | null> {
   const guildId = process.env["DISCORD_GUILD_ID"];
   const itCategory = process.env["DISCORD_TICKET_CATEGORY_ID"];
   const enCategory = process.env["DISCORD_TICKET_CATEGORY_ID_EN"];
@@ -81,7 +75,9 @@ export async function ensureTicketChannel(
     const found = existing.json.find(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (c: any) =>
-        c?.parent_id === categoryId && typeof c?.topic === "string" && c.topic.includes(topicMarker),
+        c?.parent_id === categoryId &&
+        typeof c?.topic === "string" &&
+        c.topic.includes(topicMarker),
     );
     if (found?.id) return String(found.id);
   }
@@ -176,7 +172,6 @@ export function payButton(locale: Locale, url: string) {
 export function linkButton(label: string, url: string) {
   return [{ type: 1, components: [{ type: 2, style: 5, label, url }] }];
 }
-
 
 /** Staff-only controls. Visibility is cosmetic: authorization is enforced server-side. */
 export function staffKeyButtons(orderId: string) {

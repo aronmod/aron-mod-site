@@ -58,7 +58,6 @@ export async function createOrder(params: {
   return { token, id: String(data.id), amountCents: data.amount_cents as number, expiresAt };
 }
 
-
 export async function getOrderByToken(token: string) {
   if (typeof token !== "string" || !/^[0-9a-f]{64}$/.test(token)) return null;
   const supabase = getServiceClient();

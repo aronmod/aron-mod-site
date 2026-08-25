@@ -94,15 +94,11 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
               if (interactionChannelId) {
                 // Switching plan invalidates the previous selection: the old
                 // unpaid order and its summary must disappear.
-                const { cancelPendingOrdersForChannel } = await import(
-                  "@/lib/purchase/orders.server"
-                );
+                const { cancelPendingOrdersForChannel } =
+                  await import("@/lib/purchase/orders.server");
                 await cancelPendingOrdersForChannel(interactionChannelId);
                 if (ticket?.summaryMessageId) {
-                  await discord.deleteChannelMessage(
-                    interactionChannelId,
-                    ticket.summaryMessageId,
-                  );
+                  await discord.deleteChannelMessage(interactionChannelId, ticket.summaryMessageId);
                 }
                 await tickets.updateTicket(interactionChannelId, {
                   selectedPlan: plan,
@@ -124,9 +120,8 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
               const locale = ticket?.locale ?? "it";
               const c = t(locale);
 
-              const { createOrder, cancelPendingOrdersForChannel } = await import(
-                "@/lib/purchase/orders.server"
-              );
+              const { createOrder, cancelPendingOrdersForChannel } =
+                await import("@/lib/purchase/orders.server");
               const { shortId } = await import("@/lib/purchase/crypto.server");
 
               // Exactly one active awaiting_payment order per ticket.
@@ -176,7 +171,6 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
 
               return json({ type: 4, data: { ...summary, flags: 64 } });
             }
-
 
             const uuidRe =
               "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
