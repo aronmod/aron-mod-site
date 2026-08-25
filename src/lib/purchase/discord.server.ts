@@ -117,76 +117,80 @@ function shortEur(cents: number): string {
 }
 
 /**
- * The persistent ticket panel. It always keeps the BASE/PLUS buttons and shows
- * the current selection. Discord cannot space buttons inside one action row, so
- * every important choice gets its own row.
+ * The persistent plan panel: header + plan buttons only, one button per action
+ * row so they are never glued together. No selection state is rendered here.
  */
-export function panelMessage(
-  locale: Locale,
-  userId: string,
-  plan: "base" | "plus" | null,
-  days: 15 | 30 | null,
-) {
+export function panelMessage(locale: Locale, userId: string) {
   const c = t(locale);
-  const lines = [c.welcome(userId), c.panelTitle, "", c.choosePlan, c.planInfo];
-  if (plan && days) lines.push("", c.selectedFull(plan, days), c.changeHint);
-  else if (plan) lines.push("", c.selected(plan), c.chooseDays);
+  const lines = [c.welcome(userId), c.panelTitle, "", c.choosePlan];
 
   const rows: Array<Record<string, unknown>> = [
     {
       type: 1,
-      components: [
-        {
-          type: 2,
-          style: plan === "base" ? 3 : 2,
-          label: plan === "base" ? `✅ ${c.planBase}` : c.planBase,
-          custom_id: "aron_plan_base",
-        },
-      ],
+      components: [{ type: 2, style: 1, label: c.planBase, custom_id: "aron_plan_base" }],
     },
     {
       type: 1,
-      components: [
-        {
-          type: 2,
-          style: plan === "plus" ? 3 : 2,
-          label: plan === "plus" ? `✅ ${c.planPlus}` : c.planPlus,
-          custom_id: "aron_plan_plus",
-        },
-      ],
+      components: [{ type: 2, style: 1, label: c.planPlus, custom_id: "aron_plan_plus" }],
     },
   ];
-  if (plan) {
-    const label15 = `${c.days15} — ${shortEur(priceCents(plan, 15))}`;
-    const label30 = `${c.days30} — ${shortEur(priceCents(plan, 30))}`;
-    rows.push(
-      {
-        type: 1,
-        components: [
-          {
-            type: 2,
-            style: days === 15 ? 3 : 1,
-            label: days === 15 ? `✅ ${label15}` : label15,
-            custom_id: `aron_days_${plan}_15`,
-          },
-        ],
-      },
-      {
-        type: 1,
-        components: [
-          {
-            type: 2,
-            style: days === 30 ? 3 : 1,
-            label: days === 30 ? `✅ ${label30}` : label30,
-            custom_id: `aron_days_${plan}_30`,
-          },
-        ],
-      },
-    );
-  }
 
   return { content: lines.join("\n"), components: rows };
 }
+
+/**
+ * The single temporary duration message shown under the plan panel. Changing
+ * plan only edits this message (new prices + custom ids), never adds one.
+ */
+export function durationMessage(locale: Locale, plan: "base" | "plus") {
+  const c = t(locale);
+  const label15 = `${c.days15} — ${shortEur(priceCents(plan, 15))}`;
+  const label30 = `${c.days30} — ${shortEur(priceCents(plan, 30))}`;
+  return {
+    content: c.chooseDuration,
+    components: [
+      {
+        type: 1,
+        components: [
+          { type: 2, style: 1, label: label15, custom_id: `aron_days_${plan}_15` },
+        ],
+      },
+      {
+        type: 1,
+        components: [
+          { type: 2, style: 1, label: label30, custom_id: `aron_days_${plan}_30` },
+        ],
+      },
+    ],
+  };
+}
+
+/** The one message left in the ticket after the duration is chosen. */
+export function finalOrderMessage(
+  locale: Locale,
+  userId: string,
+  ref: string,
+  plan: "base" | "plus",
+  days: 15 | 30,
+  amountCents: number,
+  url: string,
+) {
+  const c = t(locale);
+  return {
+    content: [
+      c.welcome(userId),
+      c.panelTitle,
+      "",
+      c.orderRef(ref),
+      "",
+      c.orderPlanLine(plan, days),
+      c.orderTotalLine(amountCents),
+      "",
+    ].join("\n"),
+    components: payButton(locale, url),
+  };
+}
+
 
 /**
  * Discord link buttons are always style 5 and cannot take a custom colour, so
