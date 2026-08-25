@@ -10,6 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AcquistoCompletatoRouteImport } from './routes/acquisto-completato'
+import { Route as CheckoutTokenRouteImport } from './routes/checkout.$token'
 import { Route as ApiPublicDiscordAdminSetupRouteImport } from './routes/api/public/discord-admin-setup'
 import { Route as ApiPublicDiscordInteractionsRouteImport } from './routes/api/public/discord-interactions'
 import { Route as ApiPublicLicenseValidateRouteImport } from './routes/api/public/license-validate'
@@ -18,6 +20,16 @@ import { Route as ApiPublicPaypalWebhookRouteImport } from './routes/api/public/
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AcquistoCompletatoRoute = AcquistoCompletatoRouteImport.update({
+  id: '/acquisto-completato',
+  path: '/acquisto-completato',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutTokenRoute = CheckoutTokenRouteImport.update({
+  id: '/checkout/$token',
+  path: '/checkout/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicDiscordAdminSetupRoute =
@@ -46,6 +58,8 @@ const ApiPublicPaypalWebhookRoute = ApiPublicPaypalWebhookRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/acquisto-completato': typeof AcquistoCompletatoRoute
+  '/checkout/$token': typeof CheckoutTokenRoute
   '/api/public/discord-admin-setup': typeof ApiPublicDiscordAdminSetupRoute
   '/api/public/discord-interactions': typeof ApiPublicDiscordInteractionsRoute
   '/api/public/license-validate': typeof ApiPublicLicenseValidateRoute
@@ -53,6 +67,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/acquisto-completato': typeof AcquistoCompletatoRoute
+  '/checkout/$token': typeof CheckoutTokenRoute
   '/api/public/discord-admin-setup': typeof ApiPublicDiscordAdminSetupRoute
   '/api/public/discord-interactions': typeof ApiPublicDiscordInteractionsRoute
   '/api/public/license-validate': typeof ApiPublicLicenseValidateRoute
@@ -61,6 +77,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/acquisto-completato': typeof AcquistoCompletatoRoute
+  '/checkout/$token': typeof CheckoutTokenRoute
   '/api/public/discord-admin-setup': typeof ApiPublicDiscordAdminSetupRoute
   '/api/public/discord-interactions': typeof ApiPublicDiscordInteractionsRoute
   '/api/public/license-validate': typeof ApiPublicLicenseValidateRoute
@@ -70,6 +88,8 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/acquisto-completato'
+    | '/checkout/$token'
     | '/api/public/discord-admin-setup'
     | '/api/public/discord-interactions'
     | '/api/public/license-validate'
@@ -77,6 +97,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/acquisto-completato'
+    | '/checkout/$token'
     | '/api/public/discord-admin-setup'
     | '/api/public/discord-interactions'
     | '/api/public/license-validate'
@@ -84,6 +106,8 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/acquisto-completato'
+    | '/checkout/$token'
     | '/api/public/discord-admin-setup'
     | '/api/public/discord-interactions'
     | '/api/public/license-validate'
@@ -92,6 +116,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AcquistoCompletatoRoute: typeof AcquistoCompletatoRoute
+  CheckoutTokenRoute: typeof CheckoutTokenRoute
   ApiPublicDiscordAdminSetupRoute: typeof ApiPublicDiscordAdminSetupRoute
   ApiPublicDiscordInteractionsRoute: typeof ApiPublicDiscordInteractionsRoute
   ApiPublicLicenseValidateRoute: typeof ApiPublicLicenseValidateRoute
@@ -105,6 +131,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/acquisto-completato': {
+      id: '/acquisto-completato'
+      path: '/acquisto-completato'
+      fullPath: '/acquisto-completato'
+      preLoaderRoute: typeof AcquistoCompletatoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout/$token': {
+      id: '/checkout/$token'
+      path: '/checkout/$token'
+      fullPath: '/checkout/$token'
+      preLoaderRoute: typeof CheckoutTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/discord-admin-setup': {
@@ -140,6 +180,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AcquistoCompletatoRoute: AcquistoCompletatoRoute,
+  CheckoutTokenRoute: CheckoutTokenRoute,
   ApiPublicDiscordAdminSetupRoute: ApiPublicDiscordAdminSetupRoute,
   ApiPublicDiscordInteractionsRoute: ApiPublicDiscordInteractionsRoute,
   ApiPublicLicenseValidateRoute: ApiPublicLicenseValidateRoute,
