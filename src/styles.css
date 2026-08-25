@@ -310,7 +310,6 @@
   }
 }
 
-
 /* only shown on wide viewports where the side gutters are truly free */
 @utility grid-spark-wide {
   display: none;
@@ -346,7 +345,6 @@
     opacity: 0;
   }
 }
-
 
 @utility animate-halo {
   animation: aron-halo 7s ease-in-out infinite;
