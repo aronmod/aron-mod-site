@@ -324,6 +324,13 @@ function Header({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
             </a>
           </div>
 
+          <a
+            href="#prezzi"
+            className="shrink-0 rounded-lg bg-[image:var(--gradient-accent)] px-2 py-1 text-[13px] font-semibold text-primary-foreground transition-transform hover:scale-105 max-[420px]:px-1.5 max-[420px]:py-0.5 max-[420px]:text-[12px] sm:px-3.5 sm:py-1.5 sm:text-[14px]"
+          >
+            {t.header.buy}
+          </a>
+
           <div className="flex items-center gap-1 rounded-lg border border-border p-0.5">
             <button
               type="button"
@@ -354,13 +361,6 @@ function Header({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
               {t.header.langEn}
             </button>
           </div>
-
-          <a
-            href="#prezzi"
-            className="shrink-0 rounded-lg bg-[image:var(--gradient-accent)] px-2 py-1 text-[13px] font-semibold text-primary-foreground transition-transform hover:scale-105 max-[420px]:px-1.5 max-[420px]:py-0.5 max-[420px]:text-[12px] sm:px-3.5 sm:py-1.5 sm:text-[14px]"
-          >
-            {t.header.buy}
-          </a>
         </nav>
       </div>
     </header>
