@@ -44,11 +44,55 @@ function idsOf(message: PanelMessage): string[] {
 }
 
 const SPACER = "\u200b";
-const INVISIBLE_RE = /^\u200b*$/;
+const INVISIBLE_RE = /^\u200b+$/;
 
-function isSpacerField(name: string): boolean {
-  return INVISIBLE_RE.test(name);
+function buildDescription(lines: string[]): string {
+  return lines.join("\n");
 }
+
+const IT_DESCRIPTION = buildDescription([
+  "Clicca **Acquista** e scegli il piano e la durata in base alle tue esigenze. Poi completa il pagamento con PayPal.",
+  "",
+  "Dopo la verifica del pagamento, riceverai la key direttamente nel ticket.",
+  SPACER,
+  SPACER,
+  "**⭐ PLUS — Funzioni extra (In base al server)**",
+  "Auto Dungeon",
+  "Auto Alchimia",
+  "Switch Ammalia",
+  "HWID Spoofer",
+  SPACER,
+  SPACER,
+  "**🔹 BASE**",
+  "**15 giorni**  ·  **9 €**",
+  "**30 giorni**  ·  **15 €**",
+  SPACER,
+  "**🔹 PLUS**",
+  "**15 giorni**  ·  **12 €**",
+  "**30 giorni**  ·  **20 €**",
+]);
+
+const EN_DESCRIPTION = buildDescription([
+  "Click **Buy** and choose the plan and duration that best suit your needs. Then complete the payment with PayPal.",
+  "",
+  "After the payment is verified, you will receive the key directly in the ticket.",
+  SPACER,
+  SPACER,
+  "**⭐ PLUS — Extra features (Depending on the server)**",
+  "Auto Dungeon",
+  "Auto Alchemy",
+  "Auto Enchant",
+  "HWID Spoofer",
+  SPACER,
+  SPACER,
+  "**🔹 BASE**",
+  "**15 days**  ·  **€9**",
+  "**30 days**  ·  **€15**",
+  SPACER,
+  "**🔹 PLUS**",
+  "**15 days**  ·  **€12**",
+  "**30 days**  ·  **€20**",
+]);
 
 /**
  * Publishes / refreshes the "🛒 Acquista Aron Mod" purchase panel.
@@ -82,31 +126,8 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
               embeds: [
                 {
                   title: "🛒 Acquista Aron Mod",
-                  description:
-                    "Clicca **Acquista** e scegli il piano e la durata in base alle tue esigenze. Poi completa il pagamento con PayPal.\n\nDopo la verifica del pagamento, riceverai la key direttamente nel ticket.",
+                  description: IT_DESCRIPTION,
                   color: 0x3b82f6,
-                  fields: [
-                    { name: SPACER, value: SPACER, inline: false },
-                    { name: SPACER, value: SPACER, inline: false },
-                    {
-                      name: "⭐ PLUS — Funzioni extra (In base al server)",
-                      value: "Auto Dungeon\nAuto Alchimia\nSwitch Ammalia\nHWID Spoofer",
-                      inline: false,
-                    },
-                    { name: SPACER, value: SPACER, inline: false },
-                    { name: SPACER, value: SPACER, inline: false },
-                    {
-                      name: "🔹 BASE",
-                      value: "**15 giorni**  ·  **9 €**\n**30 giorni**  ·  **15 €**",
-                      inline: false,
-                    },
-                    { name: SPACER, value: SPACER, inline: false },
-                    {
-                      name: "🔹 PLUS",
-                      value: "**15 giorni**  ·  **12 €**\n**30 giorni**  ·  **20 €**",
-                      inline: false,
-                    },
-                  ],
                 },
               ],
               components: [
@@ -130,31 +151,8 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
               embeds: [
                 {
                   title: "🛒 Buy Aron Mod",
-                  description:
-                    "Click **Buy** and choose the plan and duration that best suit your needs. Then complete the payment with PayPal.\n\nAfter the payment is verified, you will receive the key directly in the ticket.",
+                  description: EN_DESCRIPTION,
                   color: 0x3b82f6,
-                  fields: [
-                    { name: SPACER, value: SPACER, inline: false },
-                    { name: SPACER, value: SPACER, inline: false },
-                    {
-                      name: "⭐ PLUS — Extra features (Depending on the server)",
-                      value: "Auto Dungeon\nAuto Alchemy\nAuto Enchant\nHWID Spoofer",
-                      inline: false,
-                    },
-                    { name: SPACER, value: SPACER, inline: false },
-                    { name: SPACER, value: SPACER, inline: false },
-                    {
-                      name: "🔹 BASE",
-                      value: "**15 days**  ·  **€9**\n**30 days**  ·  **€15**",
-                      inline: false,
-                    },
-                    { name: SPACER, value: SPACER, inline: false },
-                    {
-                      name: "🔹 PLUS",
-                      value: "**15 days**  ·  **€12**\n**30 days**  ·  **€20**",
-                      inline: false,
-                    },
-                  ],
                 },
               ],
               components: [
