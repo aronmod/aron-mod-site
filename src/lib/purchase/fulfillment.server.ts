@@ -22,8 +22,22 @@ export type FulfillResult =
   | { status: "already_processed" }
   | { status: "order_not_found" };
 
+/** Human-readable, non-sensitive cross-reference between our order and PayPal. */
+function orderRefLines(orderId: string, captureId: string | null): string[] {
+  return [
+    `Ordine Aron: \`${shortId(orderId)}\``,
+    `PayPal Capture: \`${captureId && captureId.length > 0 ? captureId : "n/d"}\``,
+  ];
+}
+
+/** Compact one-line reference for staff alerts. */
+function orderRefInline(orderId: string, captureId: string | null): string {
+  return `Ordine Aron \`${shortId(orderId)}\` · PayPal Capture \`${captureId && captureId.length > 0 ? captureId : "n/d"}\``;
+}
+
 function paidMessage(
   orderId: string,
+  captureId: string,
   plan: string,
   days: number,
   amountCents: number,
@@ -33,7 +47,7 @@ function paidMessage(
     userId ? `<@${userId}>` : "",
     "✅ **Pagamento confermato / Payment confirmed**",
     `Piano / Plan: **${String(plan).toUpperCase()}** · ${days} giorni / days · ${formatEur(amountCents)}`,
-    `Ordine / Order: \`${shortId(orderId)}\``,
+    ...orderRefLines(orderId, captureId),
     "",
     "🔑 La KeyAuth key verrà assegnata dallo staff in questo ticket.",
     "_Your KeyAuth key will be assigned by the staff in this ticket._",
@@ -44,6 +58,7 @@ function paidMessage(
 
 function reviewMessage(
   orderId: string,
+  captureId: string,
   plan: string,
   days: number,
   amountCents: number,
@@ -53,7 +68,7 @@ function reviewMessage(
     userId ? `<@${userId}>` : "",
     "✅ **Pagamento confermato / Payment confirmed**",
     `Piano / Plan: **${String(plan).toUpperCase()}** · ${days} giorni / days · ${formatEur(amountCents)}`,
-    `Ordine / Order: \`${shortId(orderId)}\``,
+    ...orderRefLines(orderId, captureId),
     "",
     "🕵️ **Verifica manuale in corso** — questo pagamento richiede una revisione di sicurezza prima della consegna della KeyAuth key. Nessuna azione richiesta da parte tua: lo staff completerà il controllo al più presto.",
     "_🕵️ **Manual review in progress** — this payment requires a security review before the KeyAuth key is delivered. No action needed from you: the staff will complete the check shortly._",
@@ -61,6 +76,7 @@ function reviewMessage(
     .filter(Boolean)
     .join("\n");
 }
+
 
 function keyMessage(plan: string, days: number, plaintextKey: string, userId: string | null) {
   return [
