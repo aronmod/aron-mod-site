@@ -13,7 +13,18 @@ export type CheckoutSummary = {
   orderRef?: string;
   expiresAt?: string;
   paypalClientId?: string;
+  locale?: "it" | "en";
+  /** Server-built Discord deep link to the buyer's own ticket, when known. */
+  ticketUrl?: string | null;
 };
+
+/** Deep link to the buyer's private ticket, built only from server-side data. */
+function buildTicketUrl(channelId: unknown): string | null {
+  const guildId = process.env["DISCORD_GUILD_ID"];
+  const channel = channelId ? String(channelId) : "";
+  if (!guildId || !/^\d{5,25}$/.test(channel)) return null;
+  return `https://discord.com/channels/${guildId}/${channel}`;
+}
 
 export const getCheckoutSummary = createServerFn({ method: "GET" })
   .inputValidator((data: unknown) => tokenSchema.parse(data))
@@ -22,9 +33,13 @@ export const getCheckoutSummary = createServerFn({ method: "GET" })
     const { shortId } = await import("./purchase/crypto.server");
     const order = await getOrderByToken(data.token);
     if (!order) return { state: "not_found" };
-    if (order.status === "paid") return { state: "paid", orderRef: shortId(String(order.id)) };
-    if (order.status === "cancelled") return { state: "cancelled" };
-    if (new Date(order.checkout_expires_at).getTime() < Date.now()) return { state: "expired" };
+    const locale = order.locale === "en" ? "en" : "it";
+    const ticketUrl = buildTicketUrl(order.discord_ticket_channel_id);
+    if (order.status === "paid")
+      return { state: "paid", orderRef: shortId(String(order.id)), locale, ticketUrl };
+    if (order.status === "cancelled") return { state: "cancelled", locale, ticketUrl };
+    if (new Date(order.checkout_expires_at).getTime() < Date.now())
+      return { state: "expired", locale, ticketUrl };
     return {
       state: "ok",
       plan: order.plan as "base" | "plus",
@@ -33,6 +48,8 @@ export const getCheckoutSummary = createServerFn({ method: "GET" })
       currency: String(order.currency),
       orderRef: shortId(String(order.id)),
       expiresAt: String(order.checkout_expires_at),
+      locale,
+      ticketUrl,
       // Public client id only. PAYPAL_CLIENT_ID stays strictly server-side.
       paypalClientId: process.env["PUBLIC_PAYPAL_CLIENT_ID"] ?? "",
     };
@@ -75,43 +92,46 @@ export const startPaypalOrder = createServerFn({ method: "POST" })
 
 export const finalizePaypalOrder = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => captureSchema.parse(data))
-  .handler(async ({ data }): Promise<{ ok: boolean; error?: string }> => {
-    const { getOrderByToken } = await import("./purchase/orders.server");
-    const { capturePaypalOrder, getPaypalOrder } = await import("./purchase/paypal.server");
-    const { fulfillOrder } = await import("./purchase/fulfillment.server");
+  .handler(
+    async ({ data }): Promise<{ ok: boolean; error?: string; ticketUrl?: string | null }> => {
+      const { getOrderByToken } = await import("./purchase/orders.server");
+      const { capturePaypalOrder, getPaypalOrder } = await import("./purchase/paypal.server");
+      const { fulfillOrder } = await import("./purchase/fulfillment.server");
 
-    const order = await getOrderByToken(data.token);
-    if (!order) return { ok: false, error: "not_found" };
-    if (order.status === "paid") return { ok: true };
-    if (!order.paypal_order_id || order.paypal_order_id !== data.paypalOrderId) {
-      return { ok: false, error: "order_mismatch" };
-    }
+      const order = await getOrderByToken(data.token);
+      if (!order) return { ok: false, error: "not_found" };
+      if (order.status === "paid")
+        return { ok: true, ticketUrl: buildTicketUrl(order.discord_ticket_channel_id) };
+      if (!order.paypal_order_id || order.paypal_order_id !== data.paypalOrderId) {
+        return { ok: false, error: "order_mismatch" };
+      }
 
-    const orderId = String(order.id);
-    let capture = await capturePaypalOrder(String(order.paypal_order_id), orderId);
-    if (capture.status === 422 || capture.status === 400) {
-      // Possibly already captured — re-read authoritative state from PayPal.
-      capture = await getPaypalOrder(String(order.paypal_order_id));
-    }
-    const unit = capture.json?.purchase_units?.[0];
-    const captureObj = unit?.payments?.captures?.[0];
-    const okStatus = capture.json?.status === "COMPLETED" && captureObj?.status === "COMPLETED";
-    const amountOk =
-      captureObj?.amount?.currency_code === order.currency &&
-      captureObj?.amount?.value === ((order.amount_cents as number) / 100).toFixed(2);
-    const customOk = (unit?.custom_id ?? captureObj?.custom_id) === orderId;
+      const orderId = String(order.id);
+      let capture = await capturePaypalOrder(String(order.paypal_order_id), orderId);
+      if (capture.status === 422 || capture.status === 400) {
+        // Possibly already captured — re-read authoritative state from PayPal.
+        capture = await getPaypalOrder(String(order.paypal_order_id));
+      }
+      const unit = capture.json?.purchase_units?.[0];
+      const captureObj = unit?.payments?.captures?.[0];
+      const okStatus = capture.json?.status === "COMPLETED" && captureObj?.status === "COMPLETED";
+      const amountOk =
+        captureObj?.amount?.currency_code === order.currency &&
+        captureObj?.amount?.value === ((order.amount_cents as number) / 100).toFixed(2);
+      const customOk = (unit?.custom_id ?? captureObj?.custom_id) === orderId;
 
-    if (!okStatus || !amountOk || !customOk) {
-      console.error("paypal_capture_not_verified", { status: capture.status });
-      return { ok: false, error: "payment_not_completed" };
-    }
+      if (!okStatus || !amountOk || !customOk) {
+        console.error("paypal_capture_not_verified", { status: capture.status });
+        return { ok: false, error: "payment_not_completed" };
+      }
 
-    const { evaluateCaptureRisk } = await import("./purchase/risk.server");
-    await fulfillOrder(
-      orderId,
-      String(captureObj.id),
-      "checkout_capture",
-      evaluateCaptureRisk(captureObj),
-    );
-    return { ok: true };
-  });
+      const { evaluateCaptureRisk } = await import("./purchase/risk.server");
+      await fulfillOrder(
+        orderId,
+        String(captureObj.id),
+        "checkout_capture",
+        evaluateCaptureRisk(captureObj),
+      );
+      return { ok: true, ticketUrl: buildTicketUrl(order.discord_ticket_channel_id) };
+    },
+  );

@@ -1,8 +1,8 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
-import { Loader2, ShieldCheck, TriangleAlert } from "lucide-react";
+import { CheckCircle2, Loader2, ShieldCheck, TriangleAlert } from "lucide-react";
 
 import {
   finalizePaypalOrder,
@@ -37,7 +37,8 @@ export const Route = createFileRoute("/checkout/$token")({
 
 const T = {
   it: {
-    title: "Checkout Aron Mod",
+    title: "Checkout",
+    brand: "Aron Mod",
     loading: "Caricamento dell'ordine…",
     notFound: "Link di pagamento non valido.",
     expired:
@@ -52,12 +53,19 @@ const T = {
     expires: "Il link scade il",
     payError: "Pagamento non completato. Nessun addebito confermato: riprova o contatta lo staff.",
     processing: "Verifica del pagamento in corso…",
-    backTicket: "Torna al Discord",
-    safe: "Prezzo e ordine sono verificati lato server. Non inserire mai la tua KeyAuth key su questo sito.",
+    choose: "Scegli come pagare",
+    backTicket: "Torna al ticket Discord",
+    backCommunity: "Vai al server Discord",
+    successTitle: "Pagamento completato",
+    successNote: "La key verrà consegnata nel ticket Discord dopo la verifica del pagamento.",
+    redirecting: "Ti reindirizziamo al tuo ticket Discord…",
+    delivery: "La key verrà consegnata nel ticket Discord dopo la verifica del pagamento.",
+    safe: "Non inserire mai la tua KeyAuth key su questo sito.",
     missingConfig: "Pagamenti temporaneamente non disponibili. Contatta lo staff su Discord.",
   },
   en: {
-    title: "Aron Mod checkout",
+    title: "Checkout",
+    brand: "Aron Mod",
     loading: "Loading your order…",
     notFound: "Invalid payment link.",
     expired: "This payment link has expired. Go back to your Discord ticket and request a new one.",
@@ -71,29 +79,51 @@ const T = {
     expires: "Link expires on",
     payError: "Payment not completed. No confirmed charge: try again or contact staff.",
     processing: "Verifying your payment…",
-    backTicket: "Back to Discord",
-    safe: "Price and order are verified server-side. Never enter your KeyAuth key on this website.",
+    choose: "Choose how to pay",
+    backTicket: "Back to Discord ticket",
+    backCommunity: "Go to the Discord server",
+    successTitle: "Payment completed",
+    successNote: "The key will be delivered in your Discord ticket after the payment is verified.",
+    redirecting: "Redirecting you to your Discord ticket…",
+    delivery: "The key will be delivered in your Discord ticket after the payment is verified.",
+    safe: "Never enter your KeyAuth key on this website.",
     missingConfig: "Payments temporarily unavailable. Please contact staff on Discord.",
   },
 } as const;
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <main className="relative min-h-screen bg-background px-4 py-16">
+    <main className="relative flex min-h-screen items-center justify-center bg-background px-4 py-10 sm:py-14">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 bg-[image:var(--gradient-hero)] opacity-70"
       />
-      <div className="relative mx-auto w-full max-w-lg">{children}</div>
+      <div className="relative mx-auto w-full max-w-2xl">{children}</div>
     </main>
+  );
+}
+
+function Header({ title }: { title: string }) {
+  return (
+    <div className="flex items-center gap-3">
+      <img
+        src="/aron-logo.png"
+        alt="Aron Mod"
+        width={48}
+        height={48}
+        className="h-11 w-11 rounded-xl"
+      />
+      <div>
+        <p className="font-display text-lg leading-none font-bold tracking-wide">ARON MOD</p>
+        <p className="mt-1 text-sm text-muted-foreground">{title}</p>
+      </div>
+    </div>
   );
 }
 
 function CheckoutPage() {
   const { token } = Route.useParams();
-  const [lang] = useLang();
-  const t = T[lang];
-  const navigate = useNavigate();
+  const [uiLang] = useLang();
 
   const fetchSummary = useServerFn(getCheckoutSummary);
   const createOrder = useServerFn(startPaypalOrder);
@@ -101,6 +131,7 @@ function CheckoutPage() {
 
   const [error, setError] = useState<string | null>(null);
   const [processing, setProcessing] = useState(false);
+  const [success, setSuccess] = useState<{ ticketUrl: string | null } | null>(null);
   const buttonsRef = useRef<HTMLDivElement | null>(null);
   const renderedRef = useRef(false);
 
@@ -109,6 +140,10 @@ function CheckoutPage() {
     queryFn: () => fetchSummary({ data: { token } }),
     retry: false,
   });
+
+  // The order locale is authoritative; the UI language is only a fallback.
+  const lang = data?.locale ?? uiLang;
+  const t = T[lang];
 
   const clientId = data?.state === "ok" ? (data.paypalClientId ?? "") : "";
 
@@ -125,7 +160,7 @@ function CheckoutPage() {
       if (!paypal || !buttonsRef.current) return;
       paypal
         .Buttons({
-          style: { layout: "vertical", shape: "pill", color: "blue" },
+          style: { layout: "vertical", shape: "pill", color: "blue", height: 48 },
           createOrder: async () => {
             setError(null);
             const res = await createOrder({ data: { token } });
@@ -134,10 +169,11 @@ function CheckoutPage() {
           },
           onApprove: async (details: { orderID: string }) => {
             setProcessing(true);
+            // Only a server-verified capture unlocks the success state.
             const res = await finalize({ data: { token, paypalOrderId: details.orderID } });
             setProcessing(false);
             if (res.ok) {
-              void navigate({ to: "/acquisto-completato" });
+              setSuccess({ ticketUrl: res.ticketUrl ?? null });
             } else {
               setError(t.payError);
             }
@@ -148,13 +184,49 @@ function CheckoutPage() {
     };
     script.onerror = () => setError(t.payError);
     document.body.appendChild(script);
-  }, [data?.state, clientId, token, createOrder, finalize, navigate, t.payError]);
+  }, [data?.state, clientId, token, createOrder, finalize, t.payError]);
+
+  // Auto-redirect only after the server confirmed the capture, and only to a
+  // server-built ticket deep link.
+  useEffect(() => {
+    if (!success?.ticketUrl) return;
+    const url = success.ticketUrl;
+    const timer = window.setTimeout(() => {
+      window.location.assign(url);
+    }, 3000);
+    return () => window.clearTimeout(timer);
+  }, [success]);
 
   if (isLoading) {
     return (
       <Shell>
         <div className="glass-card flex items-center gap-3 rounded-2xl p-7 text-muted-foreground">
           <Loader2 className="h-5 w-5 animate-spin text-accent" /> {t.loading}
+        </div>
+      </Shell>
+    );
+  }
+
+  if (success) {
+    return (
+      <Shell>
+        <div className="glass-card rounded-3xl p-7 sm:p-10">
+          <Header title={t.title} />
+          <div className="mt-8 flex flex-col items-center text-center">
+            <CheckCircle2 aria-hidden className="h-14 w-14 text-emerald-400" />
+            <h1 className="font-display mt-4 text-2xl font-bold sm:text-3xl">{t.successTitle}</h1>
+            <p className="mt-3 max-w-md text-sm text-foreground/90 sm:text-base">{t.successNote}</p>
+            <a
+              href={success.ticketUrl ?? LINKS.discordInvite}
+              {...EXTERNAL_LINK_PROPS}
+              className="font-display mt-7 inline-flex w-full items-center justify-center rounded-xl bg-[image:var(--gradient-accent)] px-6 py-3.5 text-base font-bold text-primary-foreground sm:w-auto"
+            >
+              {success.ticketUrl ? t.backTicket : t.backCommunity}
+            </a>
+            {success.ticketUrl ? (
+              <p className="mt-3 text-xs text-muted-foreground">{t.redirecting}</p>
+            ) : null}
+          </div>
         </div>
       </Shell>
     );
@@ -172,18 +244,19 @@ function CheckoutPage() {
             : t.notFound;
 
   if (message) {
+    const fallbackUrl = data?.ticketUrl ?? LINKS.purchaseChannel;
     return (
       <Shell>
-        <div className="glass-card rounded-2xl p-7">
-          <TriangleAlert aria-hidden className="h-6 w-6 text-accent" />
-          <h1 className="font-display mt-3 text-2xl font-bold">{t.title}</h1>
-          <p className="mt-3 text-sm text-foreground/90">{message}</p>
+        <div className="glass-card rounded-3xl p-7 sm:p-10">
+          <Header title={t.title} />
+          <TriangleAlert aria-hidden className="mt-8 h-6 w-6 text-accent" />
+          <p className="mt-3 text-sm text-foreground/90 sm:text-base">{message}</p>
           <a
-            href={LINKS.purchaseChannel}
+            href={fallbackUrl}
             {...EXTERNAL_LINK_PROPS}
-            className="font-display mt-6 inline-flex items-center justify-center rounded-xl bg-[image:var(--gradient-accent)] px-5 py-2.5 text-sm font-bold text-primary-foreground"
+            className="font-display mt-6 inline-flex items-center justify-center rounded-xl bg-[image:var(--gradient-accent)] px-5 py-3 text-sm font-bold text-primary-foreground"
           >
-            {t.backTicket}
+            {data?.ticketUrl ? t.backTicket : t.backCommunity}
           </a>
           <div className="mt-4">
             <Link to="/" className="text-xs text-muted-foreground hover:text-foreground">
@@ -197,26 +270,27 @@ function CheckoutPage() {
 
   return (
     <Shell>
-      <div className="glass-card rounded-2xl p-7">
-        <h1 className="font-display text-2xl font-bold">{t.title}</h1>
-        <dl className="mt-6 space-y-2.5 text-sm">
-          <div className="flex justify-between">
+      <div className="glass-card rounded-3xl p-6 sm:p-10">
+        <Header title={t.title} />
+
+        <dl className="mt-8 space-y-3 text-sm sm:text-base">
+          <div className="flex items-center justify-between">
             <dt className="text-muted-foreground">{t.plan}</dt>
-            <dd className="font-bold">{data?.plan?.toUpperCase()}</dd>
+            <dd className="font-display font-bold tracking-wide">{data?.plan?.toUpperCase()}</dd>
           </div>
-          <div className="flex justify-between">
+          <div className="flex items-center justify-between">
             <dt className="text-muted-foreground">{t.days}</dt>
             <dd className="font-bold">
               {data?.days} {t.daysUnit}
             </dd>
           </div>
-          <div className="flex justify-between">
+          <div className="flex items-center justify-between">
             <dt className="text-muted-foreground">{t.order}</dt>
-            <dd className="font-mono text-xs">{data?.orderRef}</dd>
+            <dd className="font-mono text-xs sm:text-sm">{data?.orderRef}</dd>
           </div>
-          <div className="flex justify-between border-t border-border/60 pt-3 text-base">
-            <dt className="font-semibold">{t.total}</dt>
-            <dd className="font-display font-bold text-accent">
+          <div className="mt-2 flex items-center justify-between rounded-2xl border border-border/60 bg-card/40 px-4 py-4">
+            <dt className="font-display text-base font-semibold sm:text-lg">{t.total}</dt>
+            <dd className="font-display text-2xl font-bold text-accent sm:text-3xl">
               {formatEur(data?.amountCents ?? 0)}
             </dd>
           </div>
@@ -244,12 +318,18 @@ function CheckoutPage() {
         ) : null}
 
         {clientId ? (
-          <div ref={buttonsRef} className="mt-6" />
+          <div className="mt-8">
+            <p className="font-display text-sm font-semibold tracking-wide text-foreground/90 sm:text-base">
+              {t.choose}
+            </p>
+            <div ref={buttonsRef} className="mt-4" />
+          </div>
         ) : (
-          <p className="mt-6 text-sm text-muted-foreground">{t.missingConfig}</p>
+          <p className="mt-8 text-sm text-muted-foreground">{t.missingConfig}</p>
         )}
 
-        <p className="mt-6 flex items-start gap-2 text-xs text-muted-foreground">
+        <p className="mt-8 text-sm text-foreground/90">{t.delivery}</p>
+        <p className="mt-3 flex items-start gap-2 text-xs text-muted-foreground">
           <ShieldCheck aria-hidden className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
           {t.safe}
         </p>
