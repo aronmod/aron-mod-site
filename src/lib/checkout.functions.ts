@@ -13,7 +13,18 @@ export type CheckoutSummary = {
   orderRef?: string;
   expiresAt?: string;
   paypalClientId?: string;
+  locale?: "it" | "en";
+  /** Server-built Discord deep link to the buyer's own ticket, when known. */
+  ticketUrl?: string | null;
 };
+
+/** Deep link to the buyer's private ticket, built only from server-side data. */
+function buildTicketUrl(channelId: unknown): string | null {
+  const guildId = process.env["DISCORD_GUILD_ID"];
+  const channel = channelId ? String(channelId) : "";
+  if (!guildId || !/^\d{5,25}$/.test(channel)) return null;
+  return `https://discord.com/channels/${guildId}/${channel}`;
+}
 
 export const getCheckoutSummary = createServerFn({ method: "GET" })
   .inputValidator((data: unknown) => tokenSchema.parse(data))
@@ -22,9 +33,13 @@ export const getCheckoutSummary = createServerFn({ method: "GET" })
     const { shortId } = await import("./purchase/crypto.server");
     const order = await getOrderByToken(data.token);
     if (!order) return { state: "not_found" };
-    if (order.status === "paid") return { state: "paid", orderRef: shortId(String(order.id)) };
-    if (order.status === "cancelled") return { state: "cancelled" };
-    if (new Date(order.checkout_expires_at).getTime() < Date.now()) return { state: "expired" };
+    const locale = order.locale === "en" ? "en" : "it";
+    const ticketUrl = buildTicketUrl(order.discord_ticket_channel_id);
+    if (order.status === "paid")
+      return { state: "paid", orderRef: shortId(String(order.id)), locale, ticketUrl };
+    if (order.status === "cancelled") return { state: "cancelled", locale, ticketUrl };
+    if (new Date(order.checkout_expires_at).getTime() < Date.now())
+      return { state: "expired", locale, ticketUrl };
     return {
       state: "ok",
       plan: order.plan as "base" | "plus",
@@ -33,10 +48,13 @@ export const getCheckoutSummary = createServerFn({ method: "GET" })
       currency: String(order.currency),
       orderRef: shortId(String(order.id)),
       expiresAt: String(order.checkout_expires_at),
+      locale,
+      ticketUrl,
       // Public client id only. PAYPAL_CLIENT_ID stays strictly server-side.
       paypalClientId: process.env["PUBLIC_PAYPAL_CLIENT_ID"] ?? "",
     };
   });
+
 
 export const startPaypalOrder = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => tokenSchema.parse(data))
