@@ -848,7 +848,7 @@ function Pricing({ lang }: { lang: Lang }) {
             type="button"
             aria-pressed={selectedDays === 15}
             onClick={() => setSelectedDays(15)}
-            className={`rounded-xl border px-4 py-3 text-center text-base font-semibold transition-all sm:flex-1 sm:text-lg ${
+            className={`rounded-xl border px-4 py-2 text-center text-base font-semibold transition-all sm:flex-1 sm:text-lg ${
               selectedDays === 15
                 ? "border-primary/60 bg-primary/20 text-foreground shadow-[0_0_18px_-6px_color-mix(in_oklab,var(--primary)_60%,transparent)]"
                 : "border-border/50 bg-card/50 text-muted-foreground hover:border-border hover:text-foreground"
@@ -860,7 +860,7 @@ function Pricing({ lang }: { lang: Lang }) {
             type="button"
             aria-pressed={selectedDays === 30}
             onClick={() => setSelectedDays(30)}
-            className={`rounded-xl border px-4 py-3 text-center text-base font-semibold transition-all sm:flex-1 sm:text-lg ${
+            className={`rounded-xl border px-4 py-2 text-center text-base font-semibold transition-all sm:flex-1 sm:text-lg ${
               selectedDays === 30
                 ? "border-primary/60 bg-primary/20 text-foreground shadow-[0_0_18px_-6px_color-mix(in_oklab,var(--primary)_60%,transparent)]"
                 : "border-border/50 bg-card/50 text-muted-foreground hover:border-border hover:text-foreground"
