@@ -142,7 +142,6 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
           },
         } as const;
 
-
         const histories: Record<Locale, PanelMessage[]> = { it: [], en: [] };
         for (const locale of ["it", "en"] as const) {
           const history = await discordFetch(`/channels/${channels[locale]}/messages?limit=100`, {
