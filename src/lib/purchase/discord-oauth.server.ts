@@ -29,8 +29,11 @@ function timingSafeEqual(a: string, b: string): boolean {
   return diff === 0;
 }
 
-/** HMAC-signed, short-lived state. Carries only plan/days/locale/nonce/exp. */
-export async function signState(selection: OauthSelection): Promise<string> {
+/** HMAC-signed, short-lived state. Carries only plan/days/locale/prompt/nonce/exp. */
+export async function signState(
+  selection: OauthSelection,
+  prompt: "none" | "consent" = "none",
+): Promise<string> {
   const secret = requireSecret("DISCORD_OAUTH_STATE_SECRET");
   const nonceBytes = new Uint8Array(16);
   crypto.getRandomValues(nonceBytes);
@@ -41,6 +44,7 @@ export async function signState(selection: OauthSelection): Promise<string> {
       p: selection.plan,
       d: selection.days,
       l: selection.locale,
+      r: prompt,
       n: nonce,
       e: Math.floor(Date.now() / 1000) + STATE_TTL_SECONDS,
     }),
@@ -51,7 +55,7 @@ export async function signState(selection: OauthSelection): Promise<string> {
 
 export async function verifyState(
   state: string | null,
-): Promise<(OauthSelection & { nonce: string }) | null> {
+): Promise<(OauthSelection & { nonce: string; prompt: "none" | "consent" }) | null> {
   if (!state || state.length > 512) return null;
   const [payload, sig] = state.split(".");
   if (!payload || !sig) return null;
@@ -69,11 +73,13 @@ export async function verifyState(
       days,
       locale: normalizeLocale(parsed["l"]),
       nonce: parsed["n"],
+      prompt: parsed["r"] === "consent" ? "consent" : "none",
     };
   } catch {
     return null;
   }
 }
+
 
 /** Shared rate limiter (service-role RPC). Returns true when the call is allowed. */
 export async function allowRequest(
