@@ -66,12 +66,13 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
 
               const existing = await tickets.getTicket(channelId);
               await tickets.upsertTicket({ channelId, discordUserId: userId, locale });
-              const panel = discord.panelMessage(
-                locale,
-                userId,
-                existing?.selectedPlan ?? null,
-                existing?.selectedDays ?? null,
-              );
+              const panel = discord.panelMessage(locale, userId);
+
+              // Any leftover duration message from a previous attempt is removed:
+              // at most one plan panel + one duration message can be visible.
+              if (existing?.summaryMessageId) {
+                await discord.deleteChannelMessage(channelId, existing.summaryMessageId);
+              }
 
               let panelMessageId = existing?.panelMessageId ?? null;
               if (panelMessageId) {
@@ -82,7 +83,12 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
                 const sent = await discord.sendChannelMessage(channelId, panel);
                 panelMessageId = sent.json?.id ? String(sent.json.id) : null;
               }
-              await tickets.updateTicket(channelId, { panelMessageId });
+              await tickets.updateTicket(channelId, {
+                panelMessageId,
+                summaryMessageId: null,
+                selectedPlan: null,
+                selectedDays: null,
+              });
 
               return json({ type: 4, data: { content: c.ticketOpened(channelId), flags: 64 } });
             }
@@ -96,22 +102,37 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
               const locale = ticket?.locale ?? (await tickets.ticketLocale(interactionChannelId));
 
               if (interactionChannelId) {
-                // Switching plan invalidates the previous selection: the old
-                // unpaid order and its summary must disappear.
+                // Switching plan invalidates any previous unpaid order (backend only).
                 const { cancelPendingOrdersForChannel } =
                   await import("@/lib/purchase/orders.server");
                 await cancelPendingOrdersForChannel(interactionChannelId);
-                if (ticket?.summaryMessageId) {
-                  await discord.deleteChannelMessage(interactionChannelId, ticket.summaryMessageId);
+
+                // Exactly one duration message: edit it in place when it exists.
+                const duration = discord.durationMessage(locale, plan);
+                let durationMessageId = ticket?.summaryMessageId ?? null;
+                if (durationMessageId) {
+                  const edited = await discord.editChannelMessage(
+                    interactionChannelId,
+                    durationMessageId,
+                    duration,
+                  );
+                  if (!edited.ok) durationMessageId = null;
                 }
+                if (!durationMessageId) {
+                  const sent = await discord.sendChannelMessage(interactionChannelId, duration);
+                  durationMessageId = sent.json?.id ? String(sent.json.id) : null;
+                }
+
                 await tickets.updateTicket(interactionChannelId, {
+                  panelMessageId: body?.message?.id ? String(body.message.id) : undefined,
                   selectedPlan: plan,
                   selectedDays: null,
-                  summaryMessageId: null,
+                  summaryMessageId: durationMessageId,
                 });
               }
 
-              return json({ type: 7, data: discord.panelMessage(locale, userId, plan, null) });
+              // The plan panel stays untouched and clean.
+              return json({ type: 6 });
             }
 
             const daysMatch = /^aron_days_(base|plus)_(15|30)$/.exec(customId);
@@ -122,7 +143,6 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
                 ? await tickets.getTicket(interactionChannelId)
                 : null;
               const locale = ticket?.locale ?? (await tickets.ticketLocale(interactionChannelId));
-              const c = t(locale);
 
               const { createOrder, cancelPendingOrdersForChannel } =
                 await import("@/lib/purchase/orders.server");
@@ -146,35 +166,35 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
                 process.env["PAYPAL_ENV"] === "sandbox" ? SANDBOX_CHECKOUT_ORIGIN : request.url;
               const url = new URL(`/checkout/${order.token}`, checkoutBase).toString();
 
-              const summary = {
-                content: c.summary(shortId(order.id), plan, days, order.amountCents),
-                components: discord.payButton(locale, url),
-              };
+              const final = discord.finalOrderMessage(
+                locale,
+                userId,
+                shortId(order.id),
+                plan,
+                days,
+                order.amountCents,
+                url,
+              );
 
               if (interactionChannelId) {
-                let summaryMessageId = ticket?.summaryMessageId ?? null;
-                if (summaryMessageId) {
-                  const edited = await discord.editChannelMessage(
-                    interactionChannelId,
-                    summaryMessageId,
-                    summary,
-                  );
-                  if (!edited.ok) summaryMessageId = null;
-                }
-                if (!summaryMessageId) {
-                  const sent = await discord.sendChannelMessage(interactionChannelId, summary);
-                  summaryMessageId = sent.json?.id ? String(sent.json.id) : null;
+                // The duration message (this interaction's message) becomes the
+                // single final order message; the plan panel is removed.
+                const currentMessageId = body?.message?.id ? String(body.message.id) : null;
+                if (ticket?.panelMessageId && ticket.panelMessageId !== currentMessageId) {
+                  await discord.deleteChannelMessage(interactionChannelId, ticket.panelMessageId);
                 }
                 await tickets.updateTicket(interactionChannelId, {
+                  panelMessageId: currentMessageId,
+                  summaryMessageId: null,
                   selectedPlan: plan,
                   selectedDays: days,
-                  summaryMessageId,
                 });
-                return json({ type: 7, data: discord.panelMessage(locale, userId, plan, days) });
+                return json({ type: 7, data: final });
               }
 
-              return json({ type: 4, data: { ...summary, flags: 64 } });
+              return json({ type: 4, data: { ...final, flags: 64 } });
             }
+
 
             const uuidRe =
               "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
