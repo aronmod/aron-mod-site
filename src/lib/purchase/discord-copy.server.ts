@@ -89,20 +89,20 @@ const T = {
     refCapture: "PayPal Capture",
   },
   en: {
-    panelTitle: "🛒 **Buy Aron Mod**",
+    panelTitle: "🛒 **Aron Mod Purchase**",
     welcome: (userId: string) => `<@${userId}> 👋 Welcome!`,
-    choosePlan: "Choose your package:",
-    planInfo:
-      "**BASE** — core features · **PLUS** — includes Auto Dungeon, Auto Alchemy, Switch Bonus and HWID Spoofer (depending on the server).",
-    selected: (plan: string) => `Selected plan: **${plan.toUpperCase()}**`,
-    chooseDays: "Now choose the duration:",
+    choosePlan: "Choose a plan to continue.",
+    planInfo: "BASE = core features · PLUS = extra features (depending on the server).",
+    selected: (plan: string) => `Plan: **${plan.toUpperCase()}**`,
+    chooseDays: "Now choose the duration.",
     selectedFull: (plan: string, days: number) =>
-      `Current selection: **${plan.toUpperCase()}** · **${days} days**`,
-    changeHint: "You can change plan or duration at any time: the summary updates.",
-    planBase: "BASE",
-    planPlus: "PLUS",
-    days15: "15 days",
-    days30: "30 days",
+      `Plan: **${plan.toUpperCase()}** · Duration: **${days} days**`,
+    changeHint: "You can change plan or duration at any time.",
+    planBase: "🔹 BASE — Core features",
+    planPlus: "⭐ PLUS — Extra features",
+    days15: "⏱️ 15 DAYS",
+    days30: "📅 30 DAYS",
+
     pay: "💳 PAY",
     summary: (ref: string, plan: string, days: number, amountCents: number) =>
       [
