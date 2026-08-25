@@ -48,7 +48,11 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
             ? String(body.channel_id)
             : null;
 
-          if (!userId) return json({ type: 4, data: { content: "Errore utente.", flags: 64 } });
+          // Locale of the surrounding ticket, used for every generic reply.
+          const ctxLocale = await tickets.ticketLocale(interactionChannelId);
+          const ctxCopy = t(ctxLocale);
+
+          if (!userId) return json({ type: 4, data: { content: ctxCopy.userError, flags: 64 } });
 
           try {
             const startMatch = /^aron_purchase_start(?:_(it|en))?$/.exec(customId);
