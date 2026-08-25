@@ -210,7 +210,6 @@ export function finalOrderMessage(
   };
 }
 
-
 /** Discord link buttons are always style 5; the label is a plain PAGA / PAY. */
 export function payButton(locale: Locale, url: string) {
   return [{ type: 1, components: [{ type: 2, style: 5, label: t(locale).pay, url }] }];
