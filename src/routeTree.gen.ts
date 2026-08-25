@@ -10,33 +10,92 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiPublicDiscordAdminSetupRouteImport } from './routes/api/public/discord-admin-setup'
+import { Route as ApiPublicDiscordInteractionsRouteImport } from './routes/api/public/discord-interactions'
+import { Route as ApiPublicLicenseValidateRouteImport } from './routes/api/public/license-validate'
+import { Route as ApiPublicPaypalWebhookRouteImport } from './routes/api/public/paypal-webhook'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicDiscordAdminSetupRoute =
+  ApiPublicDiscordAdminSetupRouteImport.update({
+    id: '/api/public/discord-admin-setup',
+    path: '/api/public/discord-admin-setup',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicDiscordInteractionsRoute =
+  ApiPublicDiscordInteractionsRouteImport.update({
+    id: '/api/public/discord-interactions',
+    path: '/api/public/discord-interactions',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicLicenseValidateRoute =
+  ApiPublicLicenseValidateRouteImport.update({
+    id: '/api/public/license-validate',
+    path: '/api/public/license-validate',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicPaypalWebhookRoute = ApiPublicPaypalWebhookRouteImport.update({
+  id: '/api/public/paypal-webhook',
+  path: '/api/public/paypal-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api/public/discord-admin-setup': typeof ApiPublicDiscordAdminSetupRoute
+  '/api/public/discord-interactions': typeof ApiPublicDiscordInteractionsRoute
+  '/api/public/license-validate': typeof ApiPublicLicenseValidateRoute
+  '/api/public/paypal-webhook': typeof ApiPublicPaypalWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api/public/discord-admin-setup': typeof ApiPublicDiscordAdminSetupRoute
+  '/api/public/discord-interactions': typeof ApiPublicDiscordInteractionsRoute
+  '/api/public/license-validate': typeof ApiPublicLicenseValidateRoute
+  '/api/public/paypal-webhook': typeof ApiPublicPaypalWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/api/public/discord-admin-setup': typeof ApiPublicDiscordAdminSetupRoute
+  '/api/public/discord-interactions': typeof ApiPublicDiscordInteractionsRoute
+  '/api/public/license-validate': typeof ApiPublicLicenseValidateRoute
+  '/api/public/paypal-webhook': typeof ApiPublicPaypalWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/api/public/discord-admin-setup'
+    | '/api/public/discord-interactions'
+    | '/api/public/license-validate'
+    | '/api/public/paypal-webhook'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/api/public/discord-admin-setup'
+    | '/api/public/discord-interactions'
+    | '/api/public/license-validate'
+    | '/api/public/paypal-webhook'
+  id:
+    | '__root__'
+    | '/'
+    | '/api/public/discord-admin-setup'
+    | '/api/public/discord-interactions'
+    | '/api/public/license-validate'
+    | '/api/public/paypal-webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApiPublicDiscordAdminSetupRoute: typeof ApiPublicDiscordAdminSetupRoute
+  ApiPublicDiscordInteractionsRoute: typeof ApiPublicDiscordInteractionsRoute
+  ApiPublicLicenseValidateRoute: typeof ApiPublicLicenseValidateRoute
+  ApiPublicPaypalWebhookRoute: typeof ApiPublicPaypalWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +107,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/discord-admin-setup': {
+      id: '/api/public/discord-admin-setup'
+      path: '/api/public/discord-admin-setup'
+      fullPath: '/api/public/discord-admin-setup'
+      preLoaderRoute: typeof ApiPublicDiscordAdminSetupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/discord-interactions': {
+      id: '/api/public/discord-interactions'
+      path: '/api/public/discord-interactions'
+      fullPath: '/api/public/discord-interactions'
+      preLoaderRoute: typeof ApiPublicDiscordInteractionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/license-validate': {
+      id: '/api/public/license-validate'
+      path: '/api/public/license-validate'
+      fullPath: '/api/public/license-validate'
+      preLoaderRoute: typeof ApiPublicLicenseValidateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/paypal-webhook': {
+      id: '/api/public/paypal-webhook'
+      path: '/api/public/paypal-webhook'
+      fullPath: '/api/public/paypal-webhook'
+      preLoaderRoute: typeof ApiPublicPaypalWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApiPublicDiscordAdminSetupRoute: ApiPublicDiscordAdminSetupRoute,
+  ApiPublicDiscordInteractionsRoute: ApiPublicDiscordInteractionsRoute,
+  ApiPublicLicenseValidateRoute: ApiPublicLicenseValidateRoute,
+  ApiPublicPaypalWebhookRoute: ApiPublicPaypalWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
