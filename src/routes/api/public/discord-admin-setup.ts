@@ -26,7 +26,11 @@ function guildId(): string {
 
 type PanelMessage = {
   id?: string;
-  embeds?: Array<{ title?: string; description?: string }>;
+  embeds?: Array<{
+    title?: string;
+    description?: string;
+    fields?: Array<{ name?: string; value?: string }>;
+  }>;
   components?: Array<{
     components?: Array<{ custom_id?: string; label?: string; style?: number }>;
   }>;
