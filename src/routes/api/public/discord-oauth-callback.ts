@@ -318,7 +318,19 @@ export const Route = createFileRoute("/api/public/discord-oauth-callback")({
           if (!result) {
             return page({ locale, title: c.joinTitle, message: c.joinText, retryUrl, status: 200 });
           }
-          return redirect(result.checkoutUrl);
+          // Bridge page: guild id from env, channel id from the ticket just
+          // created, checkout URL from the order just created. The browser
+          // continues to the checkout automatically after ~2s.
+          const guildId = process.env["DISCORD_GUILD_ID"];
+          if (!guildId || !/^\d{5,25}$/.test(result.channelId) || !/^\d{5,25}$/.test(guildId)) {
+            return redirect(result.checkoutUrl);
+          }
+          return bridgePage({
+            locale,
+            guildId,
+            channelId: result.channelId,
+            checkoutUrl: result.checkoutUrl,
+          });
         } catch (error) {
           console.error("oauth_callback_failed", {
             reason: error instanceof Error ? error.message : "unknown",
