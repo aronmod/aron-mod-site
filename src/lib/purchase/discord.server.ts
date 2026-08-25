@@ -1,6 +1,9 @@
 // Server-only Discord REST + interaction signature verification.
 
+import { t, type Locale } from "./discord-copy.server";
+
 const API = "https://discord.com/api/v10";
+
 
 function botToken(): string {
   const token = process.env["DISCORD_BOT_TOKEN"];
