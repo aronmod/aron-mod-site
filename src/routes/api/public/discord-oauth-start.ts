@@ -31,14 +31,20 @@ export const Route = createFileRoute("/api/public/discord-oauth-start")({
         const locale = normalizeLocale(url.searchParams.get("locale"));
         if (!isPlan(plan) || !isDays(days)) return text("invalid selection", 400);
 
+        // Default path uses prompt=none so returning buyers skip the consent
+        // screen; the callback re-enters here with prompt=consent only when
+        // Discord signals that consent/interaction is required.
+        const promptParam = url.searchParams.get("prompt");
+        const prompt = oauth.isOauthPrompt(promptParam) ? promptParam : "none";
+
         try {
           const fp = await oauth.clientFingerprint(request);
           const allowed = await oauth.allowRequest(`oauth_start:${fp}`, 10, 300);
           if (!allowed) return text("too many requests", 429);
 
           const redirectUri = oauth.oauthRedirectUri(request.url);
-          const state = await oauth.signState({ plan, days, locale });
-          return redirect(oauth.authorizeUrl(state, redirectUri));
+          const state = await oauth.signState({ plan, days, locale }, prompt);
+          return redirect(oauth.authorizeUrl(state, redirectUri, prompt));
         } catch (error) {
           console.error("oauth_start_failed", {
             reason: error instanceof Error ? error.message : "unknown",
