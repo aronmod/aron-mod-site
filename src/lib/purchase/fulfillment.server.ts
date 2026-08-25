@@ -245,11 +245,13 @@ export async function deliverPendingKey(orderId: string): Promise<DeliveryResult
 
   const res = await sendChannelMessage(channelId, {
     content: keyMessage(
+      await orderLocale(orderId, channelId),
       String(order.plan),
       Number(order.days),
       plaintextKey,
       order.discord_user_id ? String(order.discord_user_id) : null,
     ),
+
   });
   if (!res.ok) {
     await failDelivery(`discord_${res.status}`);
