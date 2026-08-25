@@ -170,7 +170,6 @@ export function reviewButtons(orderId: string) {
   ];
 }
 
-
 /** Discord modal asking staff to paste the key generated manually in KeyAuth. */
 export function keyAuthModal(orderId: string) {
   return {

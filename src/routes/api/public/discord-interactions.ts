@@ -47,8 +47,7 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
 
           try {
             if (customId === "aron_purchase_start") {
-              const locale: string | null =
-                typeof body?.locale === "string" ? body.locale : null;
+              const locale: string | null = typeof body?.locale === "string" ? body.locale : null;
               const channelId = await discord.ensureTicketChannel(userId, locale);
               if (!channelId) {
                 return json({
@@ -242,7 +241,6 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
                 }
                 return json(discord.keyAuthModal(orderId));
               }
-
 
               const orderId = String(retryMatch![1]);
               const { deliverPendingKey } = await import("@/lib/purchase/fulfillment.server");

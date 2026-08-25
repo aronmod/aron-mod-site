@@ -142,7 +142,6 @@ export async function fulfillOrder(
   return { status: "paid", fulfillment: needsReview ? "review_required" : "ready" };
 }
 
-
 export type DeliveryResult =
   | { status: "delivered" }
   | { status: "nothing_pending" }

@@ -18,8 +18,9 @@ export type RiskOutcome = {
  * never from client input) and normalises it.
  */
 export function evaluateCaptureRisk(capture: unknown): RiskOutcome {
-  const sp = (capture as { seller_protection?: { status?: unknown; dispute_categories?: unknown } } | null)
-    ?.seller_protection;
+  const sp = (
+    capture as { seller_protection?: { status?: unknown; dispute_categories?: unknown } } | null
+  )?.seller_protection;
 
   const rawStatus = typeof sp?.status === "string" ? sp.status.trim().toUpperCase() : "";
   const status = rawStatus === "" ? "MISSING" : rawStatus;
