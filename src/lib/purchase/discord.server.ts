@@ -48,10 +48,20 @@ export async function alertStaff(content: string) {
   await sendChannelMessage(channelId, { content });
 }
 
-/** Finds an existing open ticket channel for a user, or creates a private one. */
-export async function ensureTicketChannel(userId: string): Promise<string | null> {
+/**
+ * Finds an existing open ticket channel for a user, or creates a private one.
+ * Italian locales land in the IT category, everything else in the EN category
+ * (falls back to the IT/default category when the EN one is not configured).
+ */
+export async function ensureTicketChannel(
+  userId: string,
+  locale?: string | null,
+): Promise<string | null> {
   const guildId = process.env["DISCORD_GUILD_ID"];
-  const categoryId = process.env["DISCORD_TICKET_CATEGORY_ID"];
+  const itCategory = process.env["DISCORD_TICKET_CATEGORY_ID"];
+  const enCategory = process.env["DISCORD_TICKET_CATEGORY_ID_EN"];
+  const isItalian = typeof locale === "string" && locale.toLowerCase().startsWith("it");
+  const categoryId = isItalian ? itCategory : (enCategory ?? itCategory);
   if (!guildId || !categoryId) throw new Error("discord_config_missing");
 
   const topicMarker = `aron-order:${userId}`;
