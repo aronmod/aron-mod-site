@@ -188,7 +188,6 @@ export function panelMessage(
   return { content: lines.join("\n"), components: rows };
 }
 
-
 /**
  * Discord link buttons are always style 5 and cannot take a custom colour, so
  * the CTA is made obvious with the 💳 emoji and a short uppercase label.
