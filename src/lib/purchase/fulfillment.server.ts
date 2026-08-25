@@ -134,10 +134,12 @@ export async function fulfillOrder(
   const channelId = row.ticket_channel_id ? String(row.ticket_channel_id) : null;
   const userId = row.discord_user_id ? String(row.discord_user_id) : null;
   const needsReview = String(row.fulfillment_status) === "review_required";
+  const locale = await orderLocale(orderId, channelId);
 
   if (channelId) {
     const res = await sendChannelMessage(channelId, {
       content: (needsReview ? reviewMessage : paidMessage)(
+        locale,
         orderId,
         captureId,
         String(row.plan),
@@ -147,6 +149,7 @@ export async function fulfillOrder(
       ),
       components: needsReview ? reviewButtons(orderId) : staffKeyButtons(orderId),
     });
+
     if (!res.ok) {
       await alertStaff(
         `⚠️ Pagamento confermato ma messaggio non inviato nel ticket. ${orderRefInline(orderId, captureId)}. Assegnare manualmente la KeyAuth key.`,
