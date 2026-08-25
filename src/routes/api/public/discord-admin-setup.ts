@@ -26,7 +26,10 @@ function guildId(): string {
 
 type PanelMessage = {
   id?: string;
-  components?: Array<{ components?: Array<{ custom_id?: string }> }>;
+  embeds?: Array<{ title?: string; description?: string }>;
+  components?: Array<{
+    components?: Array<{ custom_id?: string; label?: string; style?: number }>;
+  }>;
 };
 
 function idsOf(message: PanelMessage): string[] {
@@ -208,9 +211,39 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
 
         // Independent re-scan: assert exactly one correct panel per channel
         // and zero cross-locale panels.
-        const verify: Record<Locale, { it: number; en: number }> = {
-          it: { it: 0, en: 0 },
-          en: { it: 0, en: 0 },
+        const verify: Record<
+          Locale,
+          {
+            it: number;
+            en: number;
+            exact: boolean;
+            embedCount: number;
+            titles: string[];
+            buttonLabel: string;
+            buttonStyle: number | null;
+            hasPiano: boolean;
+          }
+        > = {
+          it: {
+            it: 0,
+            en: 0,
+            exact: false,
+            embedCount: 0,
+            titles: [],
+            buttonLabel: "",
+            buttonStyle: null,
+            hasPiano: false,
+          },
+          en: {
+            it: 0,
+            en: 0,
+            exact: false,
+            embedCount: 0,
+            titles: [],
+            buttonLabel: "",
+            buttonStyle: null,
+            hasPiano: false,
+          },
         };
         for (const locale of ["it", "en"] as const) {
           const rescan = await discordFetch(`/channels/${channels[locale]}/messages?limit=100`, {
@@ -221,11 +254,39 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
             const ids = idsOf(message);
             if (ids.includes(panels.it.customId)) verify[locale].it += 1;
             if (ids.includes(panels.en.customId)) verify[locale].en += 1;
+
+            if (ids.includes(panels[locale].customId)) {
+              const embeds = Array.isArray(message.embeds) ? message.embeds : [];
+              const button = (message.components ?? [])
+                .flatMap((row) => row.components ?? [])
+                .find((component) => component.custom_id === panels[locale].customId);
+              const expectedTitles =
+                locale === "it" ? ["🛒 Acquista Aron Mod", "BASE", "PLUS"] : ["🛒 Buy Aron Mod", "BASE", "PLUS"];
+              const expectedLabel = locale === "it" ? "🛒 Acquista ora" : "🛒 Buy now";
+              const serialized = JSON.stringify(message).toLocaleUpperCase("it-IT");
+
+              verify[locale].embedCount = embeds.length;
+              verify[locale].titles = embeds.map((embed) => String(embed.title ?? ""));
+              verify[locale].buttonLabel = String(button?.label ?? "");
+              verify[locale].buttonStyle = typeof button?.style === "number" ? button.style : null;
+              verify[locale].hasPiano = serialized.includes("PIANO");
+              verify[locale].exact =
+                embeds.length === 3 &&
+                verify[locale].titles.every((title, index) => title === expectedTitles[index]) &&
+                button?.label === expectedLabel &&
+                button.style === 1 &&
+                !verify[locale].hasPiano;
+            }
           }
         }
 
         const verified =
-          verify.it.it === 1 && verify.it.en === 0 && verify.en.en === 1 && verify.en.it === 0;
+          verify.it.it === 1 &&
+          verify.it.en === 0 &&
+          verify.it.exact &&
+          verify.en.en === 1 &&
+          verify.en.it === 0 &&
+          verify.en.exact;
         const allOk = Object.values(result).every((r) => r.ok) && verified;
         return new Response(JSON.stringify({ ok: allOk, panels: result, verify, channels }), {
           status: allOk ? 200 : 502,
