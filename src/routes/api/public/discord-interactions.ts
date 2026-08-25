@@ -187,11 +187,7 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
               if (!discord.isStaffInteraction(body)) {
                 return json({
                   type: 4,
-                  data: {
-                    content:
-                      "⛔ Azione riservata allo staff. / Staff only.\n_Se sei staff e vedi questo messaggio, `DISCORD_STAFF_ROLE_ID` non è configurato correttamente._",
-                    flags: 64,
-                  },
+                  data: { content: ctxCopy.staffOnly, flags: 64 },
                 });
               }
 
@@ -202,7 +198,7 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
                 const orderId = String(approveMatch[1]);
                 const staffId: string | undefined = body?.member?.user?.id;
                 if (!staffId)
-                  return json({ type: 4, data: { content: "Errore utente.", flags: 64 } });
+                  return json({ type: 4, data: { content: ctxCopy.userError, flags: 64 } });
 
                 const { data, error } = await supabase.rpc("approve_order_delivery", {
                   _order_id: orderId,
@@ -215,16 +211,13 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
                 if (result === "order_not_found" || result === "order_not_paid") {
                   return json({
                     type: 4,
-                    data: { content: "⚠️ Ordine non trovato o non pagato.", flags: 64 },
+                    data: { content: ctxCopy.orderNotReady, flags: 64 },
                   });
                 }
                 if (result === "already_approved") {
                   return json({
                     type: 4,
-                    data: {
-                      content: "ℹ️ Consegna già approvata per questo ordine.",
-                      flags: 64,
-                    },
+                    data: { content: ctxCopy.alreadyApproved, flags: 64 },
                   });
                 }
 
@@ -237,16 +230,13 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
                   const locale = await tickets.ticketLocale(channelId);
                   await discord.sendChannelMessage(channelId, {
                     content: t(locale).approvedNote,
-                    components: discord.staffKeyButtons(orderId),
+                    components: discord.staffKeyButtons(orderId, locale),
                   });
                 }
 
                 return json({
                   type: 4,
-                  data: {
-                    content: "✅ Consegna approvata. Ora puoi assegnare la KeyAuth key.",
-                    flags: 64,
-                  },
+                  data: { content: ctxCopy.approvedEphemeral, flags: 64 },
                 });
               }
 
@@ -254,23 +244,28 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
                 const orderId = String(assignMatch[1]);
                 const { data: order } = await supabase
                   .from("purchase_orders")
-                  .select("id, status, fulfillment_status")
+                  .select("id, status, fulfillment_status, locale, discord_ticket_channel_id")
                   .eq("id", orderId)
                   .maybeSingle();
+                const locale =
+                  order?.locale === "it" || order?.locale === "en"
+                    ? order.locale
+                    : await tickets.ticketLocale(
+                        order?.discord_ticket_channel_id
+                          ? String(order.discord_ticket_channel_id)
+                          : interactionChannelId,
+                      );
+                const c = t(locale);
                 if (!order || order.status !== "paid") {
                   return json({
                     type: 4,
-                    data: { content: "⚠️ Ordine non trovato o non pagato.", flags: 64 },
+                    data: { content: c.orderNotReady, flags: 64 },
                   });
                 }
                 if (order.fulfillment_status === "review_required") {
                   return json({
                     type: 4,
-                    data: {
-                      content:
-                        "🕵️ Ordine in **revisione manuale**: usa prima **Approva consegna (staff)**.",
-                      flags: 64,
-                    },
+                    data: { content: c.reviewRequiredAssign, flags: 64 },
                   });
                 }
                 const { data: assignment } = await supabase
@@ -281,34 +276,34 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
                 if (assignment?.status === "delivered") {
                   return json({
                     type: 4,
-                    data: { content: "ℹ️ Key già assegnata e consegnata.", flags: 64 },
+                    data: { content: c.keyAlreadyDelivered, flags: 64 },
                   });
                 }
                 if (assignment?.status === "pending") {
                   return json({
                     type: 4,
-                    data: {
-                      content:
-                        "ℹ️ Una key è già registrata ma non consegnata. Usa **Riprova consegna**.",
-                      flags: 64,
-                    },
+                    data: { content: c.keyPending, flags: 64 },
                   });
                 }
-                return json(discord.keyAuthModal(orderId));
+                return json(discord.keyAuthModal(orderId, locale));
               }
 
               const orderId = String(retryMatch![1]);
-              const { deliverPendingKey } = await import("@/lib/purchase/fulfillment.server");
+              const { deliverPendingKey, orderLocale } = await import(
+                "@/lib/purchase/fulfillment.server"
+              );
+              const locale = await orderLocale(orderId, interactionChannelId);
+              const c = t(locale);
               const result = await deliverPendingKey(orderId);
               const messages: Record<string, string> = {
-                delivered: "✅ Key consegnata nel ticket.",
-                nothing_pending: "ℹ️ Nessuna consegna pendente per questo ordine.",
-                no_channel: "⚠️ Nessun canale ticket associato all'ordine.",
-                failed: "⚠️ Consegna fallita. Riprova tra poco.",
+                delivered: c.retryDelivered,
+                nothing_pending: c.retryNothing,
+                no_channel: c.retryNoChannel,
+                failed: c.retryFailed,
               };
               return json({
                 type: 4,
-                data: { content: messages[result.status] ?? "⚠️ Errore.", flags: 64 },
+                data: { content: messages[result.status] ?? c.genericError, flags: 64 },
               });
             }
           } catch (err) {
@@ -335,16 +330,19 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
           if (!match) return json({ type: 4, data: { content: "Azione non valida.", flags: 64 } });
 
           const discord = await import("@/lib/purchase/discord.server");
+          const orderId = String(match[1]);
+          const { orderLocale } = await import("@/lib/purchase/fulfillment.server");
+          const locale = await orderLocale(orderId, body?.channel_id ? String(body.channel_id) : null);
+          const { t } = await import("@/lib/purchase/discord-copy.server");
+          const c = t(locale);
           if (!discord.isStaffInteraction(body)) {
             return json({
               type: 4,
-              data: { content: "⛔ Azione riservata allo staff. / Staff only.", flags: 64 },
+              data: { content: c.staffOnly, flags: 64 },
             });
           }
           const staffId: string | undefined = body?.member?.user?.id;
-          if (!staffId) return json({ type: 4, data: { content: "Errore utente.", flags: 64 } });
-
-          const orderId = String(match[1]);
+          if (!staffId) return json({ type: 4, data: { content: c.userError, flags: 64 } });
           try {
             // The raw key exists only here and inside the AES-GCM outbox. Never logged.
             type ModalField = { custom_id?: string; value?: string };
@@ -359,10 +357,7 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
             if (!/^[\w.@:-]{8,128}$/.test(rawKey)) {
               return json({
                 type: 4,
-                data: {
-                  content: "⚠️ Key non valida (8–128 caratteri alfanumerici, `-` `_` `.` `:` `@`).",
-                  flags: 64,
-                },
+                data: { content: c.keyInvalid, flags: 64 },
               });
             }
 
@@ -387,23 +382,19 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
             if (result === "order_not_found" || result === "order_not_paid") {
               return json({
                 type: 4,
-                data: { content: "⚠️ Ordine non trovato o non pagato.", flags: 64 },
+                data: { content: c.orderNotReady, flags: 64 },
               });
             }
             if (result === "review_required") {
               return json({
                 type: 4,
-                data: {
-                  content:
-                    "🕵️ Ordine in **revisione manuale**: approva prima la consegna con **Approva consegna (staff)**. Nessuna key è stata salvata.",
-                  flags: 64,
-                },
+                data: { content: c.reviewRequiredModal, flags: 64 },
               });
             }
             if (result === "already_delivered") {
               return json({
                 type: 4,
-                data: { content: "ℹ️ Key già assegnata a questo ordine.", flags: 64 },
+                data: { content: c.keyAlreadyAssigned, flags: 64 },
               });
             }
 
@@ -414,8 +405,8 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
               data: {
                 content:
                   delivery.status === "delivered"
-                    ? "✅ Key registrata e consegnata nel ticket."
-                    : "⚠️ Key registrata in modo sicuro ma consegna fallita. Usa **Riprova consegna** (non serve reinserirla).",
+                    ? c.assignDelivered
+                    : c.assignDeliveryFailed,
                 flags: 64,
               },
             });
@@ -426,7 +417,7 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
             });
             return json({
               type: 4,
-              data: { content: "⚠️ Errore temporaneo. Riprova più tardi.", flags: 64 },
+              data: { content: c.genericError, flags: 64 },
             });
           }
         }
