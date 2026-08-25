@@ -1,87 +1,134 @@
-// Server-only, idempotent fulfillment shared by the capture path and the webhook.
+// Server-only, idempotent payment finalization + manual KeyAuth key delivery.
+//
+// This project is NOT the license authority: KeyAuth is. Payment fulfillment only
+// marks the order paid and asks staff to assign a manually generated KeyAuth key.
 
-import {
-  decryptSecretValue,
-  encryptSecretValue,
-  generateLicenseKey,
-  last4,
-  sha256Hex,
-  shortId,
-} from "./crypto.server";
+import { decryptSecretValue, shortId } from "./crypto.server";
 import { getServiceClient } from "./db.server";
-import { addCustomerRole, alertStaff, sendChannelMessage } from "./discord.server";
+import { addCustomerRole, alertStaff, sendChannelMessage, staffKeyButtons } from "./discord.server";
 import { formatEur } from "./pricing";
 
 export type FulfillResult =
-  | { status: "fulfilled"; licenseId: string; expiresAt: string; isNew: boolean }
+  | { status: "paid" }
   | { status: "already_processed" }
   | { status: "order_not_found" };
 
-type OrderRow = {
-  discord_user_id: string | null;
-  discord_ticket_channel_id: string | null;
-  plan: string;
-  days: number;
-  amount_cents: number;
-};
-
-function buildMessage(
+function paidMessage(
   orderId: string,
-  order: OrderRow,
-  expiresAt: string,
-  plaintextKey: string | null,
+  plan: string,
+  days: number,
+  amountCents: number,
+  userId: string | null,
 ): string {
-  const expires = new Date(expiresAt).toLocaleString("it-IT", { timeZone: "UTC" });
-  const lines = [
+  return [
+    userId ? `<@${userId}>` : "",
     "✅ **Pagamento confermato / Payment confirmed**",
-    `Piano / Plan: **${String(order.plan).toUpperCase()}** · ${order.days} giorni / days · ${formatEur(order.amount_cents)}`,
-    `Scadenza / Expires: **${expires} UTC**`,
+    `Piano / Plan: **${String(plan).toUpperCase()}** · ${days} giorni / days · ${formatEur(amountCents)}`,
     `Ordine / Order: \`${shortId(orderId)}\``,
-  ];
-  if (plaintextKey) {
-    lines.push(
-      "",
-      "🔑 La tua license key (mostrata **una sola volta**, salvala ora):",
-      `\`\`\`${plaintextKey}\`\`\``,
-      "_Your license key is shown only once — store it safely._",
-    );
-  } else {
-    lines.push(
-      "",
-      "♻️ La tua licenza esistente è stata **estesa**: continua a usare la stessa key.",
-      "_Your existing license has been extended: keep using the same key._",
-    );
-  }
-  return lines.join("\n");
+    "",
+    "🔑 La KeyAuth key verrà assegnata dallo staff in questo ticket.",
+    "_Your KeyAuth key will be assigned by the staff in this ticket._",
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+function keyMessage(plan: string, days: number, plaintextKey: string, userId: string | null) {
+  return [
+    userId ? `<@${userId}>` : "",
+    "🔑 **KeyAuth key assegnata / KeyAuth key assigned**",
+    `Piano / Plan: **${String(plan).toUpperCase()}**`,
+    `Durata / Duration: **${days} giorni / days**`,
+    `\`\`\`${plaintextKey}\`\`\``,
+    "Salvala ora. La key è gestita da KeyAuth.",
+    "_Save it now. The key is managed by KeyAuth._",
+  ]
+    .filter(Boolean)
+    .join("\n");
 }
 
 /**
- * Delivers a pending encrypted license key to the buyer's ticket and only then
- * marks it delivered, wiping the ciphertext. Throws when Discord fails, so the
- * caller can return a non-2xx and let PayPal retry — the key is never lost.
+ * Confirms a verified payment exactly once. No license key is generated here and
+ * no row in `licenses` is created or extended — KeyAuth remains the sole authority.
  */
-async function deliverPending(orderId: string): Promise<boolean> {
+export async function fulfillOrder(
+  orderId: string,
+  captureId: string,
+  source: string,
+): Promise<FulfillResult> {
   const supabase = getServiceClient();
+
+  const { data, error } = await supabase.rpc("finalize_paid_order_manual", {
+    _order_id: orderId,
+    _capture_id: captureId,
+    _source: source,
+  });
+  if (error) {
+    console.error("fulfillment_rpc_error", { orderId, code: error.code });
+    throw new Error("fulfillment_failed");
+  }
+  const row = Array.isArray(data) ? data[0] : data;
+  if (!row || row.result === "order_not_found") return { status: "order_not_found" };
+  if (row.result === "already_processed") return { status: "already_processed" };
+
+  const channelId = row.ticket_channel_id ? String(row.ticket_channel_id) : null;
+  const userId = row.discord_user_id ? String(row.discord_user_id) : null;
+
+  if (channelId) {
+    const res = await sendChannelMessage(channelId, {
+      content: paidMessage(
+        orderId,
+        String(row.plan),
+        Number(row.days),
+        Number(row.amount_cents),
+        userId,
+      ),
+      components: staffKeyButtons(orderId),
+    });
+    if (!res.ok) {
+      await alertStaff(
+        `⚠️ Pagamento confermato ma messaggio non inviato nel ticket per l'ordine \`${shortId(orderId)}\`. Assegnare manualmente la KeyAuth key.`,
+      );
+    }
+  } else {
+    await alertStaff(
+      `⚠️ Pagamento confermato per l'ordine \`${shortId(orderId)}\` senza canale ticket. Contattare il cliente manualmente.`,
+    );
+  }
+
+  if (userId) await addCustomerRole(userId);
+
+  return { status: "paid" };
+}
+
+export type DeliveryResult =
+  | { status: "delivered" }
+  | { status: "nothing_pending" }
+  | { status: "no_channel" }
+  | { status: "failed" };
+
+/**
+ * Delivers the pending, AES-GCM encrypted KeyAuth key to the buyer's ticket and
+ * only then marks it delivered, wiping the ciphertext. On failure the row stays
+ * pending so staff can retry without pasting the key again.
+ */
+export async function deliverPendingKey(orderId: string): Promise<DeliveryResult> {
+  const supabase = getServiceClient();
+
   const { data: delivery } = await supabase
     .from("license_deliveries")
     .select("id, ciphertext, iv, discord_ticket_channel_id, attempts")
     .eq("purchase_order_id", orderId)
     .eq("status", "pending")
     .maybeSingle();
-  if (!delivery || !delivery.ciphertext || !delivery.iv) return false;
+  if (!delivery || !delivery.ciphertext || !delivery.iv) return { status: "nothing_pending" };
 
   const { data: order } = await supabase
     .from("purchase_orders")
-    .select("discord_user_id, discord_ticket_channel_id, plan, days, amount_cents, license_id")
+    .select("discord_user_id, discord_ticket_channel_id, plan, days")
     .eq("id", orderId)
     .maybeSingle();
-  if (!order) return false;
-
-  const { data: license } = await supabase
-    .from("licenses")
-    .select("expires_at")
-    .eq("id", order.license_id as string)
-    .maybeSingle();
+  if (!order) return { status: "nothing_pending" };
 
   const channelId =
     (delivery.discord_ticket_channel_id as string | null) ??
@@ -97,9 +144,9 @@ async function deliverPending(orderId: string): Promise<boolean> {
   if (!channelId) {
     await failDelivery("no_channel");
     await alertStaff(
-      `⚠️ License key in attesa di consegna: ordine \`${shortId(orderId)}\` non ha un canale ticket.`,
+      `⚠️ KeyAuth key in attesa di consegna: l'ordine \`${shortId(orderId)}\` non ha un canale ticket.`,
     );
-    throw new Error("license_delivery_no_channel");
+    return { status: "no_channel" };
   }
 
   let plaintextKey: string;
@@ -107,106 +154,43 @@ async function deliverPending(orderId: string): Promise<boolean> {
     plaintextKey = await decryptSecretValue(String(delivery.ciphertext), String(delivery.iv));
   } catch {
     await failDelivery("decrypt_failed");
-    throw new Error("license_delivery_decrypt_failed");
+    return { status: "failed" };
   }
 
   const res = await sendChannelMessage(channelId, {
-    content: buildMessage(
-      orderId,
-      order as unknown as OrderRow,
-      String(license?.expires_at ?? new Date().toISOString()),
+    content: keyMessage(
+      String(order.plan),
+      Number(order.days),
       plaintextKey,
+      order.discord_user_id ? String(order.discord_user_id) : null,
     ),
   });
   if (!res.ok) {
     await failDelivery(`discord_${res.status}`);
-    throw new Error("license_delivery_failed");
+    return { status: "failed" };
   }
 
+  const now = new Date().toISOString();
   await supabase
     .from("license_deliveries")
     .update({
       status: "delivered",
       ciphertext: null,
       iv: null,
-      delivered_at: new Date().toISOString(),
+      delivered_at: now,
       attempts: Number(delivery.attempts ?? 0) + 1,
       last_error_code: null,
     })
     .eq("id", delivery.id);
-  return true;
-}
-
-/**
- * Activates or extends the license for a paid order exactly once.
- * For a new license the plaintext key is stored only AES-GCM encrypted in the
- * delivery outbox (same transaction as the payment finalization) and wiped once
- * the Discord ticket message succeeds.
- */
-export async function fulfillOrder(
-  orderId: string,
-  captureId: string,
-  source: string,
-): Promise<FulfillResult> {
-  const supabase = getServiceClient();
-  const plaintextKey = generateLicenseKey();
-  const keyHash = await sha256Hex(plaintextKey);
-  const encrypted = await encryptSecretValue(plaintextKey);
-
-  const { data, error } = await supabase.rpc("finalize_paid_order", {
-    _order_id: orderId,
-    _capture_id: captureId,
-    _new_key_hash: keyHash,
-    _new_key_last4: last4(plaintextKey),
-    _source: source,
-    _delivery_ciphertext: encrypted.ciphertext,
-    _delivery_iv: encrypted.iv,
-  });
-  if (error) {
-    console.error("fulfillment_rpc_error", { orderId, code: error.code });
-    throw new Error("fulfillment_failed");
-  }
-  const row = Array.isArray(data) ? data[0] : data;
-  if (!row || row.result === "order_not_found") return { status: "order_not_found" };
-
-  if (row.result === "already_processed") {
-    // Retry path: a previous run may have persisted the key but failed to deliver it.
-    await deliverPending(orderId);
-    return { status: "already_processed" };
-  }
-
-  if (row.is_new_license) {
-    await deliverPending(orderId);
-  } else {
-    const { data: order } = await supabase
-      .from("purchase_orders")
-      .select("discord_user_id, discord_ticket_channel_id, plan, days, amount_cents")
-      .eq("id", orderId)
-      .maybeSingle();
-    if (order?.discord_ticket_channel_id) {
-      const res = await sendChannelMessage(String(order.discord_ticket_channel_id), {
-        content: buildMessage(orderId, order as unknown as OrderRow, String(row.expires_at), null),
-      });
-      if (!res.ok) {
-        // No secret at risk on renewals: alert staff instead of blocking the webhook.
-        await alertStaff(
-          `⚠️ Rinnovo confermato ma messaggio Discord non inviato per ordine \`${shortId(orderId)}\`.`,
-        );
-      }
-    }
-  }
-
-  const { data: order } = await supabase
+  await supabase
+    .from("keyauth_assignments")
+    .update({ status: "delivered", delivered_at: now })
+    .eq("purchase_order_id", orderId);
+  await supabase
     .from("purchase_orders")
-    .select("discord_user_id")
-    .eq("id", orderId)
-    .maybeSingle();
-  if (order?.discord_user_id) await addCustomerRole(String(order.discord_user_id));
+    .update({ fulfillment_status: "delivered" })
+    .eq("id", orderId);
+  if (order.discord_user_id) await addCustomerRole(String(order.discord_user_id));
 
-  return {
-    status: "fulfilled",
-    licenseId: String(row.license_id),
-    expiresAt: String(row.expires_at),
-    isNew: Boolean(row.is_new_license),
-  };
+  return { status: "delivered" };
 }
