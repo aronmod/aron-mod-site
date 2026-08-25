@@ -265,13 +265,13 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
                   ? ["🛒 Acquista Aron Mod", "BASE", "PLUS"]
                   : ["🛒 Buy Aron Mod", "BASE", "PLUS"];
               const expectedLabel = locale === "it" ? "🛒 Acquista ora" : "🛒 Buy now";
-              const serialized = JSON.stringify(message).toLocaleUpperCase("it-IT");
+              const serializedEmbeds = JSON.stringify(embeds);
 
               verify[locale].embedCount = embeds.length;
               verify[locale].titles = embeds.map((embed) => String(embed.title ?? ""));
               verify[locale].buttonLabel = String(button?.label ?? "");
               verify[locale].buttonStyle = typeof button?.style === "number" ? button.style : null;
-              verify[locale].hasPiano = serialized.includes("PIANO");
+              verify[locale].hasPiano = serializedEmbeds.includes("PIANO");
               verify[locale].exact =
                 embeds.length === 3 &&
                 verify[locale].titles.every((title, index) => title === expectedTitles[index]) &&
