@@ -91,7 +91,7 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
                 plan,
                 days,
               });
-              const url = `https://aronmod.net/checkout/${order.token}`;
+              const url = new URL(`/checkout/${order.token}`, request.url).toString();
               return json({
                 type: 4,
                 data: {

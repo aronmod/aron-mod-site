@@ -53,7 +53,7 @@ npm run dev
 
 ## Automated purchase setup
 
-Flusso: pannello Discord → ticket privato → scelta piano/durata → link `https://aronmod.net/checkout/<token>` → PayPal → verifica server-side → licenza creata/estesa → messaggio nel ticket + ruolo cliente.
+Flusso: pannello Discord → ticket privato → scelta piano/durata → link checkout su PayPal → verifica server-side → licenza creata/estesa → messaggio nel ticket + ruolo cliente. Il link di checkout viene generato dinamicamente dall'origin della richiesta Discord, quindi in sandbox punta automaticamente alla preview e in produzione ad `aronmod.net`.
 
 ### Secrets richiesti (solo NOMI — configurarli in Project Settings → Secrets, mai nel repo)
 
@@ -88,6 +88,7 @@ Flusso: pannello Discord → ticket privato → scelta piano/durata → link `ht
 
 ### Note di sicurezza
 
+- **Sandbox / pre-go-live**: per testare prima del deploy si può puntare l'Interactions URL di Discord verso la preview del progetto (es. `https://id-preview--...lovable.app/api/public/discord-interactions`). Il link di checkout seguirà automaticamente lo stesso host. Prima della produzione, sostituire l'Interactions URL con `https://aronmod.net/api/public/discord-interactions`.
 - I prezzi (BASE 15g 9 €, BASE 30g 15 €, PLUS 15g 12 €, PLUS 30g 20 €) sono risolti solo lato server da una whitelist.
 - Token di checkout casuale, salvato solo come SHA-256, valido 30 minuti.
 - Fulfillment idempotente (`paypal_event_id` e `paypal_capture_id` UNIQUE + funzione SQL transazionale).
