@@ -219,7 +219,6 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
           status: allOk ? 200 : 502,
           headers: { "content-type": "application/json" },
         });
-
       },
     },
   },
