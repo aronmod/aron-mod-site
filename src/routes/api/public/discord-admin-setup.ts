@@ -26,7 +26,11 @@ function guildId(): string {
 
 type PanelMessage = {
   id?: string;
-  embeds?: Array<{ title?: string; description?: string }>;
+  embeds?: Array<{
+    title?: string;
+    description?: string;
+    fields?: Array<{ name?: string; value?: string }>;
+  }>;
   components?: Array<{
     components?: Array<{ custom_id?: string; label?: string; style?: number }>;
   }>;
@@ -72,18 +76,26 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
                 {
                   title: "🛒 Acquista Aron Mod",
                   description:
-                    "Clicca **Acquista** e scegli il piano e la durata.\n\nDopo la verifica del pagamento, riceverai la key direttamente nel ticket.",
+                    "Clicca **Acquista** e scegli il piano e la durata in base alle tue esigenze. Poi completa il pagamento con PayPal.\n\nDopo la verifica del pagamento, riceverai la key direttamente nel ticket.",
                   color: 0x3b82f6,
-                },
-                {
-                  title: "BASE",
-                  description: "**15 GIORNI · 9 €**\n**30 GIORNI · 15 €**",
-                  color: 0x3b82f6,
-                },
-                {
-                  title: "PLUS",
-                  description: "**15 GIORNI · 12 €**\n**30 GIORNI · 20 €**",
-                  color: 0x3b82f6,
+                  fields: [
+                    {
+                      name: "⭐ PLUS — Funzioni extra",
+                      value:
+                        "Auto Dungeon\nAuto Alchimia\nSwitch Ammalia\nHWID Spoofer\n\n*Disponibilità in base al server.*",
+                      inline: false,
+                    },
+                    {
+                      name: "BASE",
+                      value: "**15 giorni** · **9 €**\n**30 giorni** · **15 €**",
+                      inline: false,
+                    },
+                    {
+                      name: "PLUS",
+                      value: "**15 giorni** · **12 €**\n**30 giorni** · **20 €**",
+                      inline: false,
+                    },
+                  ],
                 },
               ],
               components: [
@@ -108,18 +120,26 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
                 {
                   title: "🛒 Buy Aron Mod",
                   description:
-                    "Click **Buy** and choose your plan and duration.\n\nAfter the payment is verified, you will receive the key directly in the ticket.",
+                    "Click **Buy** and choose the plan and duration that best suit your needs. Then complete the payment with PayPal.\n\nAfter the payment is verified, you will receive the key directly in the ticket.",
                   color: 0x3b82f6,
-                },
-                {
-                  title: "BASE",
-                  description: "**15 DAYS · €9**\n**30 DAYS · €15**",
-                  color: 0x3b82f6,
-                },
-                {
-                  title: "PLUS",
-                  description: "**15 DAYS · €12**\n**30 DAYS · €20**",
-                  color: 0x3b82f6,
+                  fields: [
+                    {
+                      name: "⭐ PLUS — Extra features",
+                      value:
+                        "Auto Dungeon\nAuto Alchemy\nAuto Enchant\nHWID Spoofer\n\n*Availability depends on the server.*",
+                      inline: false,
+                    },
+                    {
+                      name: "BASE",
+                      value: "**15 days** · **€9**\n**30 days** · **€15**",
+                      inline: false,
+                    },
+                    {
+                      name: "PLUS",
+                      value: "**15 days** · **€12**\n**30 days** · **€20**",
+                      inline: false,
+                    },
+                  ],
                 },
               ],
               components: [
@@ -219,6 +239,7 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
             exact: boolean;
             embedCount: number;
             titles: string[];
+            fieldNames: string[];
             buttonLabel: string;
             buttonStyle: number | null;
             hasPiano: boolean;
@@ -230,6 +251,7 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
             exact: false,
             embedCount: 0,
             titles: [],
+            fieldNames: [],
             buttonLabel: "",
             buttonStyle: null,
             hasPiano: false,
@@ -240,6 +262,7 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
             exact: false,
             embedCount: 0,
             titles: [],
+            fieldNames: [],
             buttonLabel: "",
             buttonStyle: null,
             hasPiano: false,
@@ -257,24 +280,29 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
 
             if (ids.includes(panels[locale].customId)) {
               const embeds = Array.isArray(message.embeds) ? message.embeds : [];
+              const embed = embeds[0];
+              const fields = Array.isArray(embed?.fields) ? embed.fields : [];
               const button = (message.components ?? [])
                 .flatMap((row) => row.components ?? [])
                 .find((component) => component.custom_id === panels[locale].customId);
-              const expectedTitles =
+              const expectedTitle = locale === "it" ? "🛒 Acquista Aron Mod" : "🛒 Buy Aron Mod";
+              const expectedFields =
                 locale === "it"
-                  ? ["🛒 Acquista Aron Mod", "BASE", "PLUS"]
-                  : ["🛒 Buy Aron Mod", "BASE", "PLUS"];
+                  ? ["⭐ PLUS — Funzioni extra", "BASE", "PLUS"]
+                  : ["⭐ PLUS — Extra features", "BASE", "PLUS"];
               const expectedLabel = locale === "it" ? "🛒 Acquista ora" : "🛒 Buy now";
-              const serializedEmbeds = JSON.stringify(embeds);
 
               verify[locale].embedCount = embeds.length;
-              verify[locale].titles = embeds.map((embed) => String(embed.title ?? ""));
+              verify[locale].titles = embeds.map((item) => String(item.title ?? ""));
+              verify[locale].fieldNames = fields.map((field) => String(field.name ?? ""));
               verify[locale].buttonLabel = String(button?.label ?? "");
               verify[locale].buttonStyle = typeof button?.style === "number" ? button.style : null;
-              verify[locale].hasPiano = serializedEmbeds.includes("PIANO");
+              verify[locale].hasPiano = String(embed?.description ?? "").includes("PIANO");
               verify[locale].exact =
-                embeds.length === 3 &&
-                verify[locale].titles.every((title, index) => title === expectedTitles[index]) &&
+                embeds.length === 1 &&
+                String(embed?.title ?? "") === expectedTitle &&
+                verify[locale].fieldNames.length === 3 &&
+                verify[locale].fieldNames.every((name, index) => name === expectedFields[index]) &&
                 button?.label === expectedLabel &&
                 button.style === 1 &&
                 !verify[locale].hasPiano;
