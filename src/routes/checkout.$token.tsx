@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
-import { CheckCircle2, Loader2, ShieldCheck, TriangleAlert } from "lucide-react";
+import { CheckCircle2, Loader2, TriangleAlert } from "lucide-react";
 
 import {
   finalizePaypalOrder,
@@ -60,7 +60,6 @@ const T = {
     successNote: "La key verrà consegnata nel ticket Discord dopo la verifica del pagamento.",
     redirecting: "Ti reindirizziamo al tuo ticket Discord…",
     delivery: "La key verrà consegnata nel ticket Discord dopo la verifica del pagamento.",
-    safe: "Non inserire mai la tua KeyAuth key su questo sito.",
     missingConfig: "Pagamenti temporaneamente non disponibili. Contatta lo staff su Discord.",
   },
   en: {
@@ -86,7 +85,6 @@ const T = {
     successNote: "The key will be delivered in your Discord ticket after the payment is verified.",
     redirecting: "Redirecting you to your Discord ticket…",
     delivery: "The key will be delivered in your Discord ticket after the payment is verified.",
-    safe: "Never enter your KeyAuth key on this website.",
     missingConfig: "Payments temporarily unavailable. Please contact staff on Discord.",
   },
 } as const;
@@ -152,7 +150,7 @@ function CheckoutPage() {
     renderedRef.current = true;
 
     const script = document.createElement("script");
-    script.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(clientId)}&currency=EUR&intent=capture`;
+    script.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(clientId)}&currency=EUR&intent=capture&disable-funding=mybank`;
     script.async = true;
     script.onload = () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -273,20 +271,24 @@ function CheckoutPage() {
       <div className="glass-card rounded-3xl p-6 sm:p-10">
         <Header title={t.title} />
 
-        <dl className="mt-8 space-y-3 text-sm sm:text-base">
-          <div className="flex items-center justify-between">
+        <dl className="mt-8 space-y-3.5 text-base sm:text-lg">
+          <div className="flex items-center justify-between gap-4">
             <dt className="text-muted-foreground">{t.plan}</dt>
-            <dd className="font-display font-bold tracking-wide">{data?.plan?.toUpperCase()}</dd>
+            <dd className="font-display text-lg font-bold tracking-wide sm:text-xl">
+              {data?.plan?.toUpperCase()}
+            </dd>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-4">
             <dt className="text-muted-foreground">{t.days}</dt>
-            <dd className="font-bold">
+            <dd className="font-display text-lg font-bold sm:text-xl">
               {data?.days} {t.daysUnit}
             </dd>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-4">
             <dt className="text-muted-foreground">{t.order}</dt>
-            <dd className="font-mono text-xs sm:text-sm">{data?.orderRef}</dd>
+            <dd className="font-mono text-base font-semibold tracking-wide sm:text-lg">
+              {data?.orderRef}
+            </dd>
           </div>
           <div className="mt-2 flex items-center justify-between rounded-2xl border border-border/60 bg-card/40 px-4 py-4">
             <dt className="font-display text-base font-semibold sm:text-lg">{t.total}</dt>
@@ -328,11 +330,7 @@ function CheckoutPage() {
           <p className="mt-8 text-sm text-muted-foreground">{t.missingConfig}</p>
         )}
 
-        <p className="mt-8 text-sm text-foreground/90">{t.delivery}</p>
-        <p className="mt-3 flex items-start gap-2 text-xs text-muted-foreground">
-          <ShieldCheck aria-hidden className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
-          {t.safe}
-        </p>
+        <p className="mt-8 text-sm text-foreground/90 sm:text-base">{t.delivery}</p>
       </div>
     </Shell>
   );
