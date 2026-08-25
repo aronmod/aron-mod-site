@@ -26,7 +26,7 @@ async function accessToken(): Promise<string> {
 async function paypalFetch(
   path: string,
   init: { method: string; body?: unknown; requestId?: string },
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<{ status: number; json: any }> {
   const token = await accessToken();
   const headers: Record<string, string> = {
