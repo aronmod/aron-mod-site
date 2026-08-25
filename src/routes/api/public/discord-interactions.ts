@@ -337,6 +337,16 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
                 data: { content: "⚠️ Ordine non trovato o non pagato.", flags: 64 },
               });
             }
+            if (result === "review_required") {
+              return json({
+                type: 4,
+                data: {
+                  content:
+                    "🕵️ Ordine in **revisione manuale**: approva prima la consegna con **Approva consegna (staff)**. Nessuna key è stata salvata.",
+                  flags: 64,
+                },
+              });
+            }
             if (result === "already_delivered") {
               return json({
                 type: 4,
