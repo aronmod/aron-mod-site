@@ -55,7 +55,7 @@ function SuccessPage() {
         <h1 className="font-display mt-4 text-3xl font-bold">{t.title}</h1>
         <p className="mt-4 text-sm leading-relaxed text-foreground/90">{t.text}</p>
         <a
-          href={LINKS.discordInvite}
+          href={LINKS.purchaseChannel}
           {...EXTERNAL_LINK_PROPS}
           className="font-display mt-7 inline-flex items-center justify-center rounded-xl bg-[image:var(--gradient-accent)] px-6 py-3 text-sm font-bold text-primary-foreground transition-transform hover:scale-105"
         >
