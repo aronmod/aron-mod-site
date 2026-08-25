@@ -25,7 +25,6 @@ export function last4(key: string): string {
   return key.slice(-4);
 }
 
-
 export function shortId(uuid: string): string {
   return uuid.replace(/-/g, "").slice(0, 8).toUpperCase();
 }

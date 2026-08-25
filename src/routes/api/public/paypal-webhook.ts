@@ -273,7 +273,6 @@ export const Route = createFileRoute("/api/public/paypal-webhook")({
             );
           }
 
-
           await markProcessed();
         } catch (err) {
           const code = err instanceof Error ? err.message : "unknown";

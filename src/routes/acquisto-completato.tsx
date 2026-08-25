@@ -42,7 +42,6 @@ const T = {
   },
 } as const;
 
-
 function SuccessPage() {
   const [lang] = useLang();
   const t = T[lang];

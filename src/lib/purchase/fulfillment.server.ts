@@ -9,9 +9,7 @@ import { addCustomerRole, alertStaff, sendChannelMessage, staffKeyButtons } from
 import { formatEur } from "./pricing";
 
 export type FulfillResult =
-  | { status: "paid" }
-  | { status: "already_processed" }
-  | { status: "order_not_found" };
+  { status: "paid" } | { status: "already_processed" } | { status: "order_not_found" };
 
 function paidMessage(
   orderId: string,

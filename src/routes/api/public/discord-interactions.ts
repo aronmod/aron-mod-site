@@ -214,12 +214,16 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
           const orderId = String(match[1]);
           try {
             // The raw key exists only here and inside the AES-GCM outbox. Never logged.
-            const rows = Array.isArray(body?.data?.components) ? body.data.components : [];
+            type ModalField = { custom_id?: string; value?: string };
+            type ModalRow = { components?: ModalField[] };
+            const rows: ModalRow[] = Array.isArray(body?.data?.components)
+              ? body.data.components
+              : [];
             const field = rows
-              .flatMap((r: any) => (Array.isArray(r?.components) ? r.components : []))
-              .find((c: any) => c?.custom_id === "keyauth_key");
+              .flatMap((r) => (Array.isArray(r?.components) ? r.components : []))
+              .find((c) => c?.custom_id === "keyauth_key");
             const rawKey = typeof field?.value === "string" ? field.value.trim() : "";
-            if (!/^[\w.@:\-]{8,128}$/.test(rawKey)) {
+            if (!/^[\w.@:-]{8,128}$/.test(rawKey)) {
               return json({
                 type: 4,
                 data: {
@@ -229,9 +233,8 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
               });
             }
 
-            const { encryptSecretValue, last4, sha256Hex } = await import(
-              "@/lib/purchase/crypto.server"
-            );
+            const { encryptSecretValue, last4, sha256Hex } =
+              await import("@/lib/purchase/crypto.server");
             const { getServiceClient } = await import("@/lib/purchase/db.server");
             const supabase = getServiceClient();
             const encrypted = await encryptSecretValue(rawKey);
@@ -286,7 +289,6 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
         }
 
         return json({ type: 4, data: { content: "Non supportato.", flags: 64 } });
-
       },
     },
   },
