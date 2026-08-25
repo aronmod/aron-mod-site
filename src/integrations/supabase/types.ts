@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      discord_tickets: {
+        Row: {
+          channel_id: string
+          created_at: string
+          discord_user_id: string
+          locale: string
+          panel_message_id: string | null
+          selected_days: number | null
+          selected_plan: string | null
+          summary_message_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          channel_id: string
+          created_at?: string
+          discord_user_id: string
+          locale?: string
+          panel_message_id?: string | null
+          selected_days?: number | null
+          selected_plan?: string | null
+          summary_message_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          channel_id?: string
+          created_at?: string
+          discord_user_id?: string
+          locale?: string
+          panel_message_id?: string | null
+          selected_days?: number | null
+          selected_plan?: string | null
+          summary_message_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       keyauth_assignments: {
         Row: {
           assigned_at: string
@@ -264,6 +300,7 @@ export type Database = {
           fulfillment_status: string | null
           id: string
           license_id: string | null
+          locale: string
           paid_at: string | null
           paypal_capture_id: string | null
           paypal_order_id: string | null
@@ -288,6 +325,7 @@ export type Database = {
           fulfillment_status?: string | null
           id?: string
           license_id?: string | null
+          locale?: string
           paid_at?: string | null
           paypal_capture_id?: string | null
           paypal_order_id?: string | null
@@ -312,6 +350,7 @@ export type Database = {
           fulfillment_status?: string | null
           id?: string
           license_id?: string | null
+          locale?: string
           paid_at?: string | null
           paypal_capture_id?: string | null
           paypal_order_id?: string | null

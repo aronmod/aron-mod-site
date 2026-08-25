@@ -821,7 +821,7 @@ function Servers({ lang }: { lang: Lang }) {
 
 function Pricing({ lang }: { lang: Lang }) {
   const t = copy[lang].pricing;
-  const guideUrl = LINKS.purchaseChannel;
+  const guideUrl = lang === "it" ? LINKS.purchasePanelIt : LINKS.purchasePanelEn;
 
   const PlanCard = ({
     plan,
