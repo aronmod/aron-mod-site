@@ -49,6 +49,63 @@ export type Database = {
           },
         ]
       }
+      license_deliveries: {
+        Row: {
+          attempts: number
+          ciphertext: string | null
+          created_at: string
+          delivered_at: string | null
+          discord_ticket_channel_id: string | null
+          id: string
+          iv: string | null
+          last_error_code: string | null
+          license_id: string | null
+          purchase_order_id: string
+          status: string
+        }
+        Insert: {
+          attempts?: number
+          ciphertext?: string | null
+          created_at?: string
+          delivered_at?: string | null
+          discord_ticket_channel_id?: string | null
+          id?: string
+          iv?: string | null
+          last_error_code?: string | null
+          license_id?: string | null
+          purchase_order_id: string
+          status?: string
+        }
+        Update: {
+          attempts?: number
+          ciphertext?: string | null
+          created_at?: string
+          delivered_at?: string | null
+          discord_ticket_channel_id?: string | null
+          id?: string
+          iv?: string | null
+          last_error_code?: string | null
+          license_id?: string | null
+          purchase_order_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "license_deliveries_license_id_fkey"
+            columns: ["license_id"]
+            isOneToOne: false
+            referencedRelation: "licenses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "license_deliveries_purchase_order_id_fkey"
+            columns: ["purchase_order_id"]
+            isOneToOne: true
+            referencedRelation: "purchase_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       licenses: {
         Row: {
           created_at: string
@@ -99,34 +156,49 @@ export type Database = {
       }
       payment_events: {
         Row: {
+          attempts: number
           created_at: string
           event_type: string
           id: string
+          last_error_code: string | null
           payload_minimal: Json
           paypal_capture_id: string | null
           paypal_event_id: string
           processed_at: string | null
+          processing_started_at: string | null
           purchase_order_id: string | null
+          reject_reason: string | null
+          rejected_at: string | null
         }
         Insert: {
+          attempts?: number
           created_at?: string
           event_type: string
           id?: string
+          last_error_code?: string | null
           payload_minimal?: Json
           paypal_capture_id?: string | null
           paypal_event_id: string
           processed_at?: string | null
+          processing_started_at?: string | null
           purchase_order_id?: string | null
+          reject_reason?: string | null
+          rejected_at?: string | null
         }
         Update: {
+          attempts?: number
           created_at?: string
           event_type?: string
           id?: string
+          last_error_code?: string | null
           payload_minimal?: Json
           paypal_capture_id?: string | null
           paypal_event_id?: string
           processed_at?: string | null
+          processing_started_at?: string | null
           purchase_order_id?: string | null
+          reject_reason?: string | null
+          rejected_at?: string | null
         }
         Relationships: [
           {
@@ -203,14 +275,38 @@ export type Database = {
           },
         ]
       }
+      rate_limit_buckets: {
+        Row: {
+          bucket_key: string
+          counter: number
+          window_start: string
+        }
+        Insert: {
+          bucket_key: string
+          counter?: number
+          window_start?: string
+        }
+        Update: {
+          bucket_key?: string
+          counter?: number
+          window_start?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      bump_rate_limit: {
+        Args: { _key: string; _limit: number; _window_seconds: number }
+        Returns: boolean
+      }
       finalize_paid_order: {
         Args: {
           _capture_id: string
+          _delivery_ciphertext?: string
+          _delivery_iv?: string
           _new_key_hash: string
           _new_key_last4: string
           _order_id: string
@@ -220,6 +316,15 @@ export type Database = {
           expires_at: string
           is_new_license: boolean
           license_id: string
+          result: string
+        }[]
+      }
+      validate_license_hwid: {
+        Args: { _hwid_hash: string; _key_hash: string }
+        Returns: {
+          expires_at: string
+          license_id: string
+          plan: string
           result: string
         }[]
       }
