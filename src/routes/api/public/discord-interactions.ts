@@ -10,6 +10,12 @@ function json(body: unknown, status = 200) {
 export const Route = createFileRoute("/api/public/discord-interactions")({
   server: {
     handlers: {
+      GET: async () =>
+        json({
+          ok: true,
+          route: "discord-interactions",
+          publicKeyConfigured: Boolean(process.env["DISCORD_PUBLIC_KEY"]),
+        }),
       POST: async ({ request }) => {
         const raw = await request.text();
         const { verifyDiscordSignature } = await import("@/lib/purchase/discord.server");
