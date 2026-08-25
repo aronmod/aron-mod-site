@@ -51,9 +51,21 @@ npm i
 npm run dev
 ```
 
-## Automated purchase setup
+## Automated purchase setup (PayPal + Discord, KeyAuth manuale)
 
-Flusso: pannello Discord → ticket privato → scelta piano/durata → link checkout su PayPal → verifica server-side → licenza creata/estesa → messaggio nel ticket + ruolo cliente. Il link di checkout viene generato dinamicamente dall'origin della richiesta Discord, quindi in sandbox punta automaticamente alla preview e in produzione ad `aronmod.net`.
+**Non serve la KeyAuth Seller API.** Le key sono generate **manualmente** nel pannello KeyAuth: questo progetto non è un'autorità di licenza, KeyAuth resta l'unica fonte reale delle key.
+
+Flusso completo:
+
+1. Pannello Discord → il cliente apre un ticket privato.
+2. Sceglie pacchetto (BASE / PLUS) e durata (15 / 30 giorni).
+3. Riceve un link di checkout su `aronmod.net` e paga con PayPal.
+4. Il webhook PayPal verifica il pagamento **server-side**: l'ordine diventa `paid` con `fulfillment_status = pending_key` e nel ticket compare «Pagamento confermato — la KeyAuth key verrà assegnata dallo staff».
+5. Lo staff genera la key nel dashboard KeyAuth, clicca **Assegna KeyAuth key** nel ticket e la incolla nel modal Discord.
+6. Il bot registra l'assegnazione in modo idempotente e consegna la key nel ticket una sola volta; l'ordine passa a `delivered` e il ruolo cliente viene assegnato.
+7. Se Discord fallisce, la key resta cifrata nella outbox: il bottone **Riprova consegna** la reinvia senza chiedere allo staff di reinserirla.
+
+Il link di checkout viene generato dall'origin della richiesta Discord firmata: in sandbox punta alla preview, in produzione ad `aronmod.net`.
 
 ### Secrets richiesti (solo NOMI — configurarli in Project Settings → Secrets, mai nel repo)
 
@@ -70,35 +82,36 @@ Flusso: pannello Discord → ticket privato → scelta piano/durata → link che
 | `DISCORD_GUILD_ID` | sì |
 | `DISCORD_PURCHASE_CHANNEL_ID` | sì |
 | `DISCORD_TICKET_CATEGORY_ID` | sì |
-| `DISCORD_CUSTOMER_ROLE_ID` | opzionale |
-| `DISCORD_STAFF_ROLE_ID` | opzionale |
-| `DISCORD_STAFF_ALERT_CHANNEL_ID` | opzionale |
+| `DISCORD_STAFF_ROLE_ID` | **sì** — senza questo ruolo nessuno può assegnare una KeyAuth key (nessun fallback su owner/username) |
 | `ADMIN_SETUP_SECRET` | sì (protegge l'endpoint di setup del pannello) |
-| `LICENSE_DELIVERY_SECRET` | sì — **valore casuale forte** (≥ 32 caratteri, es. `openssl rand -hex 32`). Chiave AES-GCM per cifrare la license key nella coda di consegna. Se cambia, le consegne ancora pendenti non sono più decifrabili. |
-| `HWID_HASH_SECRET` | sì — **valore casuale forte** (≥ 32 caratteri). Secret HMAC-SHA256 per HWID e per le impronte di rate limiting. Se cambia, tutti i binding HWID esistenti non corrispondono più. |
+| `LICENSE_DELIVERY_SECRET` | sì — **valore casuale forte** (≥ 32 caratteri, es. `openssl rand -hex 32`). Chiave AES-GCM per cifrare la KeyAuth key nella coda di consegna. Se cambia, le consegne ancora pendenti non sono più decifrabili. |
+| `DISCORD_CUSTOMER_ROLE_ID` | opzionale |
+| `DISCORD_STAFF_ALERT_CHANNEL_ID` | opzionale (consigliato: riceve gli alert di rimborso/disputa) |
+| `HWID_HASH_SECRET` | **legacy, non utilizzato** dal flusso attuale (restava per il vecchio endpoint di validazione licenze). Può restare configurato senza effetti. |
+
+Nessuna KeyAuth seller key o token è richiesta o supportata.
 
 `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` sono già gestiti dalla piattaforma. Nessun secret è mai esposto al frontend.
 
 ### Endpoint pubblici
 
-- **Discord Interactions URL**: `https://aronmod.net/api/public/discord-interactions` (verifica sempre `X-Signature-Ed25519` / `X-Signature-Timestamp`)
+- **Discord Interactions URL**: `https://aronmod.net/api/public/discord-interactions` (verifica sempre `X-Signature-Ed25519` / `X-Signature-Timestamp`; gestisce anche i bottoni staff e il modal della key)
 - **PayPal Webhook URL**: `https://aronmod.net/api/public/paypal-webhook` (eventi: `PAYMENT.CAPTURE.COMPLETED`, `PAYMENT.CAPTURE.REFUNDED`, `PAYMENT.CAPTURE.REVERSED`, `CUSTOMER.DISPUTE.CREATED`)
-- **Validazione licenza (loader)**: `POST https://aronmod.net/api/public/license-validate` con body `{ "license_key": "...", "hwid": "..." }`
 - **Setup pannello acquisto**: `POST https://aronmod.net/api/public/discord-admin-setup` con header `Authorization: Bearer <ADMIN_SETUP_SECRET>`
+- `POST /api/public/license-validate` è **dismesso**: risponde `410 Gone`. Il loader autentica direttamente su KeyAuth.
 
 ### Note di sicurezza
 
-- **Sandbox / pre-go-live**: per testare prima del deploy si può puntare l'Interactions URL di Discord verso la preview del progetto (es. `https://id-preview--...lovable.app/api/public/discord-interactions`). Il link di checkout seguirà automaticamente lo stesso host. Prima della produzione, sostituire l'Interactions URL con `https://aronmod.net/api/public/discord-interactions`.
+- **Sandbox / pre-go-live**: per testare prima del deploy si può puntare l'Interactions URL di Discord verso la preview del progetto. Il link di checkout seguirà automaticamente lo stesso host. Prima della produzione, sostituirlo con `https://aronmod.net/api/public/discord-interactions`.
 - I prezzi (BASE 15g 9 €, BASE 30g 15 €, PLUS 15g 12 €, PLUS 30g 20 €) sono risolti solo lato server da una whitelist.
 - Token di checkout casuale, salvato solo come SHA-256, valido 30 minuti.
-- Fulfillment idempotente (`paypal_event_id` e `paypal_capture_id` UNIQUE + funzione SQL transazionale).
-- La license key è mostrata una sola volta nel ticket Discord; in database resta solo lo SHA-256.
 - Verifica webhook PayPal: il body viene ripostato **raw** come `webhook_event` a `/v1/notifications/verify-webhook-signature`, senza parse/reserialize.
-- Retry eventi: un evento duplicato con `processed_at` valorizzato risponde 200; se `processed_at` è NULL viene rielaborato (contatore `attempts`, `last_error_code`, `rejected_at`/`reject_reason` per i rifiuti auditabili).
-- `PAYMENT.CAPTURE.COMPLETED` è accettato solo se combaciano `custom_id`, importo, valuta, stato, `supplementary_data.related_ids.order_id` verso `paypal_order_id`, capture id e `final_capture`. In caso contrario: nessun fulfillment, rifiuto auditabile e alert staff.
-- `PAYMENT.CAPTURE.REFUNDED`: il capture id viene ricavato da `related_ids.capture_id` (fallback solo da link `rel=up` su `/v2/payments/captures/<id>`). La licenza è sospesa automaticamente solo se `seller_payable_breakdown.total_refunded_amount` prova un rimborso totale; altrimenti resta attiva con alert staff.
-- Consegna key: outbox `license_deliveries` cifrata AES-GCM, creata nella stessa transazione della finalizzazione. Il ciphertext viene azzerato solo dopo l'invio riuscito su Discord; in caso di errore l'evento resta pendente e viene ritentato.
-- HWID: HMAC-SHA256 con `HWID_HASH_SECRET`; il check e il primo bind avvengono in un'unica RPC transazionale. Nei log/audit finisce solo un fingerprint di 8 caratteri derivato dall'HMAC.
-- Rate limiting `/api/public/license-validate`: 60 richieste/minuto per impronta IP (`CF-Connecting-IP`, fallback prudente) e 20/minuto per impronta della key. Le impronte sono HMAC troncati: nessun IP o key in chiaro nel database. Oltre il limite: HTTP 429 con risposta generica.
-- Tutte le tabelle del flusso acquisti sono RLS deny-by-default (nessuna policy): sono raggiungibili solo dal codice server con service role.
-
+- Retry eventi: un evento duplicato con `processed_at` valorizzato risponde 200; se `processed_at` è NULL viene rielaborato (contatore `attempts`, `last_error_code`, `rejected_at`/`reject_reason`).
+- `PAYMENT.CAPTURE.COMPLETED` è accettato solo se combaciano `custom_id`, importo, valuta, stato, `supplementary_data.related_ids.order_id` verso `paypal_order_id`, capture id e `final_capture`. Il pagamento **non genera alcuna key interna** e non crea né estende righe in `licenses`.
+- Autorizzazione staff: i bottoni `aron_assign_key_*` / `aron_retry_key_delivery_*` e il modal submit verificano server-side che `member.roles` contenga `DISCORD_STAFF_ROLE_ID`. Se il ruolo non è configurato, l'azione viene rifiutata con risposta effimera. La visibilità del bottone non è mai considerata un'autorizzazione.
+- Consegna key: la key in chiaro esiste solo nel body del modal e, temporaneamente, cifrata AES-GCM nella outbox `license_deliveries`. Il ciphertext viene azzerato subito dopo l'invio riuscito su Discord. In database restano solo SHA-256 e last4 (`keyauth_assignments`). La key non viene mai loggata.
+- Idempotenza assegnazione: `keyauth_assignments.purchase_order_id` è UNIQUE e l'RPC `assign_keyauth_key` rifiuta un secondo inserimento (`already_delivered` / `pending_exists`).
+- Rimborso totale / reversal: ordine e assegnazione passano a `revoked` e parte un alert staff esplicito «Revocare manualmente la KeyAuth key ****LAST4 nel pannello KeyAuth». Nessuna revoca automatica è possibile senza Seller API. Rimborso parziale: solo alert manuale.
+- Dispute: alert staff con order short id e last4 della key se assegnata, nessuna revoca automatica.
+- Tabelle e RPC legacy (`licenses`, `validate_license_hwid`) restano in database non utilizzate, per evitare migrazioni distruttive.
+- Tutte le tabelle del flusso acquisti sono RLS deny-by-default (nessuna policy): raggiungibili solo dal codice server con service role.
