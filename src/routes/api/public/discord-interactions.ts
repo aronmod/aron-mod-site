@@ -318,11 +318,11 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
             });
             return json({
               type: 4,
-              data: { content: "⚠️ Errore temporaneo. Riprova più tardi.", flags: 64 },
+              data: { content: ctxCopy.genericError, flags: 64 },
             });
           }
 
-          return json({ type: 4, data: { content: "Azione non riconosciuta.", flags: 64 } });
+          return json({ type: 4, data: { content: ctxCopy.unknownAction, flags: 64 } });
         }
 
         // MODAL_SUBMIT
