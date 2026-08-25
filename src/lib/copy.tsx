@@ -400,7 +400,7 @@ export const copy = {
         "Open a ticket on Discord",
         "Choose plan and duration",
         "Pay with PayPal",
-        "License activated automatically",
+        "Get your KeyAuth key in the ticket",
       ],
     },
     showcase: {
