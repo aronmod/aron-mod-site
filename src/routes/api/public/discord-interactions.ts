@@ -236,15 +236,13 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
                     ? String(body.channel_id)
                     : null;
                 if (channelId) {
+                  const locale = await tickets.ticketLocale(channelId);
                   await discord.sendChannelMessage(channelId, {
-                    content: [
-                      "✅ **Revisione completata / Review completed**",
-                      "La consegna è stata approvata dallo staff: la KeyAuth key verrà assegnata a breve in questo ticket.",
-                      "_Delivery approved by the staff: your KeyAuth key will be assigned shortly in this ticket._",
-                    ].join("\n"),
+                    content: t(locale).approvedNote,
                     components: discord.staffKeyButtons(orderId),
                   });
                 }
+
                 return json({
                   type: 4,
                   data: {
