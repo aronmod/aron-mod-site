@@ -97,11 +97,32 @@ function Index() {
   const t = copy[lang];
 
   useEffect(() => {
-    document.title =
+    const meta =
       lang === "it"
-        ? "Aron Mod - Il Bot di Metin per Server Privati"
-        : "Aron Mod - The Metin Bot for Private Servers";
+        ? {
+            title: "Aron Mod - Il Bot di Metin per Server Privati",
+            description: "FarmBot, Auto Dungeon, Auto Alchimia e altre funzioni avanzate.",
+          }
+        : {
+            title: "Aron Mod - The Metin Bot for Private Servers",
+            description: copy.en.meta.description,
+          };
+
+    document.documentElement.lang = lang;
+    document.title = meta.title;
+
+    const setMeta = (selector: string, content: string) => {
+      const el = document.head.querySelector<HTMLMetaElement>(selector);
+      if (el) el.setAttribute("content", content);
+    };
+
+    setMeta('meta[name="description"]', meta.description);
+    setMeta('meta[property="og:title"]', meta.title);
+    setMeta('meta[property="og:description"]', meta.description);
+    setMeta('meta[name="twitter:title"]', meta.title);
+    setMeta('meta[name="twitter:description"]', meta.description);
   }, [lang]);
+
 
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [ticketOpen, setTicketOpen] = useState(false);
