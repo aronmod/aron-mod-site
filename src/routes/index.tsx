@@ -430,7 +430,7 @@ function Hero({ lang }: { lang: Lang }) {
           className="reveal mx-auto mt-5 max-w-2xl space-y-2 px-4 text-center"
           style={{ animationDelay: "100ms" }}
         >
-          <p className="text-base leading-relaxed font-bold text-foreground sm:text-lg">
+          <p className="text-lg leading-relaxed font-bold text-foreground sm:text-xl">
             {t.hero.subtitle.line1}
           </p>
           <p className="text-base leading-relaxed font-medium text-foreground sm:text-lg">
