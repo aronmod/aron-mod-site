@@ -17,27 +17,19 @@ const T = {
   it: {
     panelTitle: "🛒 **Acquisto Aron Mod**",
     welcome: (userId: string) => `<@${userId}> 👋 Benvenuto!`,
-    choosePlan: "Scegli il piano per continuare.",
-    planInfo: "BASE = funzioni principali · PLUS = funzioni extra (in base al server).",
-    selected: (plan: string) => `Piano: **${plan.toUpperCase()}**`,
-    chooseDays: "Ora scegli la durata.",
-    selectedFull: (plan: string, days: number) =>
-      `Piano: **${plan.toUpperCase()}** · Durata: **${days} giorni**`,
-    changeHint: "Puoi cambiare piano o durata quando vuoi.",
-    planBase: "🔹 BASE — Funzioni principali",
-    planPlus: "⭐ PLUS — Funzioni extra",
-    days15: "⏱️ 15 GIORNI",
-    days30: "📅 30 GIORNI",
+    choosePlan: "Scegli il piano per continuare:",
+    chooseDuration: "Ora scegli la durata:",
+    planBase: "🔹 BASE",
+    planPlus: "🔹 PLUS",
+    days15: "15 GIORNI",
+    days30: "30 GIORNI",
 
-    pay: "💳 PAGA",
-    summary: (ref: string, plan: string, days: number, amountCents: number) =>
-      [
-        `🧾 **Ordine** \`${ref}\``,
-        `Piano: **${plan.toUpperCase()}** · ${days} giorni`,
-        `Totale: **${formatEur(amountCents)}**`,
-        "⏳ Il link scade tra 30 minuti.",
-        "Gli eventuali ordini precedenti non pagati di questo ticket sono stati annullati.",
-      ].join("\n"),
+    pay: "PAGA",
+    orderRef: (ref: string) => `🧾 **Ordine** \`${ref}\``,
+    orderPlanLine: (plan: string, days: number) =>
+      `Piano: **${plan.toUpperCase()}** · ${days} giorni`,
+    orderTotalLine: (amountCents: number) => `Totale: **${formatEur(amountCents)}**`,
+
     ticketOpened: (channelId: string) => `🎟️ Ticket aperto: <#${channelId}>`,
     ticketFailed: "⚠️ Impossibile aprire il ticket. Contatta lo staff.",
     genericError: "⚠️ Errore temporaneo. Riprova più tardi.",
