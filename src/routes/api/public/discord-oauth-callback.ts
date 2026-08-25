@@ -206,7 +206,35 @@ export const Route = createFileRoute("/api/public/discord-oauth-callback")({
 
         const { plan, days, locale } = selection;
         const c = COPY[locale];
-        const retryUrl = `/api/public/discord-oauth-start?plan=${plan}&days=${days}&locale=${locale}`;
+        // Manual retry always asks for consent explicitly (never an auto-loop).
+        const retryUrl = `/api/public/discord-oauth-start?plan=${plan}&days=${days}&locale=${locale}&prompt=consent`;
+
+        const oauthError = url.searchParams.get("error");
+        if (oauthError) {
+          // User explicitly denied: never auto-retry, only offer a manual retry.
+          if (oauthError === "access_denied" && selection.prompt === "consent") {
+            return page({
+              locale,
+              title: c.deniedTitle,
+              message: c.deniedText,
+              retryUrl,
+              status: 200,
+            });
+          }
+          // prompt=none could not be satisfied silently (consent/interaction/login
+          // required, or access_denied because consent was never granted):
+          // restart once with prompt=consent and a brand new signed state.
+          if (selection.prompt === "none") {
+            return redirect(retryUrl);
+          }
+          return page({
+            locale,
+            title: c.errorTitle,
+            message: c.errorText,
+            retryUrl,
+            status: 400,
+          });
+        }
 
         if (!code) {
           return page({
@@ -217,6 +245,7 @@ export const Route = createFileRoute("/api/public/discord-oauth-callback")({
             status: 400,
           });
         }
+
 
         let accessToken: string | null = null;
         try {
