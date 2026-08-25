@@ -151,15 +151,11 @@ export function durationMessage(locale: Locale, plan: "base" | "plus") {
     components: [
       {
         type: 1,
-        components: [
-          { type: 2, style: 1, label: label15, custom_id: `aron_days_${plan}_15` },
-        ],
+        components: [{ type: 2, style: 1, label: label15, custom_id: `aron_days_${plan}_15` }],
       },
       {
         type: 1,
-        components: [
-          { type: 2, style: 1, label: label30, custom_id: `aron_days_${plan}_30` },
-        ],
+        components: [{ type: 2, style: 1, label: label30, custom_id: `aron_days_${plan}_30` }],
       },
     ],
   };
@@ -191,10 +187,8 @@ export function finalOrderMessage(
   };
 }
 
-
 /** Discord link buttons are always style 5; the label is a plain PAGA / PAY. */
 export function payButton(locale: Locale, url: string) {
-
   return [{ type: 1, components: [{ type: 2, style: 5, label: t(locale).pay, url }] }];
 }
 
