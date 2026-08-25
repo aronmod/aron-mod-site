@@ -141,7 +141,7 @@ export async function verifyDiscordSignature(
       hexToBytes(signature) as unknown as ArrayBuffer,
       new TextEncoder().encode(timestamp + rawBody) as unknown as ArrayBuffer,
     );
-  } catch (err) {
+  } catch {
     console.error("discord_signature_verify_failed");
     return false;
   }

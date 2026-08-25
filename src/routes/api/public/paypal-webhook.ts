@@ -69,14 +69,10 @@ export const Route = createFileRoute("/api/public/paypal-webhook")({
             const { fulfillOrder } = await import("@/lib/purchase/fulfillment.server");
             await fulfillOrder(orderId, captureId, "paypal_webhook");
           } else if (eventType === "PAYMENT.CAPTURE.REFUNDED" || eventType === "PAYMENT.CAPTURE.REVERSED") {
-            const targetCapture = resource?.links
-              ? captureId
-              : captureId;
-            const { data: order } = await supabase
-              .from("purchase_orders")
-              .select("id, license_id, discord_user_id")
-              .or(`paypal_capture_id.eq.${targetCapture},id.eq.${orderId ?? "00000000-0000-0000-0000-000000000000"}`)
-              .maybeSingle();
+            const lookup = supabase.from("purchase_orders").select("id, license_id, discord_user_id");
+            const { data: order } = orderId
+              ? await lookup.eq("id", orderId).maybeSingle()
+              : await lookup.eq("paypal_capture_id", captureId ?? "").maybeSingle();
             if (order) {
               await supabase
                 .from("purchase_orders")
