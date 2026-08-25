@@ -26,6 +26,7 @@ async function accessToken(): Promise<string> {
 async function paypalFetch(
   path: string,
   init: { method: string; body?: unknown; requestId?: string },
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<{ status: number; json: any }> {
   const token = await accessToken();
   const headers: Record<string, string> = {
@@ -39,6 +40,7 @@ async function paypalFetch(
     body: init.body === undefined ? null : JSON.stringify(init.body),
   });
   const text = await res.text();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let json: any = null;
   try {
     json = text ? JSON.parse(text) : null;

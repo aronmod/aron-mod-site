@@ -18,6 +18,7 @@ export async function discordFetch(path: string, init: { method: string; body?: 
     body: init.body === undefined ? null : JSON.stringify(init.body),
   });
   const text = await res.text();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let json: any = null;
   try {
     json = text ? JSON.parse(text) : null;
@@ -57,6 +58,7 @@ export async function ensureTicketChannel(userId: string): Promise<string | null
   const existing = await discordFetch(`/guilds/${guildId}/channels`, { method: "GET" });
   if (Array.isArray(existing.json)) {
     const found = existing.json.find(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (c: any) =>
         c?.parent_id === categoryId &&
         typeof c?.topic === "string" &&

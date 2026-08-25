@@ -120,6 +120,7 @@ function CheckoutPage() {
     script.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(clientId)}&currency=EUR&intent=capture`;
     script.async = true;
     script.onload = () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const paypal = (window as unknown as { paypal?: any }).paypal;
       if (!paypal || !buttonsRef.current) return;
       paypal

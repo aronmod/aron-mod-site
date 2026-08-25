@@ -9,6 +9,7 @@ export const Route = createFileRoute("/api/public/paypal-webhook")({
         const verified = await verifyWebhookSignature(request.headers, raw);
         if (!verified) return new Response("invalid signature", { status: 401 });
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let event: any;
         try {
           event = JSON.parse(raw);

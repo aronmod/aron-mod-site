@@ -20,6 +20,7 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
         );
         if (!valid) return new Response("invalid request signature", { status: 401 });
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let body: any;
         try {
           body = JSON.parse(raw);
