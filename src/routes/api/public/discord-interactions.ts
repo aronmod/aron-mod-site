@@ -41,7 +41,9 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
 
           try {
             if (customId === "aron_purchase_start") {
-              const channelId = await discord.ensureTicketChannel(userId);
+              const locale: string | null =
+                typeof body?.locale === "string" ? body.locale : null;
+              const channelId = await discord.ensureTicketChannel(userId, locale);
               if (!channelId) {
                 return json({
                   type: 4,
