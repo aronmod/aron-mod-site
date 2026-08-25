@@ -850,10 +850,12 @@ function Pricing({ lang }: { lang: Lang }) {
       </div>
 
       {"includes" in plan ? (
-        <div className="mt-6 rounded-xl bg-primary/10 p-4">
-          <p className="text-sm font-semibold leading-relaxed text-foreground sm:text-base">
-            {plan.includesIntro}
+        <div className="mt-6 rounded-xl border border-accent/40 bg-primary/10 p-4">
+          <p className="flex items-start gap-2 text-sm font-bold leading-relaxed text-accent sm:text-base">
+            <HelpCircle aria-hidden className="mt-0.5 h-4 w-4 shrink-0" />
+            <span>{plan.includesIntro}</span>
           </p>
+
           <ul className="mt-3 space-y-1.5">
             {plan.includes.map((item) => (
               <li
