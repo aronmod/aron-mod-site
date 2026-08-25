@@ -433,7 +433,7 @@ function Hero({ lang }: { lang: Lang }) {
           <p className="text-lg leading-relaxed font-bold text-foreground sm:text-xl">
             {t.hero.subtitle.line1}
           </p>
-          <p className="text-base leading-relaxed font-medium text-foreground sm:text-lg">
+          <p className="text-base leading-relaxed font-medium text-foreground sm:text-xl">
             {t.hero.subtitle.line2}
           </p>
         </div>
