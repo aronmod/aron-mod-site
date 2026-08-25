@@ -179,7 +179,6 @@ const COPY = {
   },
 } as const;
 
-
 export const Route = createFileRoute("/api/public/discord-oauth-callback")({
   server: {
     handlers: {
@@ -245,7 +244,6 @@ export const Route = createFileRoute("/api/public/discord-oauth-callback")({
             status: 400,
           });
         }
-
 
         let accessToken: string | null = null;
         try {

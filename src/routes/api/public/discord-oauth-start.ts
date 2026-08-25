@@ -45,7 +45,6 @@ export const Route = createFileRoute("/api/public/discord-oauth-start")({
           const redirectUri = oauth.oauthRedirectUri(request.url);
           const state = await oauth.signState({ plan, days, locale }, prompt);
           return redirect(oauth.authorizeUrl(state, redirectUri, prompt));
-
         } catch (error) {
           console.error("oauth_start_failed", {
             reason: error instanceof Error ? error.message : "unknown",

@@ -80,7 +80,6 @@ export async function verifyState(
   }
 }
 
-
 /** Shared rate limiter (service-role RPC). Returns true when the call is allowed. */
 export async function allowRequest(
   bucketKey: string,
@@ -158,7 +157,6 @@ export function authorizeUrl(
   });
   return `https://discord.com/oauth2/authorize?${params.toString()}`;
 }
-
 
 /** Exchanges the one-time code for a short-lived access token (never logged). */
 export async function exchangeCode(
