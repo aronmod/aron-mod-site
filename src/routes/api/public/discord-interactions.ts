@@ -289,9 +289,8 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
               }
 
               const orderId = String(retryMatch![1]);
-              const { deliverPendingKey, orderLocale } = await import(
-                "@/lib/purchase/fulfillment.server"
-              );
+              const { deliverPendingKey, orderLocale } =
+                await import("@/lib/purchase/fulfillment.server");
               const locale = await orderLocale(orderId, interactionChannelId);
               const c = t(locale);
               const result = await deliverPendingKey(orderId);
@@ -419,9 +418,7 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
               type: 4,
               data: {
                 content:
-                  delivery.status === "delivered"
-                    ? c.assignDelivered
-                    : c.assignDeliveryFailed,
+                  delivery.status === "delivered" ? c.assignDelivered : c.assignDeliveryFailed,
                 flags: 64,
               },
             });
@@ -439,7 +436,9 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
 
         const { t } = await import("@/lib/purchase/discord-copy.server");
         const tickets = await import("@/lib/purchase/tickets.server");
-        const locale = await tickets.ticketLocale(body?.channel_id ? String(body.channel_id) : null);
+        const locale = await tickets.ticketLocale(
+          body?.channel_id ? String(body.channel_id) : null,
+        );
         return json({ type: 4, data: { content: t(locale).unsupported, flags: 64 } });
       },
     },

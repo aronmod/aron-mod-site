@@ -135,12 +135,16 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
         // Remove only misplaced Aron purchase panels from the opposite public channel.
         for (const message of histories.it) {
           if (message.id && idsOf(message).includes(panels.en.customId)) {
-            await discordFetch(`/channels/${channels.it}/messages/${message.id}`, { method: "DELETE" });
+            await discordFetch(`/channels/${channels.it}/messages/${message.id}`, {
+              method: "DELETE",
+            });
           }
         }
         for (const message of histories.en) {
           if (message.id && idsOf(message).includes(panels.it.customId)) {
-            await discordFetch(`/channels/${channels.en}/messages/${message.id}`, { method: "DELETE" });
+            await discordFetch(`/channels/${channels.en}/messages/${message.id}`, {
+              method: "DELETE",
+            });
           }
         }
 
@@ -154,7 +158,10 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
           const channelId = channels[locale];
           const validMessages = histories[locale].filter((message) => {
             const ids = idsOf(message);
-            return ids.includes(panel.customId) || (locale === "it" && ids.includes("aron_purchase_start"));
+            return (
+              ids.includes(panel.customId) ||
+              (locale === "it" && ids.includes("aron_purchase_start"))
+            );
           });
           const existing = validMessages[0];
           let messageId: string | null = existing?.id ? String(existing.id) : null;

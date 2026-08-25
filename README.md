@@ -69,26 +69,26 @@ Il link di checkout viene generato dall'origin della richiesta Discord firmata: 
 
 ### Secrets richiesti (solo NOMI — configurarli in Project Settings → Secrets, mai nel repo)
 
-| Nome | Obbligatorio |
-| --- | --- |
-| `PAYPAL_CLIENT_ID` | sì |
-| `PAYPAL_CLIENT_SECRET` | sì |
-| `PAYPAL_WEBHOOK_ID` | sì |
-| `PAYPAL_ENV` | sì (`sandbox` o `live`) |
-| `PUBLIC_PAYPAL_CLIENT_ID` | sì (client id **pubblico** usato dal checkout; nessun fallback su `PAYPAL_CLIENT_ID`, che resta solo server-side) |
-| `DISCORD_APPLICATION_ID` | sì |
-| `DISCORD_PUBLIC_KEY` | sì |
-| `DISCORD_BOT_TOKEN` | sì |
-| `DISCORD_GUILD_ID` | sì |
-| `DISCORD_PURCHASE_CHANNEL_ID` | sì — canale pubblico acquisto IT |
-| `DISCORD_PURCHASE_CHANNEL_ID_EN` | sì — canale pubblico acquisto EN |
-| `DISCORD_TICKET_CATEGORY_ID` | sì |
-| `DISCORD_STAFF_ROLE_ID` | **sì** — senza questo ruolo nessuno può assegnare una KeyAuth key (nessun fallback su owner/username) |
-| `ADMIN_SETUP_SECRET` | sì (protegge l'endpoint di setup del pannello) |
-| `LICENSE_DELIVERY_SECRET` | sì — **valore casuale forte** (≥ 32 caratteri, es. `openssl rand -hex 32`). Chiave AES-GCM per cifrare la KeyAuth key nella coda di consegna. Se cambia, le consegne ancora pendenti non sono più decifrabili. |
-| `DISCORD_CUSTOMER_ROLE_ID` | opzionale |
-| `DISCORD_STAFF_ALERT_CHANNEL_ID` | opzionale (consigliato: riceve gli alert di rimborso/disputa) |
-| `HWID_HASH_SECRET` | **legacy, non utilizzato** dal flusso attuale (restava per il vecchio endpoint di validazione licenze). Può restare configurato senza effetti. |
+| Nome                             | Obbligatorio                                                                                                                                                                                                   |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PAYPAL_CLIENT_ID`               | sì                                                                                                                                                                                                             |
+| `PAYPAL_CLIENT_SECRET`           | sì                                                                                                                                                                                                             |
+| `PAYPAL_WEBHOOK_ID`              | sì                                                                                                                                                                                                             |
+| `PAYPAL_ENV`                     | sì (`sandbox` o `live`)                                                                                                                                                                                        |
+| `PUBLIC_PAYPAL_CLIENT_ID`        | sì (client id **pubblico** usato dal checkout; nessun fallback su `PAYPAL_CLIENT_ID`, che resta solo server-side)                                                                                              |
+| `DISCORD_APPLICATION_ID`         | sì                                                                                                                                                                                                             |
+| `DISCORD_PUBLIC_KEY`             | sì                                                                                                                                                                                                             |
+| `DISCORD_BOT_TOKEN`              | sì                                                                                                                                                                                                             |
+| `DISCORD_GUILD_ID`               | sì                                                                                                                                                                                                             |
+| `DISCORD_PURCHASE_CHANNEL_ID`    | sì — canale pubblico acquisto IT                                                                                                                                                                               |
+| `DISCORD_PURCHASE_CHANNEL_ID_EN` | sì — canale pubblico acquisto EN                                                                                                                                                                               |
+| `DISCORD_TICKET_CATEGORY_ID`     | sì                                                                                                                                                                                                             |
+| `DISCORD_STAFF_ROLE_ID`          | **sì** — senza questo ruolo nessuno può assegnare una KeyAuth key (nessun fallback su owner/username)                                                                                                          |
+| `ADMIN_SETUP_SECRET`             | sì (protegge l'endpoint di setup del pannello)                                                                                                                                                                 |
+| `LICENSE_DELIVERY_SECRET`        | sì — **valore casuale forte** (≥ 32 caratteri, es. `openssl rand -hex 32`). Chiave AES-GCM per cifrare la KeyAuth key nella coda di consegna. Se cambia, le consegne ancora pendenti non sono più decifrabili. |
+| `DISCORD_CUSTOMER_ROLE_ID`       | opzionale                                                                                                                                                                                                      |
+| `DISCORD_STAFF_ALERT_CHANNEL_ID` | opzionale (consigliato: riceve gli alert di rimborso/disputa)                                                                                                                                                  |
+| `HWID_HASH_SECRET`               | **legacy, non utilizzato** dal flusso attuale (restava per il vecchio endpoint di validazione licenze). Può restare configurato senza effetti.                                                                 |
 
 Nessuna KeyAuth seller key o token è richiesta o supportata.
 
