@@ -255,6 +255,7 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
             embedCount: number;
             titles: string[];
             fieldNames: string[];
+            spacerCount: number;
             buttonLabel: string;
             buttonStyle: number | null;
             hasPiano: boolean;
@@ -267,6 +268,7 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
             embedCount: 0,
             titles: [],
             fieldNames: [],
+            spacerCount: 0,
             buttonLabel: "",
             buttonStyle: null,
             hasPiano: false,
@@ -278,6 +280,7 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
             embedCount: 0,
             titles: [],
             fieldNames: [],
+            spacerCount: 0,
             buttonLabel: "",
             buttonStyle: null,
             hasPiano: false,
@@ -297,6 +300,12 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
               const embeds = Array.isArray(message.embeds) ? message.embeds : [];
               const embed = embeds[0];
               const fields = Array.isArray(embed?.fields) ? embed.fields : [];
+              const realFields = fields.filter(
+                (field) => !isSpacerField(String(field.name ?? "")),
+              );
+              const spacerFields = fields.filter((field) =>
+                isSpacerField(String(field.name ?? "")),
+              );
               const button = (message.components ?? [])
                 .flatMap((row) => row.components ?? [])
                 .find((component) => component.custom_id === panels[locale].customId);
@@ -306,18 +315,21 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
                   ? ["⭐ PLUS — Funzioni extra (In base al server)", "🔹 BASE", "🔹 PLUS"]
                   : ["⭐ PLUS — Extra features (Depending on the server)", "🔹 BASE", "🔹 PLUS"];
               const expectedLabel = locale === "it" ? "🛒 Acquista ora" : "🛒 Buy now";
+              const realFieldNames = realFields.map((field) => String(field.name ?? ""));
 
               verify[locale].embedCount = embeds.length;
               verify[locale].titles = embeds.map((item) => String(item.title ?? ""));
-              verify[locale].fieldNames = fields.map((field) => String(field.name ?? ""));
+              verify[locale].fieldNames = realFieldNames;
+              verify[locale].spacerCount = spacerFields.length;
               verify[locale].buttonLabel = String(button?.label ?? "");
               verify[locale].buttonStyle = typeof button?.style === "number" ? button.style : null;
               verify[locale].hasPiano = String(embed?.description ?? "").includes("PIANO");
               verify[locale].exact =
                 embeds.length === 1 &&
                 String(embed?.title ?? "") === expectedTitle &&
-                verify[locale].fieldNames.length === 3 &&
-                verify[locale].fieldNames.every((name, index) => name === expectedFields[index]) &&
+                realFieldNames.length === 3 &&
+                realFieldNames.every((name, index) => name === expectedFields[index]) &&
+                spacerFields.length === 5 &&
                 button?.label === expectedLabel &&
                 button.style === 1 &&
                 !verify[locale].hasPiano;
