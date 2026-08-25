@@ -26,7 +26,10 @@ function guildId(): string {
 
 type PanelMessage = {
   id?: string;
-  components?: Array<{ components?: Array<{ custom_id?: string }> }>;
+  embeds?: Array<{ title?: string; description?: string }>;
+  components?: Array<{
+    components?: Array<{ custom_id?: string; label?: string; style?: number }>;
+  }>;
 };
 
 function idsOf(message: PanelMessage): string[] {
@@ -71,18 +74,16 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
                   description:
                     "Clicca **Acquista** e scegli il piano e la durata.\n\nDopo la verifica del pagamento, riceverai la key direttamente nel ticket.",
                   color: 0x3b82f6,
-                  fields: [
-                    {
-                      name: "BASE",
-                      value: "**15 giorni** · **9 €**\n**30 giorni** · **15 €**",
-                      inline: false,
-                    },
-                    {
-                      name: "PLUS",
-                      value: "**15 giorni** · **12 €**\n**30 giorni** · **20 €**",
-                      inline: false,
-                    },
-                  ],
+                },
+                {
+                  title: "BASE",
+                  description: "**15 GIORNI · 9 €**\n**30 GIORNI · 15 €**",
+                  color: 0x3b82f6,
+                },
+                {
+                  title: "PLUS",
+                  description: "**15 GIORNI · 12 €**\n**30 GIORNI · 20 €**",
+                  color: 0x3b82f6,
                 },
               ],
               components: [
@@ -109,18 +110,16 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
                   description:
                     "Click **Buy** and choose your plan and duration.\n\nAfter the payment is verified, you will receive the key directly in the ticket.",
                   color: 0x3b82f6,
-                  fields: [
-                    {
-                      name: "BASE",
-                      value: "**15 days** · **€9**\n**30 days** · **€15**",
-                      inline: false,
-                    },
-                    {
-                      name: "PLUS",
-                      value: "**15 days** · **€12**\n**30 days** · **€20**",
-                      inline: false,
-                    },
-                  ],
+                },
+                {
+                  title: "BASE",
+                  description: "**15 DAYS · €9**\n**30 DAYS · €15**",
+                  color: 0x3b82f6,
+                },
+                {
+                  title: "PLUS",
+                  description: "**15 DAYS · €12**\n**30 DAYS · €20**",
+                  color: 0x3b82f6,
                 },
               ],
               components: [
@@ -212,9 +211,39 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
 
         // Independent re-scan: assert exactly one correct panel per channel
         // and zero cross-locale panels.
-        const verify: Record<Locale, { it: number; en: number }> = {
-          it: { it: 0, en: 0 },
-          en: { it: 0, en: 0 },
+        const verify: Record<
+          Locale,
+          {
+            it: number;
+            en: number;
+            exact: boolean;
+            embedCount: number;
+            titles: string[];
+            buttonLabel: string;
+            buttonStyle: number | null;
+            hasPiano: boolean;
+          }
+        > = {
+          it: {
+            it: 0,
+            en: 0,
+            exact: false,
+            embedCount: 0,
+            titles: [],
+            buttonLabel: "",
+            buttonStyle: null,
+            hasPiano: false,
+          },
+          en: {
+            it: 0,
+            en: 0,
+            exact: false,
+            embedCount: 0,
+            titles: [],
+            buttonLabel: "",
+            buttonStyle: null,
+            hasPiano: false,
+          },
         };
         for (const locale of ["it", "en"] as const) {
           const rescan = await discordFetch(`/channels/${channels[locale]}/messages?limit=100`, {
@@ -225,11 +254,41 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
             const ids = idsOf(message);
             if (ids.includes(panels.it.customId)) verify[locale].it += 1;
             if (ids.includes(panels.en.customId)) verify[locale].en += 1;
+
+            if (ids.includes(panels[locale].customId)) {
+              const embeds = Array.isArray(message.embeds) ? message.embeds : [];
+              const button = (message.components ?? [])
+                .flatMap((row) => row.components ?? [])
+                .find((component) => component.custom_id === panels[locale].customId);
+              const expectedTitles =
+                locale === "it"
+                  ? ["🛒 Acquista Aron Mod", "BASE", "PLUS"]
+                  : ["🛒 Buy Aron Mod", "BASE", "PLUS"];
+              const expectedLabel = locale === "it" ? "🛒 Acquista ora" : "🛒 Buy now";
+              const serializedEmbeds = JSON.stringify(embeds);
+
+              verify[locale].embedCount = embeds.length;
+              verify[locale].titles = embeds.map((embed) => String(embed.title ?? ""));
+              verify[locale].buttonLabel = String(button?.label ?? "");
+              verify[locale].buttonStyle = typeof button?.style === "number" ? button.style : null;
+              verify[locale].hasPiano = serializedEmbeds.includes("PIANO");
+              verify[locale].exact =
+                embeds.length === 3 &&
+                verify[locale].titles.every((title, index) => title === expectedTitles[index]) &&
+                button?.label === expectedLabel &&
+                button.style === 1 &&
+                !verify[locale].hasPiano;
+            }
           }
         }
 
         const verified =
-          verify.it.it === 1 && verify.it.en === 0 && verify.en.en === 1 && verify.en.it === 0;
+          verify.it.it === 1 &&
+          verify.it.en === 0 &&
+          verify.it.exact &&
+          verify.en.en === 1 &&
+          verify.en.it === 0 &&
+          verify.en.exact;
         const allOk = Object.values(result).every((r) => r.ok) && verified;
         return new Response(JSON.stringify({ ok: allOk, panels: result, verify, channels }), {
           status: allOk ? 200 : 502,
