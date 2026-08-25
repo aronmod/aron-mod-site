@@ -14,6 +14,47 @@ export type Database = {
   }
   public: {
     Tables: {
+      keyauth_assignments: {
+        Row: {
+          assigned_at: string
+          assigned_by_discord_id: string
+          delivered_at: string | null
+          id: string
+          key_hash: string
+          key_last4: string
+          purchase_order_id: string
+          status: string
+        }
+        Insert: {
+          assigned_at?: string
+          assigned_by_discord_id: string
+          delivered_at?: string | null
+          id?: string
+          key_hash: string
+          key_last4: string
+          purchase_order_id: string
+          status?: string
+        }
+        Update: {
+          assigned_at?: string
+          assigned_by_discord_id?: string
+          delivered_at?: string | null
+          id?: string
+          key_hash?: string
+          key_last4?: string
+          purchase_order_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "keyauth_assignments_purchase_order_id_fkey"
+            columns: ["purchase_order_id"]
+            isOneToOne: true
+            referencedRelation: "purchase_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       license_audit: {
         Row: {
           action: string
@@ -220,6 +261,7 @@ export type Database = {
           days: number
           discord_ticket_channel_id: string | null
           discord_user_id: string
+          fulfillment_status: string | null
           id: string
           license_id: string | null
           paid_at: string | null
@@ -238,6 +280,7 @@ export type Database = {
           days: number
           discord_ticket_channel_id?: string | null
           discord_user_id: string
+          fulfillment_status?: string | null
           id?: string
           license_id?: string | null
           paid_at?: string | null
@@ -256,6 +299,7 @@ export type Database = {
           days?: number
           discord_ticket_channel_id?: string | null
           discord_user_id?: string
+          fulfillment_status?: string | null
           id?: string
           license_id?: string | null
           paid_at?: string | null
@@ -298,6 +342,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      assign_keyauth_key: {
+        Args: {
+          _assigned_by: string
+          _ciphertext: string
+          _iv: string
+          _key_hash: string
+          _key_last4: string
+          _order_id: string
+        }
+        Returns: {
+          assignment_status: string
+          result: string
+        }[]
+      }
       bump_rate_limit: {
         Args: { _key: string; _limit: number; _window_seconds: number }
         Returns: boolean
@@ -317,6 +375,17 @@ export type Database = {
           is_new_license: boolean
           license_id: string
           result: string
+        }[]
+      }
+      finalize_paid_order_manual: {
+        Args: { _capture_id: string; _order_id: string; _source: string }
+        Returns: {
+          amount_cents: number
+          days: number
+          discord_user_id: string
+          plan: string
+          result: string
+          ticket_channel_id: string
         }[]
       }
       validate_license_hwid: {

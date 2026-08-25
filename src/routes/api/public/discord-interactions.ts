@@ -105,6 +105,79 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
                 },
               });
             }
+
+            const uuidRe =
+              "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
+
+            const assignMatch = new RegExp(`^aron_assign_key_(${uuidRe})$`).exec(customId);
+            const retryMatch = new RegExp(`^aron_retry_key_delivery_(${uuidRe})$`).exec(customId);
+
+            if (assignMatch || retryMatch) {
+              if (!discord.isStaffInteraction(body)) {
+                return json({
+                  type: 4,
+                  data: {
+                    content:
+                      "⛔ Azione riservata allo staff. / Staff only.\n_Se sei staff e vedi questo messaggio, `DISCORD_STAFF_ROLE_ID` non è configurato correttamente._",
+                    flags: 64,
+                  },
+                });
+              }
+
+              const { getServiceClient } = await import("@/lib/purchase/db.server");
+              const supabase = getServiceClient();
+
+              if (assignMatch) {
+                const orderId = String(assignMatch[1]);
+                const { data: order } = await supabase
+                  .from("purchase_orders")
+                  .select("id, status, fulfillment_status")
+                  .eq("id", orderId)
+                  .maybeSingle();
+                if (!order || order.status !== "paid") {
+                  return json({
+                    type: 4,
+                    data: { content: "⚠️ Ordine non trovato o non pagato.", flags: 64 },
+                  });
+                }
+                const { data: assignment } = await supabase
+                  .from("keyauth_assignments")
+                  .select("status")
+                  .eq("purchase_order_id", orderId)
+                  .maybeSingle();
+                if (assignment?.status === "delivered") {
+                  return json({
+                    type: 4,
+                    data: { content: "ℹ️ Key già assegnata e consegnata.", flags: 64 },
+                  });
+                }
+                if (assignment?.status === "pending") {
+                  return json({
+                    type: 4,
+                    data: {
+                      content:
+                        "ℹ️ Una key è già registrata ma non consegnata. Usa **Riprova consegna**.",
+                      flags: 64,
+                    },
+                  });
+                }
+                return json(discord.keyAuthModal(orderId));
+              }
+
+              const orderId = String(retryMatch![1]);
+              const { deliverPendingKey } = await import("@/lib/purchase/fulfillment.server");
+              const result = await deliverPendingKey(orderId);
+              const messages: Record<string, string> = {
+                delivered: "✅ Key consegnata nel ticket.",
+                nothing_pending: "ℹ️ Nessuna consegna pendente per questo ordine.",
+                no_channel: "⚠️ Nessun canale ticket associato all'ordine.",
+                failed: "⚠️ Consegna fallita. Riprova tra poco.",
+              };
+              return json({
+                type: 4,
+                data: { content: messages[result.status] ?? "⚠️ Errore.", flags: 64 },
+              });
+            }
           } catch (err) {
             console.error("discord_interaction_error", {
               customId,
@@ -117,6 +190,102 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
           }
 
           return json({ type: 4, data: { content: "Azione non riconosciuta.", flags: 64 } });
+        }
+
+        // MODAL_SUBMIT
+        if (body?.type === 5) {
+          const customId: string = String(body?.data?.custom_id ?? "");
+          const match =
+            /^aron_key_modal_([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$/.exec(
+              customId,
+            );
+          if (!match) return json({ type: 4, data: { content: "Azione non valida.", flags: 64 } });
+
+          const discord = await import("@/lib/purchase/discord.server");
+          if (!discord.isStaffInteraction(body)) {
+            return json({
+              type: 4,
+              data: { content: "⛔ Azione riservata allo staff. / Staff only.", flags: 64 },
+            });
+          }
+          const staffId: string | undefined = body?.member?.user?.id;
+          if (!staffId) return json({ type: 4, data: { content: "Errore utente.", flags: 64 } });
+
+          const orderId = String(match[1]);
+          try {
+            // The raw key exists only here and inside the AES-GCM outbox. Never logged.
+            type ModalField = { custom_id?: string; value?: string };
+            type ModalRow = { components?: ModalField[] };
+            const rows: ModalRow[] = Array.isArray(body?.data?.components)
+              ? body.data.components
+              : [];
+            const field = rows
+              .flatMap((r) => (Array.isArray(r?.components) ? r.components : []))
+              .find((c) => c?.custom_id === "keyauth_key");
+            const rawKey = typeof field?.value === "string" ? field.value.trim() : "";
+            if (!/^[\w.@:-]{8,128}$/.test(rawKey)) {
+              return json({
+                type: 4,
+                data: {
+                  content: "⚠️ Key non valida (8–128 caratteri alfanumerici, `-` `_` `.` `:` `@`).",
+                  flags: 64,
+                },
+              });
+            }
+
+            const { encryptSecretValue, last4, sha256Hex } =
+              await import("@/lib/purchase/crypto.server");
+            const { getServiceClient } = await import("@/lib/purchase/db.server");
+            const supabase = getServiceClient();
+            const encrypted = await encryptSecretValue(rawKey);
+
+            const { data, error } = await supabase.rpc("assign_keyauth_key", {
+              _order_id: orderId,
+              _assigned_by: staffId,
+              _key_hash: await sha256Hex(rawKey),
+              _key_last4: last4(rawKey),
+              _ciphertext: encrypted.ciphertext,
+              _iv: encrypted.iv,
+            });
+            if (error) throw new Error("assign_rpc_failed");
+            const row = Array.isArray(data) ? data[0] : data;
+            const result = String(row?.result ?? "");
+
+            if (result === "order_not_found" || result === "order_not_paid") {
+              return json({
+                type: 4,
+                data: { content: "⚠️ Ordine non trovato o non pagato.", flags: 64 },
+              });
+            }
+            if (result === "already_delivered") {
+              return json({
+                type: 4,
+                data: { content: "ℹ️ Key già assegnata a questo ordine.", flags: 64 },
+              });
+            }
+
+            const { deliverPendingKey } = await import("@/lib/purchase/fulfillment.server");
+            const delivery = await deliverPendingKey(orderId);
+            return json({
+              type: 4,
+              data: {
+                content:
+                  delivery.status === "delivered"
+                    ? "✅ Key registrata e consegnata nel ticket."
+                    : "⚠️ Key registrata in modo sicuro ma consegna fallita. Usa **Riprova consegna** (non serve reinserirla).",
+                flags: 64,
+              },
+            });
+          } catch (err) {
+            console.error("discord_modal_error", {
+              orderId,
+              message: err instanceof Error ? err.message : "unknown",
+            });
+            return json({
+              type: 4,
+              data: { content: "⚠️ Errore temporaneo. Riprova più tardi.", flags: 64 },
+            });
+          }
         }
 
         return json({ type: 4, data: { content: "Non supportato.", flags: 64 } });

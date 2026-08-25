@@ -117,6 +117,68 @@ export function linkButton(label: string, url: string) {
   return [{ type: 1, components: [{ type: 2, style: 5, label, url }] }];
 }
 
+/** Staff-only controls. Visibility is cosmetic: authorization is enforced server-side. */
+export function staffKeyButtons(orderId: string) {
+  return [
+    {
+      type: 1,
+      components: [
+        {
+          type: 2,
+          style: 1,
+          label: "Assegna KeyAuth key (staff)",
+          custom_id: `aron_assign_key_${orderId}`,
+        },
+        {
+          type: 2,
+          style: 2,
+          label: "Riprova consegna (staff)",
+          custom_id: `aron_retry_key_delivery_${orderId}`,
+        },
+      ],
+    },
+  ];
+}
+
+/** Discord modal asking staff to paste the key generated manually in KeyAuth. */
+export function keyAuthModal(orderId: string) {
+  return {
+    type: 9,
+    data: {
+      custom_id: `aron_key_modal_${orderId}`,
+      title: "Assegna KeyAuth key",
+      components: [
+        {
+          type: 1,
+          components: [
+            {
+              type: 4,
+              custom_id: "keyauth_key",
+              style: 1,
+              label: "KeyAuth key",
+              min_length: 8,
+              max_length: 128,
+              required: true,
+              placeholder: "Incolla qui la key generata su KeyAuth",
+            },
+          ],
+        },
+      ],
+    },
+  };
+}
+
+/**
+ * Server-side staff authorization. Requires DISCORD_STAFF_ROLE_ID to be configured:
+ * there is no owner/username fallback.
+ */
+export function isStaffInteraction(body: unknown): boolean {
+  const staffRoleId = process.env["DISCORD_STAFF_ROLE_ID"];
+  if (!staffRoleId) return false;
+  const roles = (body as { member?: { roles?: unknown } } | null)?.member?.roles;
+  return Array.isArray(roles) && roles.some((r) => String(r) === staffRoleId);
+}
+
 function hexToBytes(hex: string): Uint8Array {
   const out = new Uint8Array(hex.length / 2);
   for (let i = 0; i < out.length; i++) out[i] = parseInt(hex.slice(i * 2, i * 2 + 2), 16);

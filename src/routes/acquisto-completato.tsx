@@ -11,12 +11,13 @@ export const Route = createFileRoute("/acquisto-completato")({
       {
         name: "description",
         content:
-          "Pagamento verificato: la tua licenza Aron Mod è stata attivata. Torna nel ticket Discord per i dettagli.",
+          "Pagamento verificato automaticamente. Torna nel ticket Discord per ricevere la KeyAuth key dallo staff.",
       },
       { property: "og:title", content: "Acquisto completato — Aron Mod" },
       {
         property: "og:description",
-        content: "Pagamento verificato: la tua licenza Aron Mod è stata attivata.",
+        content:
+          "Pagamento verificato automaticamente. Torna nel ticket Discord per ricevere la KeyAuth key dallo staff.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -29,13 +30,13 @@ export const Route = createFileRoute("/acquisto-completato")({
 const T = {
   it: {
     title: "Pagamento completato",
-    text: "La tua licenza è stata attivata o estesa automaticamente. Torna nel tuo ticket su Discord: lì trovi piano, durata, nuova scadenza e — solo per le nuove licenze — la license key, mostrata una sola volta.",
+    text: "Pagamento verificato automaticamente. Torna nel ticket Discord per ricevere la KeyAuth key dallo staff.",
     cta: "Torna su Discord",
     home: "Torna alla home",
   },
   en: {
     title: "Payment completed",
-    text: "Your license has been activated or extended automatically. Go back to your Discord ticket for plan, duration, new expiry date and — for new licenses only — your license key, shown only once.",
+    text: "Payment verified automatically. Go back to your Discord ticket to receive your KeyAuth key from the staff.",
     cta: "Back to Discord",
     home: "Back to home",
   },

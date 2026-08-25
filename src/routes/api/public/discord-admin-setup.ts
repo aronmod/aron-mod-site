@@ -30,9 +30,9 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
             {
               title: "🛒 Acquista Aron Mod",
               description: [
-                "**IT** — Clicca il pulsante qui sotto per aprire un ticket privato, scegliere piano e durata e pagare con PayPal. La licenza viene attivata automaticamente.",
+                "**IT** — Clicca il pulsante qui sotto per aprire un ticket privato, scegliere piano e durata e pagare con PayPal. Dopo il pagamento verificato lo staff ti assegna la KeyAuth key nel ticket.",
                 "",
-                "**EN** — Click the button below to open a private ticket, choose your plan and duration and pay with PayPal. Your license is activated automatically.",
+                "**EN** — Click the button below to open a private ticket, choose your plan and duration and pay with PayPal. Once the payment is verified, the staff assigns your KeyAuth key in the ticket.",
                 "",
                 "BASE · 15gg 9 € · 30gg 15 €",
                 "PLUS · 15gg 12 € · 30gg 20 €",
