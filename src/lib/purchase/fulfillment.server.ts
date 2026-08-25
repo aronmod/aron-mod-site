@@ -77,7 +77,6 @@ function reviewMessage(
     .join("\n");
 }
 
-
 function keyMessage(plan: string, days: number, plaintextKey: string, userId: string | null) {
   return [
     userId ? `<@${userId}>` : "",
@@ -153,7 +152,6 @@ export async function fulfillOrder(
       `🕵️ ${orderRefInline(orderId, captureId)} in **revisione manuale** — seller protection PayPal: \`${risk.status}\`${risk.reason ? ` (\`${risk.reason}\`)` : ""}. Approvare la consegna nel ticket prima di assegnare la KeyAuth key.`,
     );
   }
-
 
   if (!needsReview && userId) await addCustomerRole(userId);
 
