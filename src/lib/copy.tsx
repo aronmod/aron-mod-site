@@ -139,11 +139,18 @@ export const copy = {
         includes: ["Auto Dungeon", "Auto Alchimia", "Switch Ammalia", "HWID Spoofer"],
       },
       commonPerks: [
-        "Tutte le funzioni della mod incluse",
+        "Funzioni principali della mod incluse",
         "Aggiornamenti costanti inclusi",
         "Assistenza tramite ticket Discord",
       ],
       getMod: "Come ottenere Aron Mod",
+      stepsTitle: "Come funziona l'acquisto",
+      steps: [
+        "Apri il ticket su Discord",
+        "Scegli piano e durata",
+        "Paga con PayPal",
+        "Licenza attivata automaticamente",
+      ],
     },
     showcase: {
       eyebrow: "",
@@ -383,11 +390,18 @@ export const copy = {
         includes: ["Auto Dungeon", "Auto Alchemy", "Auto Enchant", "HWID Spoofer"],
       },
       commonPerks: [
-        "All mod features included",
+        "Core mod features included",
         "Constant updates included",
         "Support via Discord ticket",
       ],
       getMod: "How to get Aron Mod",
+      stepsTitle: "How the purchase works",
+      steps: [
+        "Open a ticket on Discord",
+        "Choose plan and duration",
+        "Pay with PayPal",
+        "License activated automatically",
+      ],
     },
     showcase: {
       eyebrow: "",

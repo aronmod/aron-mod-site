@@ -1,5 +1,6 @@
 export const LINKS = {
   discordInvite: "https://discord.gg/CyUESCgyq3",
+  purchaseChannel: "https://discord.com/channels/1530601137462448400/1530897133719257148",
   ticketIt: "https://discord.com/channels/1530601137462448400/1530637947064553633",
   ticketEn: "https://discord.com/channels/1530601137462448400/1530638052010102855",
   guideIt: "https://discord.com/channels/1530601137462448400/1530897133719257148",
