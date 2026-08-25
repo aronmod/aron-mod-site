@@ -300,9 +300,7 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
               const embeds = Array.isArray(message.embeds) ? message.embeds : [];
               const embed = embeds[0];
               const fields = Array.isArray(embed?.fields) ? embed.fields : [];
-              const realFields = fields.filter(
-                (field) => !isSpacerField(String(field.name ?? "")),
-              );
+              const realFields = fields.filter((field) => !isSpacerField(String(field.name ?? "")));
               const spacerFields = fields.filter((field) =>
                 isSpacerField(String(field.name ?? "")),
               );
