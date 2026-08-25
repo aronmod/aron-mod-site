@@ -239,6 +239,7 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
             exact: boolean;
             embedCount: number;
             titles: string[];
+            fieldNames: string[];
             buttonLabel: string;
             buttonStyle: number | null;
             hasPiano: boolean;
@@ -250,6 +251,7 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
             exact: false,
             embedCount: 0,
             titles: [],
+            fieldNames: [],
             buttonLabel: "",
             buttonStyle: null,
             hasPiano: false,
@@ -260,6 +262,7 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
             exact: false,
             embedCount: 0,
             titles: [],
+            fieldNames: [],
             buttonLabel: "",
             buttonStyle: null,
             hasPiano: false,
@@ -277,24 +280,30 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
 
             if (ids.includes(panels[locale].customId)) {
               const embeds = Array.isArray(message.embeds) ? message.embeds : [];
+              const embed = embeds[0];
+              const fields = Array.isArray(embed?.fields) ? embed.fields : [];
               const button = (message.components ?? [])
                 .flatMap((row) => row.components ?? [])
                 .find((component) => component.custom_id === panels[locale].customId);
-              const expectedTitles =
+              const expectedTitle =
+                locale === "it" ? "🛒 Acquista Aron Mod" : "🛒 Buy Aron Mod";
+              const expectedFields =
                 locale === "it"
-                  ? ["🛒 Acquista Aron Mod", "BASE", "PLUS"]
-                  : ["🛒 Buy Aron Mod", "BASE", "PLUS"];
+                  ? ["⭐ PLUS — Funzioni extra", "BASE", "PLUS"]
+                  : ["⭐ PLUS — Extra features", "BASE", "PLUS"];
               const expectedLabel = locale === "it" ? "🛒 Acquista ora" : "🛒 Buy now";
-              const serializedEmbeds = JSON.stringify(embeds);
 
               verify[locale].embedCount = embeds.length;
-              verify[locale].titles = embeds.map((embed) => String(embed.title ?? ""));
+              verify[locale].titles = embeds.map((item) => String(item.title ?? ""));
+              verify[locale].fieldNames = fields.map((field) => String(field.name ?? ""));
               verify[locale].buttonLabel = String(button?.label ?? "");
               verify[locale].buttonStyle = typeof button?.style === "number" ? button.style : null;
-              verify[locale].hasPiano = serializedEmbeds.includes("PIANO");
+              verify[locale].hasPiano = String(embed?.description ?? "").includes("PIANO");
               verify[locale].exact =
-                embeds.length === 3 &&
-                verify[locale].titles.every((title, index) => title === expectedTitles[index]) &&
+                embeds.length === 1 &&
+                String(embed?.title ?? "") === expectedTitle &&
+                verify[locale].fieldNames.length === 3 &&
+                verify[locale].fieldNames.every((name, index) => name === expectedFields[index]) &&
                 button?.label === expectedLabel &&
                 button.style === 1 &&
                 !verify[locale].hasPiano;
