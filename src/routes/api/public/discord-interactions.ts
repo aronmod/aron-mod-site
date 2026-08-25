@@ -323,15 +323,20 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
         // MODAL_SUBMIT
         if (body?.type === 5) {
           const customId: string = String(body?.data?.custom_id ?? "");
+          const { t } = await import("@/lib/purchase/discord-copy.server");
+          const tickets = await import("@/lib/purchase/tickets.server");
+          const fallbackLocale = await tickets.ticketLocale(
+            body?.channel_id ? String(body.channel_id) : null,
+          );
+          const fallbackCopy = t(fallbackLocale);
           const match =
             /^aron_key_modal_([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$/.exec(
               customId,
             );
-          if (!match) return json({ type: 4, data: { content: "Azione non valida.", flags: 64 } });
+          if (!match) return json({ type: 4, data: { content: fallbackCopy.invalidAction, flags: 64 } });
 
           const discord = await import("@/lib/purchase/discord.server");
           const orderId = String(match[1]);
-          const { t } = await import("@/lib/purchase/discord-copy.server");
           let c = t("it");
           try {
             const { orderLocale } = await import("@/lib/purchase/fulfillment.server");
