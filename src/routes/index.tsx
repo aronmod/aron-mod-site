@@ -97,11 +97,32 @@ function Index() {
   const t = copy[lang];
 
   useEffect(() => {
-    document.title =
+    const meta =
       lang === "it"
-        ? "Aron Mod - Il Bot di Metin per Server Privati"
-        : "Aron Mod - The Metin Bot for Private Servers";
+        ? {
+            title: "Aron Mod - Il Bot di Metin per Server Privati",
+            description: "FarmBot, Auto Dungeon, Auto Alchimia e altre funzioni avanzate.",
+          }
+        : {
+            title: "Aron Mod - The Metin Bot for Private Servers",
+            description: copy.en.meta.description,
+          };
+
+    document.documentElement.lang = lang;
+    document.title = meta.title;
+
+    const setMeta = (selector: string, content: string) => {
+      const el = document.head.querySelector<HTMLMetaElement>(selector);
+      if (el) el.setAttribute("content", content);
+    };
+
+    setMeta('meta[name="description"]', meta.description);
+    setMeta('meta[property="og:title"]', meta.title);
+    setMeta('meta[property="og:description"]', meta.description);
+    setMeta('meta[name="twitter:title"]', meta.title);
+    setMeta('meta[name="twitter:description"]', meta.description);
   }, [lang]);
+
 
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [ticketOpen, setTicketOpen] = useState(false);
@@ -373,7 +394,7 @@ function Hero({ lang }: { lang: Lang }) {
 
       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent" />
 
-      <div className="relative mx-auto max-w-4xl px-4 py-24 text-center sm:px-6 sm:py-32">
+      <div className="relative mx-auto max-w-4xl px-4 py-16 text-center sm:px-6 sm:py-24">
         <div className="reveal flex justify-center">
           <div className="relative">
             <div
@@ -391,28 +412,29 @@ function Hero({ lang }: { lang: Lang }) {
         </div>
 
         <h1
-          className="reveal title-shimmer mt-6 text-4xl leading-tight font-bold sm:text-6xl"
-          style={{ animationDelay: "140ms" }}
+          className="reveal title-shimmer mt-5 text-4xl leading-tight font-bold sm:text-6xl"
+          style={{ animationDelay: "60ms" }}
         >
           {t.hero.title}
         </h1>
 
         <div
-          className="reveal mx-auto mt-7 max-w-2xl space-y-2 px-4 text-center"
-          style={{ animationDelay: "200ms" }}
+          className="reveal mx-auto mt-5 max-w-2xl space-y-2 px-4 text-center"
+          style={{ animationDelay: "100ms" }}
         >
-          <p className="text-base leading-relaxed font-bold text-foreground/90 sm:text-lg">
+          <p className="text-base leading-relaxed font-bold text-foreground sm:text-lg">
             {t.hero.subtitle.line1}
           </p>
-          <p className="text-base leading-relaxed font-medium text-foreground/90 sm:text-lg">
+          <p className="text-base leading-relaxed font-medium text-foreground sm:text-lg">
             {t.hero.subtitle.line2}
           </p>
         </div>
 
         <div
-          className="reveal mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row"
-          style={{ animationDelay: "260ms" }}
+          className="reveal mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row"
+          style={{ animationDelay: "140ms" }}
         >
+
           <a
             href="#prezzi"
             className="glow-ring hover-lift-glow inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-accent)] px-7 py-3.5 font-display text-base font-bold text-primary-foreground hover:shadow-[0_0_0_1px_color-mix(in_oklab,var(--violet)_45%,transparent),0_18px_50px_-16px_color-mix(in_oklab,var(--primary)_80%,transparent)] sm:w-auto"
@@ -828,10 +850,12 @@ function Pricing({ lang }: { lang: Lang }) {
       </div>
 
       {"includes" in plan ? (
-        <div className="mt-6 rounded-xl bg-primary/10 p-4">
-          <p className="text-sm font-semibold leading-relaxed text-foreground sm:text-base">
-            {plan.includesIntro}
+        <div className="mt-6 rounded-xl border border-accent/40 bg-primary/10 p-4">
+          <p className="flex items-start gap-2 text-sm font-bold leading-relaxed text-accent sm:text-base">
+            <HelpCircle aria-hidden className="mt-0.5 h-4 w-4 shrink-0" />
+            <span>{plan.includesIntro}</span>
           </p>
+
           <ul className="mt-3 space-y-1.5">
             {plan.includes.map((item) => (
               <li
