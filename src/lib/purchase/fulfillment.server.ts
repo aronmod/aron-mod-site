@@ -2,14 +2,25 @@
 //
 // This project is NOT the license authority: KeyAuth is. Payment fulfillment only
 // marks the order paid and asks staff to assign a manually generated KeyAuth key.
+// When PayPal does not report full seller protection, the order lands in
+// `review_required` and a staff approval is needed before the key can be assigned.
 
 import { decryptSecretValue, shortId } from "./crypto.server";
 import { getServiceClient } from "./db.server";
-import { addCustomerRole, alertStaff, sendChannelMessage, staffKeyButtons } from "./discord.server";
+import {
+  addCustomerRole,
+  alertStaff,
+  reviewButtons,
+  sendChannelMessage,
+  staffKeyButtons,
+} from "./discord.server";
 import { formatEur } from "./pricing";
+import type { RiskOutcome } from "./risk.server";
 
 export type FulfillResult =
-  { status: "paid" } | { status: "already_processed" } | { status: "order_not_found" };
+  | { status: "paid"; fulfillment: "ready" | "review_required" }
+  | { status: "already_processed" }
+  | { status: "order_not_found" };
 
 function paidMessage(
   orderId: string,
@@ -26,6 +37,26 @@ function paidMessage(
     "",
     "🔑 La KeyAuth key verrà assegnata dallo staff in questo ticket.",
     "_Your KeyAuth key will be assigned by the staff in this ticket._",
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+function reviewMessage(
+  orderId: string,
+  plan: string,
+  days: number,
+  amountCents: number,
+  userId: string | null,
+): string {
+  return [
+    userId ? `<@${userId}>` : "",
+    "✅ **Pagamento confermato / Payment confirmed**",
+    `Piano / Plan: **${String(plan).toUpperCase()}** · ${days} giorni / days · ${formatEur(amountCents)}`,
+    `Ordine / Order: \`${shortId(orderId)}\``,
+    "",
+    "🕵️ **Verifica manuale in corso** — questo pagamento richiede una revisione di sicurezza prima della consegna della KeyAuth key. Nessuna azione richiesta da parte tua: lo staff completerà il controllo al più presto.",
+    "_🕵️ **Manual review in progress** — this payment requires a security review before the KeyAuth key is delivered. No action needed from you: the staff will complete the check shortly._",
   ]
     .filter(Boolean)
     .join("\n");
@@ -48,18 +79,23 @@ function keyMessage(plan: string, days: number, plaintextKey: string, userId: st
 /**
  * Confirms a verified payment exactly once. No license key is generated here and
  * no row in `licenses` is created or extended — KeyAuth remains the sole authority.
+ * `risk` comes from PayPal's capture (server-side), never from the client.
  */
 export async function fulfillOrder(
   orderId: string,
   captureId: string,
   source: string,
+  risk: RiskOutcome,
 ): Promise<FulfillResult> {
   const supabase = getServiceClient();
 
-  const { data, error } = await supabase.rpc("finalize_paid_order_manual", {
+  const { data, error } = await supabase.rpc("finalize_paid_order_reviewed", {
     _order_id: orderId,
     _capture_id: captureId,
     _source: source,
+    _risk_status: risk.status,
+    _risk_reason: risk.reason,
+    _needs_review: risk.needsReview,
   });
   if (error) {
     console.error("fulfillment_rpc_error", { orderId, code: error.code });
@@ -71,17 +107,18 @@ export async function fulfillOrder(
 
   const channelId = row.ticket_channel_id ? String(row.ticket_channel_id) : null;
   const userId = row.discord_user_id ? String(row.discord_user_id) : null;
+  const needsReview = String(row.fulfillment_status) === "review_required";
 
   if (channelId) {
     const res = await sendChannelMessage(channelId, {
-      content: paidMessage(
+      content: (needsReview ? reviewMessage : paidMessage)(
         orderId,
         String(row.plan),
         Number(row.days),
         Number(row.amount_cents),
         userId,
       ),
-      components: staffKeyButtons(orderId),
+      components: needsReview ? reviewButtons(orderId) : staffKeyButtons(orderId),
     });
     if (!res.ok) {
       await alertStaff(
@@ -94,9 +131,15 @@ export async function fulfillOrder(
     );
   }
 
-  if (userId) await addCustomerRole(userId);
+  if (needsReview) {
+    await alertStaff(
+      `🕵️ Ordine \`${shortId(orderId)}\` in **revisione manuale** — seller protection PayPal: \`${risk.status}\`${risk.reason ? ` (\`${risk.reason}\`)` : ""}. Approvare la consegna nel ticket prima di assegnare la KeyAuth key.`,
+    );
+  }
 
-  return { status: "paid" };
+  if (!needsReview && userId) await addCustomerRole(userId);
+
+  return { status: "paid", fulfillment: needsReview ? "review_required" : "ready" };
 }
 
 export type DeliveryResult =

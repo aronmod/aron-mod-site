@@ -106,6 +106,12 @@ export const finalizePaypalOrder = createServerFn({ method: "POST" })
       return { ok: false, error: "payment_not_completed" };
     }
 
-    await fulfillOrder(orderId, String(captureObj.id), "checkout_capture");
+    const { evaluateCaptureRisk } = await import("./purchase/risk.server");
+    await fulfillOrder(
+      orderId,
+      String(captureObj.id),
+      "checkout_capture",
+      evaluateCaptureRisk(captureObj),
+    );
     return { ok: true };
   });

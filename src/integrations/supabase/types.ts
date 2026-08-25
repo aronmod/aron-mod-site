@@ -268,6 +268,11 @@ export type Database = {
           paypal_capture_id: string | null
           paypal_order_id: string | null
           plan: string
+          review_approved_at: string | null
+          review_approved_by: string | null
+          risk_checked_at: string | null
+          risk_reason: string | null
+          risk_status: string | null
           status: string
           updated_at: string
         }
@@ -287,6 +292,11 @@ export type Database = {
           paypal_capture_id?: string | null
           paypal_order_id?: string | null
           plan: string
+          review_approved_at?: string | null
+          review_approved_by?: string | null
+          risk_checked_at?: string | null
+          risk_reason?: string | null
+          risk_status?: string | null
           status?: string
           updated_at?: string
         }
@@ -306,6 +316,11 @@ export type Database = {
           paypal_capture_id?: string | null
           paypal_order_id?: string | null
           plan?: string
+          review_approved_at?: string | null
+          review_approved_by?: string | null
+          risk_checked_at?: string | null
+          risk_reason?: string | null
+          risk_status?: string | null
           status?: string
           updated_at?: string
         }
@@ -342,6 +357,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      approve_order_delivery: {
+        Args: { _order_id: string; _staff_id: string }
+        Returns: {
+          days: number
+          discord_user_id: string
+          plan: string
+          result: string
+          ticket_channel_id: string
+        }[]
+      }
       assign_keyauth_key: {
         Args: {
           _assigned_by: string
@@ -383,6 +408,25 @@ export type Database = {
           amount_cents: number
           days: number
           discord_user_id: string
+          plan: string
+          result: string
+          ticket_channel_id: string
+        }[]
+      }
+      finalize_paid_order_reviewed: {
+        Args: {
+          _capture_id: string
+          _needs_review: boolean
+          _order_id: string
+          _risk_reason: string
+          _risk_status: string
+          _source: string
+        }
+        Returns: {
+          amount_cents: number
+          days: number
+          discord_user_id: string
+          fulfillment_status: string
           plan: string
           result: string
           ticket_channel_id: string

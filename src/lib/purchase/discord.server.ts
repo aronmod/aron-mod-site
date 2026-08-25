@@ -150,6 +150,26 @@ export function staffKeyButtons(orderId: string) {
   ];
 }
 
+/**
+ * Shown instead of `staffKeyButtons` when PayPal did not report full seller
+ * protection. Authorization for the approval is enforced server-side.
+ */
+export function reviewButtons(orderId: string) {
+  return [
+    {
+      type: 1,
+      components: [
+        {
+          type: 2,
+          style: 3,
+          label: "Approva consegna (staff)",
+          custom_id: `aron_approve_delivery_${orderId}`,
+        },
+      ],
+    },
+  ];
+}
+
 /** Discord modal asking staff to paste the key generated manually in KeyAuth. */
 export function keyAuthModal(orderId: string) {
   return {

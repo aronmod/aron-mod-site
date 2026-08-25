@@ -167,7 +167,15 @@ export const Route = createFileRoute("/api/public/paypal-webhook")({
               .eq("paypal_event_id", eventId);
 
             const { fulfillOrder } = await import("@/lib/purchase/fulfillment.server");
-            await fulfillOrder(orderId, captureId, "paypal_webhook");
+            const { evaluateCaptureRisk } = await import("@/lib/purchase/risk.server");
+            const risk = evaluateCaptureRisk(resource);
+            payloadMinimal["seller_protection_status"] = risk.status;
+            payloadMinimal["seller_protection_reason"] = risk.reason;
+            await supabase
+              .from("payment_events")
+              .update({ payload_minimal: payloadMinimal })
+              .eq("paypal_event_id", eventId);
+            await fulfillOrder(orderId, captureId, "paypal_webhook", risk);
           } else if (isRefundLike) {
             const { data: order } = captureId
               ? await supabase
