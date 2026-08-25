@@ -142,4 +142,3 @@ export async function verifyWebhookSignature(headers: Headers, rawBody: string):
   const json = (await res.json().catch(() => null)) as { verification_status?: string } | null;
   return json?.verification_status === "SUCCESS";
 }
-

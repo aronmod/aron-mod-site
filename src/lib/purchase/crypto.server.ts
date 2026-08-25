@@ -86,10 +86,7 @@ export function requireSecret(name: string): string {
 async function aesKey(): Promise<CryptoKey> {
   const secret = requireSecret("LICENSE_DELIVERY_SECRET");
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(secret));
-  return crypto.subtle.importKey("raw", digest, { name: "AES-GCM" }, false, [
-    "encrypt",
-    "decrypt",
-  ]);
+  return crypto.subtle.importKey("raw", digest, { name: "AES-GCM" }, false, ["encrypt", "decrypt"]);
 }
 
 /** AES-GCM encryption for the license key held in the delivery outbox. */

@@ -96,16 +96,15 @@ async function deliverPending(orderId: string): Promise<boolean> {
 
   if (!channelId) {
     await failDelivery("no_channel");
-    await alertStaff(`⚠️ License key in attesa di consegna: ordine \`${shortId(orderId)}\` non ha un canale ticket.`);
+    await alertStaff(
+      `⚠️ License key in attesa di consegna: ordine \`${shortId(orderId)}\` non ha un canale ticket.`,
+    );
     throw new Error("license_delivery_no_channel");
   }
 
   let plaintextKey: string;
   try {
-    plaintextKey = await decryptSecretValue(
-      String(delivery.ciphertext),
-      String(delivery.iv),
-    );
+    plaintextKey = await decryptSecretValue(String(delivery.ciphertext), String(delivery.iv));
   } catch {
     await failDelivery("decrypt_failed");
     throw new Error("license_delivery_decrypt_failed");

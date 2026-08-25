@@ -35,7 +35,6 @@ export const getCheckoutSummary = createServerFn({ method: "GET" })
       expiresAt: String(order.checkout_expires_at),
       // Public client id only. PAYPAL_CLIENT_ID stays strictly server-side.
       paypalClientId: process.env["PUBLIC_PAYPAL_CLIENT_ID"] ?? "",
-
     };
   });
 

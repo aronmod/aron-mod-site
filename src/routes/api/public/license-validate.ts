@@ -24,11 +24,7 @@ function tooMany() {
 
 /** Prefer the Cloudflare-managed client IP; other client headers are spoofable. */
 function clientIp(request: Request): string {
-  return (
-    request.headers.get("cf-connecting-ip") ??
-    request.headers.get("x-real-ip") ??
-    "unknown"
-  );
+  return request.headers.get("cf-connecting-ip") ?? request.headers.get("x-real-ip") ?? "unknown";
 }
 
 export const Route = createFileRoute("/api/public/license-validate")({
@@ -42,9 +38,8 @@ export const Route = createFileRoute("/api/public/license-validate")({
           return deny();
         }
 
-        const { hmacSha256Hex, requireSecret, sha256Hex } = await import(
-          "@/lib/purchase/crypto.server"
-        );
+        const { hmacSha256Hex, requireSecret, sha256Hex } =
+          await import("@/lib/purchase/crypto.server");
         const { getServiceClient } = await import("@/lib/purchase/db.server");
         const supabase = getServiceClient();
 
@@ -58,7 +53,11 @@ export const Route = createFileRoute("/api/public/license-validate")({
         const keyFp = (await hmacSha256Hex(hwidSecret, `key:${keyHash}`)).slice(0, 32);
         const limits = await Promise.all([
           supabase.rpc("bump_rate_limit", { _key: `ip:${ipFp}`, _limit: 60, _window_seconds: 60 }),
-          supabase.rpc("bump_rate_limit", { _key: `key:${keyFp}`, _limit: 20, _window_seconds: 60 }),
+          supabase.rpc("bump_rate_limit", {
+            _key: `key:${keyFp}`,
+            _limit: 20,
+            _window_seconds: 60,
+          }),
         ]);
         if (limits.some((r) => r.data === false)) return tooMany();
 
