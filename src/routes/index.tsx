@@ -821,77 +821,111 @@ function Servers({ lang }: { lang: Lang }) {
 
 function Pricing({ lang }: { lang: Lang }) {
   const t = copy[lang].pricing;
-  const guideUrl = lang === "it" ? LINKS.purchasePanelIt : LINKS.purchasePanelEn;
+  const panelUrl = lang === "it" ? LINKS.purchasePanelIt : LINKS.purchasePanelEn;
 
   const PlanCard = ({
     plan,
+    planId,
     highlight,
   }: {
     plan: (typeof t)["base"] | (typeof t)["plus"];
+    planId: "base" | "plus";
     highlight: boolean;
-  }) => (
-    <article
-      className={`glass-card relative flex flex-col rounded-2xl p-7 ${highlight ? "glow-ring border-primary/60" : ""}`}
-    >
-      {plan.bestValue ? (
-        <span className="absolute top-5 right-5 rounded-md bg-accent/15 px-2 py-0.5 text-[11px] font-bold tracking-wider text-accent uppercase">
-          {plan.bestValueLabel}
-        </span>
-      ) : null}
-      <h3 className="font-display text-2xl font-bold">{plan.name}</h3>
-      <div className="mt-6 flex flex-col gap-3.5">
-        <a
-          href={guideUrl}
-          {...EXTERNAL_LINK_PROPS}
-          className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card/70 px-5 py-2.5 font-display text-sm font-bold text-foreground transition-all hover:scale-105 hover:border-primary"
-        >
-          <ExternalLink className="h-3.5 w-3.5" /> {plan.cta15}
-        </a>
-        <a
-          href={guideUrl}
-          {...EXTERNAL_LINK_PROPS}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-accent)] px-5 py-2.5 font-display text-sm font-bold text-primary-foreground transition-transform hover:scale-105"
-        >
-          <ExternalLink className="h-3.5 w-3.5" /> {plan.cta30}
-        </a>
-      </div>
+  }) => {
+    const [days, setDays] = useState<15 | 30>(30);
+    // The selection is only a hint: plan, duration and price are re-validated
+    // and resolved server-side before any order is created.
+    const startUrl = `/api/public/discord-oauth-start?plan=${planId}&days=${days}&locale=${lang}`;
 
-      {"includes" in plan ? (
-        <div className="mt-6 rounded-xl border border-accent/40 bg-primary/10 p-4">
-          <p className="flex items-start gap-2 text-sm font-bold leading-relaxed text-accent sm:text-base">
-            <HelpCircle aria-hidden className="mt-0.5 h-4 w-4 shrink-0" />
-            <span>{plan.includesIntro}</span>
-          </p>
+    const durationButton = (value: 15 | 30, label: string) => (
+      <button
+        type="button"
+        onClick={() => setDays(value)}
+        aria-pressed={days === value}
+        className={`inline-flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-2.5 font-display text-sm font-bold transition-all ${
+          days === value
+            ? "border border-primary bg-primary/20 text-foreground shadow-[0_10px_30px_-16px_color-mix(in_oklab,var(--primary)_80%,transparent)]"
+            : "border border-border bg-card/70 text-muted-foreground hover:border-primary/60 hover:text-foreground"
+        }`}
+      >
+        {label}
+      </button>
+    );
 
-          <ul className="mt-3 space-y-1.5">
-            {plan.includes.map((item) => (
-              <li
-                key={item}
-                className="flex items-center gap-2 text-sm font-semibold text-foreground"
-              >
-                <Check
-                  className="h-4 w-4 shrink-0"
-                  style={{
-                    color: "color-mix(in oklab, var(--accent) 60%, var(--violet))",
-                  }}
-                />
-                {item}
-              </li>
-            ))}
-          </ul>
+    return (
+      <article
+        className={`glass-card relative flex flex-col rounded-2xl p-7 ${highlight ? "glow-ring border-primary/60" : ""}`}
+      >
+        {plan.bestValue ? (
+          <span className="absolute top-5 right-5 rounded-md bg-accent/15 px-2 py-0.5 text-[11px] font-bold tracking-wider text-accent uppercase">
+            {plan.bestValueLabel}
+          </span>
+        ) : null}
+        <h3 className="font-display text-2xl font-bold">{plan.name}</h3>
+
+        <fieldset className="mt-6 border-0 p-0">
+          <legend className="mb-2.5 text-sm font-semibold text-muted-foreground">
+            {t.durationLegend}
+          </legend>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            {durationButton(15, plan.cta15)}
+            {durationButton(30, plan.cta30)}
+          </div>
+        </fieldset>
+
+        <div className="mt-4 flex flex-col gap-2.5">
+          <a
+            href={startUrl}
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-accent)] px-5 py-3 font-display text-sm font-bold text-primary-foreground transition-transform hover:scale-105"
+          >
+            <MessageCircle className="h-4 w-4" /> {t.continueCta}
+          </a>
+          <a
+            href={panelUrl}
+            {...EXTERNAL_LINK_PROPS}
+            className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-muted-foreground underline decoration-dotted underline-offset-4 transition-colors hover:text-foreground"
+          >
+            <ExternalLink className="h-3.5 w-3.5" /> {t.directLink}
+          </a>
         </div>
-      ) : null}
 
-      <ul className="mt-6 flex-1 space-y-2 text-sm text-muted-foreground">
-        {t.commonPerks.map((perk) => (
-          <li key={perk} className="flex items-start gap-2">
-            <CircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
-            {perk}
-          </li>
-        ))}
-      </ul>
-    </article>
-  );
+        {"includes" in plan ? (
+          <div className="mt-6 rounded-xl border border-accent/40 bg-primary/10 p-4">
+            <p className="flex items-start gap-2 text-sm font-bold leading-relaxed text-accent sm:text-base">
+              <HelpCircle aria-hidden className="mt-0.5 h-4 w-4 shrink-0" />
+              <span>{plan.includesIntro}</span>
+            </p>
+
+            <ul className="mt-3 space-y-1.5">
+              {plan.includes.map((item) => (
+                <li
+                  key={item}
+                  className="flex items-center gap-2 text-sm font-semibold text-foreground"
+                >
+                  <Check
+                    className="h-4 w-4 shrink-0"
+                    style={{
+                      color: "color-mix(in oklab, var(--accent) 60%, var(--violet))",
+                    }}
+                  />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+
+        <ul className="mt-6 flex-1 space-y-2 text-sm text-muted-foreground">
+          {t.commonPerks.map((perk) => (
+            <li key={perk} className="flex items-start gap-2">
+              <CircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+              {perk}
+            </li>
+          ))}
+        </ul>
+      </article>
+    );
+  };
 
   return (
     <section id="prezzi" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
@@ -904,8 +938,8 @@ function Pricing({ lang }: { lang: Lang }) {
         }
       />
       <div className="mx-auto mt-12 grid max-w-4xl gap-5.5 md:grid-cols-2 md:gap-x-7.5 md:gap-y-6">
-        <PlanCard plan={t.base} highlight={false} />
-        <PlanCard plan={t.plus} highlight={true} />
+        <PlanCard plan={t.base} planId="base" highlight={false} />
+        <PlanCard plan={t.plus} planId="plus" highlight={true} />
       </div>
       <ol className="mx-auto mt-10 grid max-w-4xl gap-3 sm:grid-cols-4">
         {t.steps.map((step, i) => (

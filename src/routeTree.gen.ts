@@ -14,6 +14,8 @@ import { Route as AcquistoCompletatoRouteImport } from './routes/acquisto-comple
 import { Route as CheckoutTokenRouteImport } from './routes/checkout.$token'
 import { Route as ApiPublicDiscordAdminSetupRouteImport } from './routes/api/public/discord-admin-setup'
 import { Route as ApiPublicDiscordInteractionsRouteImport } from './routes/api/public/discord-interactions'
+import { Route as ApiPublicDiscordOauthCallbackRouteImport } from './routes/api/public/discord-oauth-callback'
+import { Route as ApiPublicDiscordOauthStartRouteImport } from './routes/api/public/discord-oauth-start'
 import { Route as ApiPublicLicenseValidateRouteImport } from './routes/api/public/license-validate'
 import { Route as ApiPublicPaypalWebhookRouteImport } from './routes/api/public/paypal-webhook'
 
@@ -44,6 +46,18 @@ const ApiPublicDiscordInteractionsRoute =
     path: '/api/public/discord-interactions',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicDiscordOauthCallbackRoute =
+  ApiPublicDiscordOauthCallbackRouteImport.update({
+    id: '/api/public/discord-oauth-callback',
+    path: '/api/public/discord-oauth-callback',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicDiscordOauthStartRoute =
+  ApiPublicDiscordOauthStartRouteImport.update({
+    id: '/api/public/discord-oauth-start',
+    path: '/api/public/discord-oauth-start',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicLicenseValidateRoute =
   ApiPublicLicenseValidateRouteImport.update({
     id: '/api/public/license-validate',
@@ -62,6 +76,8 @@ export interface FileRoutesByFullPath {
   '/checkout/$token': typeof CheckoutTokenRoute
   '/api/public/discord-admin-setup': typeof ApiPublicDiscordAdminSetupRoute
   '/api/public/discord-interactions': typeof ApiPublicDiscordInteractionsRoute
+  '/api/public/discord-oauth-callback': typeof ApiPublicDiscordOauthCallbackRoute
+  '/api/public/discord-oauth-start': typeof ApiPublicDiscordOauthStartRoute
   '/api/public/license-validate': typeof ApiPublicLicenseValidateRoute
   '/api/public/paypal-webhook': typeof ApiPublicPaypalWebhookRoute
 }
@@ -71,6 +87,8 @@ export interface FileRoutesByTo {
   '/checkout/$token': typeof CheckoutTokenRoute
   '/api/public/discord-admin-setup': typeof ApiPublicDiscordAdminSetupRoute
   '/api/public/discord-interactions': typeof ApiPublicDiscordInteractionsRoute
+  '/api/public/discord-oauth-callback': typeof ApiPublicDiscordOauthCallbackRoute
+  '/api/public/discord-oauth-start': typeof ApiPublicDiscordOauthStartRoute
   '/api/public/license-validate': typeof ApiPublicLicenseValidateRoute
   '/api/public/paypal-webhook': typeof ApiPublicPaypalWebhookRoute
 }
@@ -81,6 +99,8 @@ export interface FileRoutesById {
   '/checkout/$token': typeof CheckoutTokenRoute
   '/api/public/discord-admin-setup': typeof ApiPublicDiscordAdminSetupRoute
   '/api/public/discord-interactions': typeof ApiPublicDiscordInteractionsRoute
+  '/api/public/discord-oauth-callback': typeof ApiPublicDiscordOauthCallbackRoute
+  '/api/public/discord-oauth-start': typeof ApiPublicDiscordOauthStartRoute
   '/api/public/license-validate': typeof ApiPublicLicenseValidateRoute
   '/api/public/paypal-webhook': typeof ApiPublicPaypalWebhookRoute
 }
@@ -92,6 +112,8 @@ export interface FileRouteTypes {
     | '/checkout/$token'
     | '/api/public/discord-admin-setup'
     | '/api/public/discord-interactions'
+    | '/api/public/discord-oauth-callback'
+    | '/api/public/discord-oauth-start'
     | '/api/public/license-validate'
     | '/api/public/paypal-webhook'
   fileRoutesByTo: FileRoutesByTo
@@ -101,6 +123,8 @@ export interface FileRouteTypes {
     | '/checkout/$token'
     | '/api/public/discord-admin-setup'
     | '/api/public/discord-interactions'
+    | '/api/public/discord-oauth-callback'
+    | '/api/public/discord-oauth-start'
     | '/api/public/license-validate'
     | '/api/public/paypal-webhook'
   id:
@@ -110,6 +134,8 @@ export interface FileRouteTypes {
     | '/checkout/$token'
     | '/api/public/discord-admin-setup'
     | '/api/public/discord-interactions'
+    | '/api/public/discord-oauth-callback'
+    | '/api/public/discord-oauth-start'
     | '/api/public/license-validate'
     | '/api/public/paypal-webhook'
   fileRoutesById: FileRoutesById
@@ -120,6 +146,8 @@ export interface RootRouteChildren {
   CheckoutTokenRoute: typeof CheckoutTokenRoute
   ApiPublicDiscordAdminSetupRoute: typeof ApiPublicDiscordAdminSetupRoute
   ApiPublicDiscordInteractionsRoute: typeof ApiPublicDiscordInteractionsRoute
+  ApiPublicDiscordOauthCallbackRoute: typeof ApiPublicDiscordOauthCallbackRoute
+  ApiPublicDiscordOauthStartRoute: typeof ApiPublicDiscordOauthStartRoute
   ApiPublicLicenseValidateRoute: typeof ApiPublicLicenseValidateRoute
   ApiPublicPaypalWebhookRoute: typeof ApiPublicPaypalWebhookRoute
 }
@@ -161,6 +189,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicDiscordInteractionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/discord-oauth-callback': {
+      id: '/api/public/discord-oauth-callback'
+      path: '/api/public/discord-oauth-callback'
+      fullPath: '/api/public/discord-oauth-callback'
+      preLoaderRoute: typeof ApiPublicDiscordOauthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/discord-oauth-start': {
+      id: '/api/public/discord-oauth-start'
+      path: '/api/public/discord-oauth-start'
+      fullPath: '/api/public/discord-oauth-start'
+      preLoaderRoute: typeof ApiPublicDiscordOauthStartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/license-validate': {
       id: '/api/public/license-validate'
       path: '/api/public/license-validate'
@@ -184,6 +226,8 @@ const rootRouteChildren: RootRouteChildren = {
   CheckoutTokenRoute: CheckoutTokenRoute,
   ApiPublicDiscordAdminSetupRoute: ApiPublicDiscordAdminSetupRoute,
   ApiPublicDiscordInteractionsRoute: ApiPublicDiscordInteractionsRoute,
+  ApiPublicDiscordOauthCallbackRoute: ApiPublicDiscordOauthCallbackRoute,
+  ApiPublicDiscordOauthStartRoute: ApiPublicDiscordOauthStartRoute,
   ApiPublicLicenseValidateRoute: ApiPublicLicenseValidateRoute,
   ApiPublicPaypalWebhookRoute: ApiPublicPaypalWebhookRoute,
 }

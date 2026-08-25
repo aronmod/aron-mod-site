@@ -160,13 +160,8 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
                 days,
                 locale,
               });
-              // In sandbox/dev the stable dev host returns 403 on non-API pages,
-              // so point the checkout link at the authenticated preview host.
-              const SANDBOX_CHECKOUT_ORIGIN =
-                "https://id-preview--1c134ef5-f387-4545-90d6-32fe56e14d6a.lovable.app";
-              const checkoutBase =
-                process.env["PAYPAL_ENV"] === "sandbox" ? SANDBOX_CHECKOUT_ORIGIN : request.url;
-              const url = new URL(`/checkout/${order.token}`, checkoutBase).toString();
+              const { checkoutUrlFor } = await import("@/lib/purchase/orders.server");
+              const url = checkoutUrlFor(order.token, request.url);
 
               const final = discord.finalOrderMessage(
                 locale,

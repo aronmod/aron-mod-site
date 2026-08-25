@@ -8,6 +8,17 @@ import { CURRENCY, priceCents, type Days, type Plan } from "./pricing";
 export const CHECKOUT_TTL_MINUTES = 30;
 
 /**
+ * Absolute checkout URL for a token. In sandbox/dev the stable dev host returns
+ * 403 on non-API pages, so the authenticated preview host is used instead.
+ */
+export function checkoutUrlFor(token: string, requestUrl: string): string {
+  const SANDBOX_CHECKOUT_ORIGIN =
+    "https://id-preview--1c134ef5-f387-4545-90d6-32fe56e14d6a.lovable.app";
+  const base = process.env["PAYPAL_ENV"] === "sandbox" ? SANDBOX_CHECKOUT_ORIGIN : requestUrl;
+  return new URL(`/checkout/${token}`, base).toString();
+}
+
+/**
  * Logically cancels every still-unpaid order of a ticket so old checkout links
  * stop being payable when the buyer changes plan or duration. Paid orders and
  * any other terminal status are never touched.
