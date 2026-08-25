@@ -15,20 +15,20 @@ export function normalizeLocale(value: unknown): Locale {
 
 const T = {
   it: {
-    panelTitle: "🛒 **Acquista Aron Mod**",
+    panelTitle: "🛒 **Acquisto Aron Mod**",
     welcome: (userId: string) => `<@${userId}> 👋 Benvenuto!`,
-    choosePlan: "Scegli il pacchetto:",
-    planInfo:
-      "**BASE** — funzioni principali · **PLUS** — include Auto Dungeon, Auto Alchimia, Switch Ammalia e HWID Spoofer (in base al server).",
-    selected: (plan: string) => `Piano selezionato: **${plan.toUpperCase()}**`,
-    chooseDays: "Ora scegli la durata:",
+    choosePlan: "Scegli il piano per continuare.",
+    planInfo: "BASE = funzioni principali · PLUS = funzioni extra (in base al server).",
+    selected: (plan: string) => `Piano: **${plan.toUpperCase()}**`,
+    chooseDays: "Ora scegli la durata.",
     selectedFull: (plan: string, days: number) =>
-      `Selezione attuale: **${plan.toUpperCase()}** · **${days} giorni**`,
-    changeHint: "Puoi cambiare piano o durata in qualsiasi momento: il riepilogo si aggiorna.",
-    planBase: "BASE",
-    planPlus: "PLUS",
-    days15: "15 giorni",
-    days30: "30 giorni",
+      `Piano: **${plan.toUpperCase()}** · Durata: **${days} giorni**`,
+    changeHint: "Puoi cambiare piano o durata quando vuoi.",
+    planBase: "🔹 BASE — Funzioni principali",
+    planPlus: "⭐ PLUS — Funzioni extra",
+    days15: "⏱️ 15 GIORNI",
+    days30: "📅 30 GIORNI",
+
     pay: "💳 PAGA",
     summary: (ref: string, plan: string, days: number, amountCents: number) =>
       [
@@ -89,20 +89,20 @@ const T = {
     refCapture: "PayPal Capture",
   },
   en: {
-    panelTitle: "🛒 **Buy Aron Mod**",
+    panelTitle: "🛒 **Aron Mod Purchase**",
     welcome: (userId: string) => `<@${userId}> 👋 Welcome!`,
-    choosePlan: "Choose your package:",
-    planInfo:
-      "**BASE** — core features · **PLUS** — includes Auto Dungeon, Auto Alchemy, Switch Bonus and HWID Spoofer (depending on the server).",
-    selected: (plan: string) => `Selected plan: **${plan.toUpperCase()}**`,
-    chooseDays: "Now choose the duration:",
+    choosePlan: "Choose a plan to continue.",
+    planInfo: "BASE = core features · PLUS = extra features (depending on the server).",
+    selected: (plan: string) => `Plan: **${plan.toUpperCase()}**`,
+    chooseDays: "Now choose the duration.",
     selectedFull: (plan: string, days: number) =>
-      `Current selection: **${plan.toUpperCase()}** · **${days} days**`,
-    changeHint: "You can change plan or duration at any time: the summary updates.",
-    planBase: "BASE",
-    planPlus: "PLUS",
-    days15: "15 days",
-    days30: "30 days",
+      `Plan: **${plan.toUpperCase()}** · Duration: **${days} days**`,
+    changeHint: "You can change plan or duration at any time.",
+    planBase: "🔹 BASE — Core features",
+    planPlus: "⭐ PLUS — Extra features",
+    days15: "⏱️ 15 DAYS",
+    days30: "📅 30 DAYS",
+
     pay: "💳 PAY",
     summary: (ref: string, plan: string, days: number, amountCents: number) =>
       [
