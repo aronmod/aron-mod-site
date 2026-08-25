@@ -108,9 +108,17 @@ export async function ensureTicketChannel(userId: string, locale: Locale): Promi
   return created.json?.id ? String(created.json.id) : null;
 }
 
+/** Compact price label for buttons: "12 €" instead of "12,00 €". */
+function shortEur(cents: number): string {
+  const value = cents / 100;
+  const text = Number.isInteger(value) ? String(value) : value.toFixed(2).replace(".", ",");
+  return `${text} €`;
+}
+
 /**
  * The persistent ticket panel. It always keeps the BASE/PLUS buttons and shows
- * the current selection, so there is exactly one selection state visible.
+ * the current selection. Discord cannot space buttons inside one action row, so
+ * every important choice gets its own row.
  */
 export function panelMessage(
   locale: Locale,
@@ -133,6 +141,11 @@ export function panelMessage(
           label: plan === "base" ? `✅ ${c.planBase}` : c.planBase,
           custom_id: "aron_plan_base",
         },
+      ],
+    },
+    {
+      type: 1,
+      components: [
         {
           type: 2,
           style: plan === "plus" ? 3 : 2,
@@ -143,27 +156,37 @@ export function panelMessage(
     },
   ];
   if (plan) {
-    rows.push({
-      type: 1,
-      components: [
-        {
-          type: 2,
-          style: days === 15 ? 3 : 1,
-          label: days === 15 ? `✅ ${c.days15}` : c.days15,
-          custom_id: `aron_days_${plan}_15`,
-        },
-        {
-          type: 2,
-          style: days === 30 ? 3 : 1,
-          label: days === 30 ? `✅ ${c.days30}` : c.days30,
-          custom_id: `aron_days_${plan}_30`,
-        },
-      ],
-    });
+    const label15 = `${c.days15} — ${shortEur(priceCents(plan, 15))}`;
+    const label30 = `${c.days30} — ${shortEur(priceCents(plan, 30))}`;
+    rows.push(
+      {
+        type: 1,
+        components: [
+          {
+            type: 2,
+            style: days === 15 ? 3 : 1,
+            label: days === 15 ? `✅ ${label15}` : label15,
+            custom_id: `aron_days_${plan}_15`,
+          },
+        ],
+      },
+      {
+        type: 1,
+        components: [
+          {
+            type: 2,
+            style: days === 30 ? 3 : 1,
+            label: days === 30 ? `✅ ${label30}` : label30,
+            custom_id: `aron_days_${plan}_30`,
+          },
+        ],
+      },
+    );
   }
 
   return { content: lines.join("\n"), components: rows };
 }
+
 
 /**
  * Discord link buttons are always style 5 and cannot take a custom colour, so
