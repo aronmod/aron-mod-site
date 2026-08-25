@@ -69,10 +69,13 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
                 {
                   title: "🛒 Acquista Aron Mod",
                   description: [
-                    "Clicca il pulsante qui sotto per aprire un ticket privato in italiano, scegliere piano e durata e pagare con PayPal. Dopo il pagamento verificato lo staff ti assegna la KeyAuth key nel ticket.",
+                    "Apri un ticket privato per scegliere piano e durata e completare il pagamento con PayPal.",
                     "",
-                    "BASE · 15gg 9 € · 30gg 15 €",
-                    "PLUS · 15gg 12 € · 30gg 20 €",
+                    "Dopo la verifica del pagamento, riceverai la key direttamente nel ticket.",
+                    "",
+                    "**Prezzi**",
+                    "BASE · 15 giorni 9 € · 30 giorni 15 €",
+                    "PLUS · 15 giorni 12 € · 30 giorni 20 €",
                   ].join("\n"),
                   color: 0x3b82f6,
                 },
@@ -84,7 +87,7 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
                     {
                       type: 2,
                       style: 3,
-                      label: "🇮🇹 Acquista (Italiano)",
+                      label: "🛒 Acquista",
                       custom_id: "aron_purchase_start_it",
                     },
                   ],
@@ -99,10 +102,13 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
                 {
                   title: "🛒 Buy Aron Mod",
                   description: [
-                    "Click the button below to open a private ticket in English, choose your plan and duration and pay with PayPal. Once the payment is verified, the staff assigns your KeyAuth key in the ticket.",
+                    "Open a private ticket to choose your plan and duration and complete the payment with PayPal.",
                     "",
-                    "BASE · 15d 9 € · 30d 15 €",
-                    "PLUS · 15d 12 € · 30d 20 €",
+                    "After the payment is verified, you will receive the key directly in the ticket.",
+                    "",
+                    "**Prices**",
+                    "BASE · 15 days €9 · 30 days €15",
+                    "PLUS · 15 days €12 · 30 days €20",
                   ].join("\n"),
                   color: 0x3b82f6,
                 },
@@ -114,7 +120,7 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
                     {
                       type: 2,
                       style: 3,
-                      label: "🇬🇧 Buy (English)",
+                      label: "🛒 Buy",
                       custom_id: "aron_purchase_start_en",
                     },
                   ],
