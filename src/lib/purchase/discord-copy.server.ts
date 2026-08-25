@@ -19,8 +19,8 @@ const T = {
     welcome: (userId: string) => `<@${userId}> 👋 Benvenuto!`,
     choosePlan: "Scegli il piano per continuare:",
     chooseDuration: "Ora scegli la durata:",
-    planBase: "BASE",
-    planPlus: "PLUS",
+    planBase: "🔹 BASE",
+    planPlus: "🔹 PLUS",
     days15: "15 GIORNI",
     days30: "30 GIORNI",
 
@@ -85,8 +85,8 @@ const T = {
     welcome: (userId: string) => `<@${userId}> 👋 Welcome!`,
     choosePlan: "Choose a plan to continue:",
     chooseDuration: "Now choose the duration:",
-    planBase: "BASE",
-    planPlus: "PLUS",
+    planBase: "🔹 BASE",
+    planPlus: "🔹 PLUS",
     days15: "15 DAYS",
     days30: "30 DAYS",
 
