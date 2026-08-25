@@ -122,6 +122,9 @@ export const copy = {
       title: "Scegli il tuo piano",
       subtitle:
         "Scegli il piano, clicca su Acquista e completa l'acquisto con il nostro staff su Discord.",
+      continueCta: "Continua con Discord",
+      directLink: "Acquista direttamente su Discord",
+      durationLegend: "Scegli la durata",
       base: {
         name: "BASE",
         bestValue: false,
@@ -373,6 +376,9 @@ export const copy = {
       title: "Choose your plan",
       subtitle:
         "Choose your plan, click Buy, and complete your purchase with our staff on Discord.",
+      continueCta: "Continue with Discord",
+      directLink: "Buy directly on Discord",
+      durationLegend: "Choose the duration",
       base: {
         name: "BASE",
         bestValue: false,
