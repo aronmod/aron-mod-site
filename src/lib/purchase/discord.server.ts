@@ -55,18 +55,16 @@ export async function alertStaff(content: string) {
 
 /**
  * Finds an existing open ticket channel for a user, or creates a private one.
- * Italian locales land in the IT category, everything else in the EN category
- * (falls back to the IT/default category when the EN one is not configured).
+ * The locale comes from the entry point (IT / EN panel) and decides the category.
  */
 export async function ensureTicketChannel(
   userId: string,
-  locale?: string | null,
+  locale: Locale,
 ): Promise<string | null> {
   const guildId = process.env["DISCORD_GUILD_ID"];
   const itCategory = process.env["DISCORD_TICKET_CATEGORY_ID"];
   const enCategory = process.env["DISCORD_TICKET_CATEGORY_ID_EN"];
-  const isItalian = typeof locale === "string" && locale.toLowerCase().startsWith("it");
-  const categoryId = isItalian ? itCategory : (enCategory ?? itCategory);
+  const categoryId = locale === "it" ? itCategory : (enCategory ?? itCategory);
   if (!guildId || !categoryId) throw new Error("discord_config_missing");
 
   const topicMarker = `aron-order:${userId}`;
@@ -75,9 +73,7 @@ export async function ensureTicketChannel(
     const found = existing.json.find(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (c: any) =>
-        (c?.parent_id === itCategory || c?.parent_id === enCategory) &&
-        typeof c?.topic === "string" &&
-        c.topic.includes(topicMarker),
+        c?.parent_id === categoryId && typeof c?.topic === "string" && c.topic.includes(topicMarker),
     );
     if (found?.id) return String(found.id);
   }
@@ -94,7 +90,7 @@ export async function ensureTicketChannel(
   const created = await discordFetch(`/guilds/${guildId}/channels`, {
     method: "POST",
     body: {
-      name: `acquisto-${userId.slice(-4)}`,
+      name: `${locale === "it" ? "acquisto" : "order"}-${userId.slice(-4)}`,
       type: 0,
       parent_id: categoryId,
       topic: `Aron Mod purchase ticket · ${topicMarker}`,
@@ -104,33 +100,75 @@ export async function ensureTicketChannel(
   return created.json?.id ? String(created.json.id) : null;
 }
 
-export function planButtons() {
-  return [
+/**
+ * The persistent ticket panel. It always keeps the BASE/PLUS buttons and shows
+ * the current selection, so there is exactly one selection state visible.
+ */
+export function panelMessage(
+  locale: Locale,
+  userId: string,
+  plan: "base" | "plus" | null,
+  days: 15 | 30 | null,
+) {
+  const c = t(locale);
+  const lines = [c.welcome(userId), c.panelTitle, "", c.choosePlan, c.planInfo];
+  if (plan && days) lines.push("", c.selectedFull(plan, days), c.changeHint);
+  else if (plan) lines.push("", c.selected(plan), c.chooseDays);
+
+  const rows: Array<Record<string, unknown>> = [
     {
       type: 1,
       components: [
-        { type: 2, style: 1, label: "BASE", custom_id: "aron_plan_base" },
-        { type: 2, style: 3, label: "PLUS", custom_id: "aron_plan_plus" },
+        {
+          type: 2,
+          style: plan === "base" ? 3 : 2,
+          label: plan === "base" ? `✅ ${c.planBase}` : c.planBase,
+          custom_id: "aron_plan_base",
+        },
+        {
+          type: 2,
+          style: plan === "plus" ? 3 : 2,
+          label: plan === "plus" ? `✅ ${c.planPlus}` : c.planPlus,
+          custom_id: "aron_plan_plus",
+        },
       ],
     },
   ];
+  if (plan) {
+    rows.push({
+      type: 1,
+      components: [
+        {
+          type: 2,
+          style: days === 15 ? 3 : 1,
+          label: days === 15 ? `✅ ${c.days15}` : c.days15,
+          custom_id: `aron_days_${plan}_15`,
+        },
+        {
+          type: 2,
+          style: days === 30 ? 3 : 1,
+          label: days === 30 ? `✅ ${c.days30}` : c.days30,
+          custom_id: `aron_days_${plan}_30`,
+        },
+      ],
+    });
+  }
+
+  return { content: lines.join("\n"), components: rows };
 }
 
-export function daysButtons(plan: "base" | "plus") {
-  return [
-    {
-      type: 1,
-      components: [
-        { type: 2, style: 1, label: "15 giorni / days", custom_id: `aron_days_${plan}_15` },
-        { type: 2, style: 1, label: "30 giorni / days", custom_id: `aron_days_${plan}_30` },
-      ],
-    },
-  ];
+/**
+ * Discord link buttons are always style 5 and cannot take a custom colour, so
+ * the CTA is made obvious with the 💳 emoji and a short uppercase label.
+ */
+export function payButton(locale: Locale, url: string) {
+  return [{ type: 1, components: [{ type: 2, style: 5, label: t(locale).pay, url }] }];
 }
 
 export function linkButton(label: string, url: string) {
   return [{ type: 1, components: [{ type: 2, style: 5, label, url }] }];
 }
+
 
 /** Staff-only controls. Visibility is cosmetic: authorization is enforced server-side. */
 export function staffKeyButtons(orderId: string) {
