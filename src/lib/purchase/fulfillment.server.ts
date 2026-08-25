@@ -158,7 +158,7 @@ export async function fulfillOrder(
         Number(row.amount_cents),
         userId,
       ),
-      components: needsReview ? reviewButtons(orderId) : staffKeyButtons(orderId),
+      components: needsReview ? reviewButtons(orderId, locale) : staffKeyButtons(orderId, locale),
     });
 
     if (!res.ok) {
