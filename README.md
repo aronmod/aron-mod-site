@@ -63,7 +63,7 @@ Flusso: pannello Discord → ticket privato → scelta piano/durata → link `ht
 | `PAYPAL_CLIENT_SECRET` | sì |
 | `PAYPAL_WEBHOOK_ID` | sì |
 | `PAYPAL_ENV` | sì (`sandbox` o `live`) |
-| `PUBLIC_PAYPAL_CLIENT_ID` | opzionale (client id pubblico usato dal checkout; se assente si usa `PAYPAL_CLIENT_ID`) |
+| `PUBLIC_PAYPAL_CLIENT_ID` | sì (client id **pubblico** usato dal checkout; nessun fallback su `PAYPAL_CLIENT_ID`, che resta solo server-side) |
 | `DISCORD_APPLICATION_ID` | sì |
 | `DISCORD_PUBLIC_KEY` | sì |
 | `DISCORD_BOT_TOKEN` | sì |
@@ -74,6 +74,8 @@ Flusso: pannello Discord → ticket privato → scelta piano/durata → link `ht
 | `DISCORD_STAFF_ROLE_ID` | opzionale |
 | `DISCORD_STAFF_ALERT_CHANNEL_ID` | opzionale |
 | `ADMIN_SETUP_SECRET` | sì (protegge l'endpoint di setup del pannello) |
+| `LICENSE_DELIVERY_SECRET` | sì — **valore casuale forte** (≥ 32 caratteri, es. `openssl rand -hex 32`). Chiave AES-GCM per cifrare la license key nella coda di consegna. Se cambia, le consegne ancora pendenti non sono più decifrabili. |
+| `HWID_HASH_SECRET` | sì — **valore casuale forte** (≥ 32 caratteri). Secret HMAC-SHA256 per HWID e per le impronte di rate limiting. Se cambia, tutti i binding HWID esistenti non corrispondono più. |
 
 `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` sono già gestiti dalla piattaforma. Nessun secret è mai esposto al frontend.
 
@@ -90,3 +92,12 @@ Flusso: pannello Discord → ticket privato → scelta piano/durata → link `ht
 - Token di checkout casuale, salvato solo come SHA-256, valido 30 minuti.
 - Fulfillment idempotente (`paypal_event_id` e `paypal_capture_id` UNIQUE + funzione SQL transazionale).
 - La license key è mostrata una sola volta nel ticket Discord; in database resta solo lo SHA-256.
+- Verifica webhook PayPal: il body viene ripostato **raw** come `webhook_event` a `/v1/notifications/verify-webhook-signature`, senza parse/reserialize.
+- Retry eventi: un evento duplicato con `processed_at` valorizzato risponde 200; se `processed_at` è NULL viene rielaborato (contatore `attempts`, `last_error_code`, `rejected_at`/`reject_reason` per i rifiuti auditabili).
+- `PAYMENT.CAPTURE.COMPLETED` è accettato solo se combaciano `custom_id`, importo, valuta, stato, `supplementary_data.related_ids.order_id` verso `paypal_order_id`, capture id e `final_capture`. In caso contrario: nessun fulfillment, rifiuto auditabile e alert staff.
+- `PAYMENT.CAPTURE.REFUNDED`: il capture id viene ricavato da `related_ids.capture_id` (fallback solo da link `rel=up` su `/v2/payments/captures/<id>`). La licenza è sospesa automaticamente solo se `seller_payable_breakdown.total_refunded_amount` prova un rimborso totale; altrimenti resta attiva con alert staff.
+- Consegna key: outbox `license_deliveries` cifrata AES-GCM, creata nella stessa transazione della finalizzazione. Il ciphertext viene azzerato solo dopo l'invio riuscito su Discord; in caso di errore l'evento resta pendente e viene ritentato.
+- HWID: HMAC-SHA256 con `HWID_HASH_SECRET`; il check e il primo bind avvengono in un'unica RPC transazionale. Nei log/audit finisce solo un fingerprint di 8 caratteri derivato dall'HMAC.
+- Rate limiting `/api/public/license-validate`: 60 richieste/minuto per impronta IP (`CF-Connecting-IP`, fallback prudente) e 20/minuto per impronta della key. Le impronte sono HMAC troncati: nessun IP o key in chiaro nel database. Oltre il limite: HTTP 429 con risposta generica.
+- Tutte le tabelle del flusso acquisti sono RLS deny-by-default (nessuna policy): sono raggiungibili solo dal codice server con service role.
+

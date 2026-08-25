@@ -94,6 +94,11 @@ export async function capturePaypalOrder(paypalOrderId: string, orderId: string)
   });
 }
 
+/**
+ * Verifies a PayPal webhook. PayPal requires `webhook_event` to be posted back
+ * byte-for-byte as received, so the raw body is spliced into the envelope
+ * instead of being parsed and re-serialized.
+ */
 export async function verifyWebhookSignature(headers: Headers, rawBody: string): Promise<boolean> {
   const webhookId = process.env["PAYPAL_WEBHOOK_ID"];
   if (!webhookId) return false;
@@ -106,24 +111,34 @@ export async function verifyWebhookSignature(headers: Headers, rawBody: string):
   ].map((h) => headers.get(h));
   if (required.some((v) => !v)) return false;
 
-  let event: unknown;
+  // Only guard against malformed payloads; the original bytes are still sent.
   try {
-    event = JSON.parse(rawBody);
+    const parsed: unknown = JSON.parse(rawBody);
+    if (!parsed || typeof parsed !== "object") return false;
   } catch {
     return false;
   }
 
-  const { status, json } = await paypalFetch("/v1/notifications/verify-webhook-signature", {
+  const envelope =
+    "{" +
+    [
+      `"auth_algo":${JSON.stringify(required[0])}`,
+      `"cert_url":${JSON.stringify(required[1])}`,
+      `"transmission_id":${JSON.stringify(required[2])}`,
+      `"transmission_sig":${JSON.stringify(required[3])}`,
+      `"transmission_time":${JSON.stringify(required[4])}`,
+      `"webhook_id":${JSON.stringify(webhookId)}`,
+      `"webhook_event":${rawBody}`,
+    ].join(",") +
+    "}";
+
+  const token = await accessToken();
+  const res = await fetch(`${paypalHost()}/v1/notifications/verify-webhook-signature`, {
     method: "POST",
-    body: {
-      auth_algo: required[0],
-      cert_url: required[1],
-      transmission_id: required[2],
-      transmission_sig: required[3],
-      transmission_time: required[4],
-      webhook_id: webhookId,
-      webhook_event: event,
-    },
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: envelope,
   });
-  return status === 200 && json?.verification_status === "SUCCESS";
+  if (res.status !== 200) return false;
+  const json = (await res.json().catch(() => null)) as { verification_status?: string } | null;
+  return json?.verification_status === "SUCCESS";
 }

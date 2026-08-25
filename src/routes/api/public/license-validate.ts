@@ -6,12 +6,25 @@ const schema = z.object({
   hwid: z.string().min(8).max(256),
 });
 
-function deny(reason: string) {
-  // Generic response: never reveals whether the key exists.
-  return new Response(JSON.stringify({ valid: false, reason }), {
-    status: 200,
+function json(body: unknown, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
     headers: { "content-type": "application/json" },
   });
+}
+
+/** Generic response: never reveals whether the key exists. */
+function deny() {
+  return json({ valid: false, reason: "invalid" });
+}
+
+function tooMany() {
+  return json({ valid: false, reason: "invalid" }, 429);
+}
+
+/** Prefer the Cloudflare-managed client IP; other client headers are spoofable. */
+function clientIp(request: Request): string {
+  return request.headers.get("cf-connecting-ip") ?? request.headers.get("x-real-ip") ?? "unknown";
 }
 
 export const Route = createFileRoute("/api/public/license-validate")({
@@ -22,63 +35,63 @@ export const Route = createFileRoute("/api/public/license-validate")({
         try {
           parsed = schema.parse(await request.json());
         } catch {
-          return deny("invalid");
+          return deny();
         }
 
-        const { sha256Hex } = await import("@/lib/purchase/crypto.server");
+        const { hmacSha256Hex, requireSecret, sha256Hex } =
+          await import("@/lib/purchase/crypto.server");
         const { getServiceClient } = await import("@/lib/purchase/db.server");
         const supabase = getServiceClient();
 
-        const keyHash = await sha256Hex(parsed.license_key.trim().toUpperCase());
-        const hwidHash = await sha256Hex(parsed.hwid.trim());
+        const hwidSecret = requireSecret("HWID_HASH_SECRET");
+        const keyNormalized = parsed.license_key.trim().toUpperCase();
+        const keyHash = await sha256Hex(keyNormalized);
+        const hwidHash = await hmacSha256Hex(hwidSecret, parsed.hwid.trim());
 
-        const { data: license } = await supabase
-          .from("licenses")
-          .select("id, plan, status, expires_at, hwid_hash")
-          .eq("key_hash", keyHash)
-          .maybeSingle();
+        // Rate limiting: only keyed fingerprints are stored, never raw IPs or keys.
+        const ipFp = (await hmacSha256Hex(hwidSecret, `ip:${clientIp(request)}`)).slice(0, 32);
+        const keyFp = (await hmacSha256Hex(hwidSecret, `key:${keyHash}`)).slice(0, 32);
+        const limits = await Promise.all([
+          supabase.rpc("bump_rate_limit", { _key: `ip:${ipFp}`, _limit: 60, _window_seconds: 60 }),
+          supabase.rpc("bump_rate_limit", {
+            _key: `key:${keyFp}`,
+            _limit: 20,
+            _window_seconds: 60,
+          }),
+        ]);
+        if (limits.some((r) => r.data === false)) return tooMany();
 
-        if (!license) return deny("invalid");
-        if (license.status !== "active") return deny("invalid");
-        if (new Date(String(license.expires_at)).getTime() <= Date.now()) {
-          await supabase.from("licenses").update({ status: "expired" }).eq("id", license.id);
-          return deny("invalid");
+        const { data, error } = await supabase.rpc("validate_license_hwid", {
+          _key_hash: keyHash,
+          _hwid_hash: hwidHash,
+        });
+        if (error) {
+          console.error("license_validate_rpc_error", { code: error.code });
+          return deny();
         }
+        const row = Array.isArray(data) ? data[0] : data;
+        if (!row) return deny();
 
-        if (!license.hwid_hash) {
-          await supabase
-            .from("licenses")
-            .update({
-              hwid_hash: hwidHash,
-              first_bound_at: new Date().toISOString(),
-              last_validated_at: new Date().toISOString(),
-            })
-            .eq("id", license.id);
+        const fingerprint = hwidHash.slice(0, 8);
+        if (row.result === "bound" && row.license_id) {
           await supabase.from("license_audit").insert({
-            license_id: license.id,
+            license_id: row.license_id,
             action: "hwid_bound",
             source: "loader",
-            metadata_minimal: { hwid_prefix: hwidHash.slice(0, 8) },
+            metadata_minimal: { hwid_fp: fingerprint },
           });
-        } else if (license.hwid_hash !== hwidHash) {
+        } else if (row.result === "hwid_mismatch" && row.license_id) {
           await supabase.from("license_audit").insert({
-            license_id: license.id,
+            license_id: row.license_id,
             action: "hwid_mismatch",
             source: "loader",
-            metadata_minimal: { hwid_prefix: hwidHash.slice(0, 8) },
+            metadata_minimal: { hwid_fp: fingerprint },
           });
-          return deny("invalid");
-        } else {
-          await supabase
-            .from("licenses")
-            .update({ last_validated_at: new Date().toISOString() })
-            .eq("id", license.id);
         }
 
-        return new Response(
-          JSON.stringify({ valid: true, plan: license.plan, expires_at: license.expires_at }),
-          { status: 200, headers: { "content-type": "application/json" } },
-        );
+        if (row.result !== "valid" && row.result !== "bound") return deny();
+
+        return json({ valid: true, plan: row.plan, expires_at: row.expires_at });
       },
     },
   },
