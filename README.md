@@ -53,7 +53,7 @@ npm run dev
 
 ## Automated purchase setup
 
-Flusso: pannello Discord → ticket privato → scelta piano/durata → link `https://aronmod.net/checkout/<token>` → PayPal → verifica server-side → licenza creata/estesa → messaggio nel ticket + ruolo cliente.
+Flusso: pannello Discord → ticket privato → scelta piano/durata → link checkout su PayPal → verifica server-side → licenza creata/estesa → messaggio nel ticket + ruolo cliente. Il link di checkout viene generato dinamicamente dall'origin della richiesta Discord, quindi in sandbox punta automaticamente alla preview e in produzione ad `aronmod.net`.
 
 ### Secrets richiesti (solo NOMI — configurarli in Project Settings → Secrets, mai nel repo)
 
