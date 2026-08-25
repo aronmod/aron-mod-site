@@ -113,6 +113,12 @@ export function oauthClientId(): string {
 /**
  * Public callback URL. In sandbox the stable dev host answers API routes without
  * a Lovable session, so it is used for the OAuth callback.
+ *
+ * NOTE (production): after the live deploy + Discord Developer Portal config,
+ * both the OAuth callback and the checkout will run on https://aronmod.net
+ * (i.e. https://aronmod.net/api/public/discord-oauth-callback). The Lovable
+ * dev/preview hosts below are intentionally kept for sandbox and must not be
+ * removed while PAYPAL_ENV=sandbox.
  */
 export function oauthRedirectUri(requestUrl: string): string {
   const DEV_API_ORIGIN = "https://project--1c134ef5-f387-4545-90d6-32fe56e14d6a-dev.lovable.app";
@@ -120,17 +126,33 @@ export function oauthRedirectUri(requestUrl: string): string {
   return new URL("/api/public/discord-oauth-callback", base).toString();
 }
 
-export function authorizeUrl(state: string, redirectUri: string): string {
+export type OauthPrompt = "none" | "consent";
+
+export function isOauthPrompt(value: unknown): value is OauthPrompt {
+  return value === "none" || value === "consent";
+}
+
+/**
+ * Builds the authorize URL. `prompt=none` lets Discord skip the consent screen
+ * for users who already authorized the app; `consent` is only used as fallback
+ * when Discord signals that interaction/consent is required.
+ */
+export function authorizeUrl(
+  state: string,
+  redirectUri: string,
+  prompt: OauthPrompt = "none",
+): string {
   const params = new URLSearchParams({
     client_id: oauthClientId(),
     response_type: "code",
     scope: OAUTH_SCOPES,
     redirect_uri: redirectUri,
     state,
-    prompt: "consent",
+    prompt,
   });
   return `https://discord.com/oauth2/authorize?${params.toString()}`;
 }
+
 
 /** Exchanges the one-time code for a short-lived access token (never logged). */
 export async function exchangeCode(
