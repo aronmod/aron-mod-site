@@ -43,6 +43,13 @@ function idsOf(message: PanelMessage): string[] {
     .filter(Boolean);
 }
 
+const SPACER = "\u200b";
+const INVISIBLE_RE = /^\u200b*$/;
+
+function isSpacerField(name: string): boolean {
+  return INVISIBLE_RE.test(name);
+}
+
 /**
  * Publishes / refreshes the "🛒 Acquista Aron Mod" purchase panel.
  * Protected by ADMIN_SETUP_SECRET (Authorization: Bearer <secret>).
@@ -79,16 +86,21 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
                     "Clicca **Acquista** e scegli il piano e la durata in base alle tue esigenze. Poi completa il pagamento con PayPal.\n\nDopo la verifica del pagamento, riceverai la key direttamente nel ticket.",
                   color: 0x3b82f6,
                   fields: [
+                    { name: SPACER, value: SPACER, inline: false },
+                    { name: SPACER, value: SPACER, inline: false },
                     {
                       name: "⭐ PLUS — Funzioni extra (In base al server)",
                       value: "Auto Dungeon\nAuto Alchimia\nSwitch Ammalia\nHWID Spoofer",
                       inline: false,
                     },
+                    { name: SPACER, value: SPACER, inline: false },
+                    { name: SPACER, value: SPACER, inline: false },
                     {
                       name: "🔹 BASE",
                       value: "**15 giorni**  ·  **9 €**\n**30 giorni**  ·  **15 €**",
                       inline: false,
                     },
+                    { name: SPACER, value: SPACER, inline: false },
                     {
                       name: "🔹 PLUS",
                       value: "**15 giorni**  ·  **12 €**\n**30 giorni**  ·  **20 €**",
@@ -122,16 +134,21 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
                     "Click **Buy** and choose the plan and duration that best suit your needs. Then complete the payment with PayPal.\n\nAfter the payment is verified, you will receive the key directly in the ticket.",
                   color: 0x3b82f6,
                   fields: [
+                    { name: SPACER, value: SPACER, inline: false },
+                    { name: SPACER, value: SPACER, inline: false },
                     {
                       name: "⭐ PLUS — Extra features (Depending on the server)",
                       value: "Auto Dungeon\nAuto Alchemy\nAuto Enchant\nHWID Spoofer",
                       inline: false,
                     },
+                    { name: SPACER, value: SPACER, inline: false },
+                    { name: SPACER, value: SPACER, inline: false },
                     {
                       name: "🔹 BASE",
                       value: "**15 days**  ·  **€9**\n**30 days**  ·  **€15**",
                       inline: false,
                     },
+                    { name: SPACER, value: SPACER, inline: false },
                     {
                       name: "🔹 PLUS",
                       value: "**15 days**  ·  **€12**\n**30 days**  ·  **€20**",
@@ -238,6 +255,7 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
             embedCount: number;
             titles: string[];
             fieldNames: string[];
+            spacerCount: number;
             buttonLabel: string;
             buttonStyle: number | null;
             hasPiano: boolean;
@@ -250,6 +268,7 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
             embedCount: 0,
             titles: [],
             fieldNames: [],
+            spacerCount: 0,
             buttonLabel: "",
             buttonStyle: null,
             hasPiano: false,
@@ -261,6 +280,7 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
             embedCount: 0,
             titles: [],
             fieldNames: [],
+            spacerCount: 0,
             buttonLabel: "",
             buttonStyle: null,
             hasPiano: false,
@@ -280,6 +300,10 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
               const embeds = Array.isArray(message.embeds) ? message.embeds : [];
               const embed = embeds[0];
               const fields = Array.isArray(embed?.fields) ? embed.fields : [];
+              const realFields = fields.filter((field) => !isSpacerField(String(field.name ?? "")));
+              const spacerFields = fields.filter((field) =>
+                isSpacerField(String(field.name ?? "")),
+              );
               const button = (message.components ?? [])
                 .flatMap((row) => row.components ?? [])
                 .find((component) => component.custom_id === panels[locale].customId);
@@ -289,18 +313,21 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
                   ? ["⭐ PLUS — Funzioni extra (In base al server)", "🔹 BASE", "🔹 PLUS"]
                   : ["⭐ PLUS — Extra features (Depending on the server)", "🔹 BASE", "🔹 PLUS"];
               const expectedLabel = locale === "it" ? "🛒 Acquista ora" : "🛒 Buy now";
+              const realFieldNames = realFields.map((field) => String(field.name ?? ""));
 
               verify[locale].embedCount = embeds.length;
               verify[locale].titles = embeds.map((item) => String(item.title ?? ""));
-              verify[locale].fieldNames = fields.map((field) => String(field.name ?? ""));
+              verify[locale].fieldNames = realFieldNames;
+              verify[locale].spacerCount = spacerFields.length;
               verify[locale].buttonLabel = String(button?.label ?? "");
               verify[locale].buttonStyle = typeof button?.style === "number" ? button.style : null;
               verify[locale].hasPiano = String(embed?.description ?? "").includes("PIANO");
               verify[locale].exact =
                 embeds.length === 1 &&
                 String(embed?.title ?? "") === expectedTitle &&
-                verify[locale].fieldNames.length === 3 &&
-                verify[locale].fieldNames.every((name, index) => name === expectedFields[index]) &&
+                realFieldNames.length === 3 &&
+                realFieldNames.every((name, index) => name === expectedFields[index]) &&
+                spacerFields.length === 5 &&
                 button?.label === expectedLabel &&
                 button.style === 1 &&
                 !verify[locale].hasPiano;
