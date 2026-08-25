@@ -172,7 +172,7 @@ export const Route = createFileRoute("/api/public/paypal-webhook")({
             const { data: order } = captureId
               ? await supabase
                   .from("purchase_orders")
-                  .select("id, license_id, amount_cents, currency")
+                  .select("id, amount_cents, currency")
                   .eq("paypal_capture_id", captureId)
                   .maybeSingle()
               : { data: null };
@@ -191,6 +191,16 @@ export const Route = createFileRoute("/api/public/paypal-webhook")({
               .update({ purchase_order_id: order.id })
               .eq("paypal_event_id", eventId);
 
+            const { shortId } = await import("@/lib/purchase/crypto.server");
+            const { data: assignment } = await supabase
+              .from("keyauth_assignments")
+              .select("key_last4, status")
+              .eq("purchase_order_id", order.id)
+              .maybeSingle();
+            const keyInfo = assignment?.key_last4
+              ? `KeyAuth key \`****${assignment.key_last4}\``
+              : "nessuna KeyAuth key ancora assegnata";
+
             const expected = ((order.amount_cents as number) / 100).toFixed(2);
             let fullRefund = eventType === "PAYMENT.CAPTURE.REVERSED";
             if (eventType === "PAYMENT.CAPTURE.REFUNDED") {
@@ -203,36 +213,66 @@ export const Route = createFileRoute("/api/public/paypal-webhook")({
 
             if (!fullRefund) {
               await alertStaff(
-                `⚠️ ${eventType} — ordine \`${order.id}\`: rimborso parziale o non verificabile. Licenza lasciata attiva, verifica manuale.`,
+                `⚠️ ${eventType} — ordine \`${shortId(String(order.id))}\`: rimborso parziale o non verificabile (${keyInfo}). Nessuna azione automatica: verifica manuale.`,
               );
             } else {
               await supabase
                 .from("purchase_orders")
                 .update({
                   status: eventType.endsWith("REFUNDED") ? "refunded" : "reversed",
+                  fulfillment_status: "revoked",
                 })
                 .eq("id", order.id);
-              if (order.license_id) {
+              if (assignment) {
                 await supabase
-                  .from("licenses")
-                  .update({ status: "suspended" })
-                  .eq("id", order.license_id);
-                await supabase.from("license_audit").insert({
-                  license_id: order.license_id,
-                  action: "license_suspended",
-                  source: "paypal_webhook",
-                  metadata_minimal: { event_type: eventType },
-                });
+                  .from("keyauth_assignments")
+                  .update({ status: "revoked" })
+                  .eq("purchase_order_id", order.id);
               }
+              await supabase.from("license_audit").insert({
+                license_id: null,
+                action: "order_revoked",
+                source: "paypal_webhook",
+                metadata_minimal: { event_type: eventType, order_id: order.id },
+              });
               await alertStaff(
-                `🚨 ${eventType} — ordine \`${order.id}\`. Rimborso totale: licenza sospesa automaticamente.`,
+                [
+                  `🚨 ${eventType} — ordine \`${shortId(String(order.id))}\`: **rimborso totale**.`,
+                  assignment?.key_last4
+                    ? `**Revocare manualmente la KeyAuth key \`****${assignment.key_last4}\` nel pannello KeyAuth.**`
+                    : "Nessuna KeyAuth key assegnata: non assegnare nessuna key a questo ordine.",
+                ].join("\n"),
               );
             }
           } else if (eventType === "CUSTOMER.DISPUTE.CREATED") {
+            const { shortId } = await import("@/lib/purchase/crypto.server");
+            const disputedCapture =
+              resource?.disputed_transactions?.[0]?.seller_transaction_id ?? captureId;
+            const { data: order } = disputedCapture
+              ? await supabase
+                  .from("purchase_orders")
+                  .select("id")
+                  .eq("paypal_capture_id", String(disputedCapture))
+                  .maybeSingle()
+              : { data: null };
+            let keyInfo = "ordine non identificato";
+            if (order?.id) {
+              const { data: assignment } = await supabase
+                .from("keyauth_assignments")
+                .select("key_last4")
+                .eq("purchase_order_id", order.id)
+                .maybeSingle();
+              keyInfo = `ordine \`${shortId(String(order.id))}\` · ${
+                assignment?.key_last4
+                  ? `KeyAuth key \`****${assignment.key_last4}\``
+                  : "nessuna key assegnata"
+              }`;
+            }
             await alertStaff(
-              `⚠️ Disputa PayPal aperta (evento \`${eventId}\`). Nessuna revoca automatica: verificare manualmente.`,
+              `⚠️ Disputa PayPal aperta (evento \`${eventId}\`) — ${keyInfo}. Nessuna revoca automatica: valutare la revoca manuale nel pannello KeyAuth.`,
             );
           }
+
 
           await markProcessed();
         } catch (err) {
