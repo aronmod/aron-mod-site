@@ -285,8 +285,7 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
               const button = (message.components ?? [])
                 .flatMap((row) => row.components ?? [])
                 .find((component) => component.custom_id === panels[locale].customId);
-              const expectedTitle =
-                locale === "it" ? "🛒 Acquista Aron Mod" : "🛒 Buy Aron Mod";
+              const expectedTitle = locale === "it" ? "🛒 Acquista Aron Mod" : "🛒 Buy Aron Mod";
               const expectedFields =
                 locale === "it"
                   ? ["⭐ PLUS — Funzioni extra", "BASE", "PLUS"]
