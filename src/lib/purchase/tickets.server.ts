@@ -78,8 +78,13 @@ export async function updateTicket(
 /** Locale of a ticket, defaulting to Italian when the ticket is unknown. */
 export async function ticketLocale(channelId: string | null | undefined): Promise<Locale> {
   if (!channelId) return "it";
-  const ticket = await getTicket(channelId);
-  if (ticket?.locale) return ticket.locale;
+  const supabase = getServiceClient();
+  const { data } = await supabase
+    .from("discord_tickets")
+    .select("locale")
+    .eq("channel_id", channelId)
+    .maybeSingle();
+  if (data?.locale === "it" || data?.locale === "en") return data.locale;
 
   const itCategory = process.env["DISCORD_TICKET_CATEGORY_ID"];
   const enCategory = process.env["DISCORD_TICKET_CATEGORY_ID_EN"];
