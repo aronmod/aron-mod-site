@@ -80,19 +80,18 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
                   color: 0x3b82f6,
                   fields: [
                     {
-                      name: "⭐ PLUS — Funzioni extra",
-                      value:
-                        "Auto Dungeon\nAuto Alchimia\nSwitch Ammalia\nHWID Spoofer\n\n*Disponibilità in base al server.*",
+                      name: "⭐ PLUS — Funzioni extra (In base al server)",
+                      value: "Auto Dungeon\nAuto Alchimia\nSwitch Ammalia\nHWID Spoofer",
                       inline: false,
                     },
                     {
-                      name: "BASE",
-                      value: "**15 giorni** · **9 €**\n**30 giorni** · **15 €**",
+                      name: "🔹 BASE",
+                      value: "**15 giorni**  ·  **9 €**\n**30 giorni**  ·  **15 €**",
                       inline: false,
                     },
                     {
-                      name: "PLUS",
-                      value: "**15 giorni** · **12 €**\n**30 giorni** · **20 €**",
+                      name: "🔹 PLUS",
+                      value: "**15 giorni**  ·  **12 €**\n**30 giorni**  ·  **20 €**",
                       inline: false,
                     },
                   ],
@@ -124,19 +123,18 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
                   color: 0x3b82f6,
                   fields: [
                     {
-                      name: "⭐ PLUS — Extra features",
-                      value:
-                        "Auto Dungeon\nAuto Alchemy\nAuto Enchant\nHWID Spoofer\n\n*Availability depends on the server.*",
+                      name: "⭐ PLUS — Extra features (Depending on the server)",
+                      value: "Auto Dungeon\nAuto Alchemy\nAuto Enchant\nHWID Spoofer",
                       inline: false,
                     },
                     {
-                      name: "BASE",
-                      value: "**15 days** · **€9**\n**30 days** · **€15**",
+                      name: "🔹 BASE",
+                      value: "**15 days**  ·  **€9**\n**30 days**  ·  **€15**",
                       inline: false,
                     },
                     {
-                      name: "PLUS",
-                      value: "**15 days** · **€12**\n**30 days** · **€20**",
+                      name: "🔹 PLUS",
+                      value: "**15 days**  ·  **€12**\n**30 days**  ·  **€20**",
                       inline: false,
                     },
                   ],
@@ -288,8 +286,8 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
               const expectedTitle = locale === "it" ? "🛒 Acquista Aron Mod" : "🛒 Buy Aron Mod";
               const expectedFields =
                 locale === "it"
-                  ? ["⭐ PLUS — Funzioni extra", "BASE", "PLUS"]
-                  : ["⭐ PLUS — Extra features", "BASE", "PLUS"];
+                  ? ["⭐ PLUS — Funzioni extra (In base al server)", "🔹 BASE", "🔹 PLUS"]
+                  : ["⭐ PLUS — Extra features (Depending on the server)", "🔹 BASE", "🔹 PLUS"];
               const expectedLabel = locale === "it" ? "🛒 Acquista ora" : "🛒 Buy now";
 
               verify[locale].embedCount = embeds.length;
