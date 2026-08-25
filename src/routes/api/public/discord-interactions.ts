@@ -134,8 +134,9 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
 
               }
 
-              // The plan panel stays untouched and clean.
-              return json({ type: 6 });
+              // The plan panel is updated in place so only the chosen plan is green.
+              return json({ type: 7, data: discord.panelMessage(locale, userId, plan) });
+
             }
 
             const daysMatch = /^aron_days_(base|plus)_(15|30)$/.exec(customId);
