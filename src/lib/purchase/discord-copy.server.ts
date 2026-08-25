@@ -83,27 +83,18 @@ const T = {
   en: {
     panelTitle: "🛒 **Aron Mod Purchase**",
     welcome: (userId: string) => `<@${userId}> 👋 Welcome!`,
-    choosePlan: "Choose a plan to continue.",
-    planInfo: "BASE = core features · PLUS = extra features (depending on the server).",
-    selected: (plan: string) => `Plan: **${plan.toUpperCase()}**`,
-    chooseDays: "Now choose the duration.",
-    selectedFull: (plan: string, days: number) =>
-      `Plan: **${plan.toUpperCase()}** · Duration: **${days} days**`,
-    changeHint: "You can change plan or duration at any time.",
-    planBase: "🔹 BASE — Core features",
-    planPlus: "⭐ PLUS — Extra features",
-    days15: "⏱️ 15 DAYS",
-    days30: "📅 30 DAYS",
+    choosePlan: "Choose a plan to continue:",
+    chooseDuration: "Now choose the duration:",
+    planBase: "🔹 BASE",
+    planPlus: "🔹 PLUS",
+    days15: "15 DAYS",
+    days30: "30 DAYS",
 
-    pay: "💳 PAY",
-    summary: (ref: string, plan: string, days: number, amountCents: number) =>
-      [
-        `🧾 **Order** \`${ref}\``,
-        `Plan: **${plan.toUpperCase()}** · ${days} days`,
-        `Total: **${formatEur(amountCents)}**`,
-        "⏳ The link expires in 30 minutes.",
-        "Any previous unpaid order in this ticket has been cancelled.",
-      ].join("\n"),
+    pay: "PAY",
+    orderRef: (ref: string) => `🧾 **Order** \`${ref}\``,
+    orderPlanLine: (plan: string, days: number) => `Plan: **${plan.toUpperCase()}** · ${days} days`,
+    orderTotalLine: (amountCents: number) => `Total: **${formatEur(amountCents)}**`,
+
     ticketOpened: (channelId: string) => `🎟️ Ticket opened: <#${channelId}>`,
     ticketFailed: "⚠️ Could not open the ticket. Please contact the staff.",
     genericError: "⚠️ Temporary error. Please try again later.",
