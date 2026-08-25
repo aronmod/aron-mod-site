@@ -36,7 +36,7 @@ async function paypalFetch(
   const res = await fetch(`${paypalHost()}${path}`, {
     method: init.method,
     headers,
-    body: init.body === undefined ? undefined : JSON.stringify(init.body),
+    body: init.body === undefined ? null : JSON.stringify(init.body),
   });
   const text = await res.text();
   let json: any = null;

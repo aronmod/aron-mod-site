@@ -15,7 +15,7 @@ export async function discordFetch(path: string, init: { method: string; body?: 
       Authorization: `Bot ${botToken()}`,
       "Content-Type": "application/json",
     },
-    body: init.body === undefined ? undefined : JSON.stringify(init.body),
+    body: init.body === undefined ? null : JSON.stringify(init.body),
   });
   const text = await res.text();
   let json: any = null;

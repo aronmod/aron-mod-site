@@ -5,7 +5,7 @@ const HEX = "0123456789abcdef";
 function toHex(buf: ArrayBuffer): string {
   const bytes = new Uint8Array(buf);
   let out = "";
-  for (const b of bytes) out += HEX[b >> 4] + HEX[b & 15];
+  for (const b of bytes) out += (HEX[b >> 4] ?? "") + (HEX[b & 15] ?? "");
   return out;
 }
 
@@ -19,7 +19,7 @@ function randomBase32(length: number): string {
   const bytes = new Uint8Array(length);
   crypto.getRandomValues(bytes);
   let out = "";
-  for (const b of bytes) out += alphabet[b % alphabet.length];
+  for (const b of bytes) out += alphabet[b % alphabet.length] ?? "A";
   return out;
 }
 
