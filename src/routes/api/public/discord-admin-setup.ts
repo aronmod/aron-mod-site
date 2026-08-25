@@ -286,8 +286,8 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
               const expectedTitle = locale === "it" ? "🛒 Acquista Aron Mod" : "🛒 Buy Aron Mod";
               const expectedFields =
                 locale === "it"
-                  ? ["⭐ PLUS — Funzioni extra", "BASE", "PLUS"]
-                  : ["⭐ PLUS — Extra features", "BASE", "PLUS"];
+                  ? ["⭐ PLUS — Funzioni extra (In base al server)", "🔹 BASE", "🔹 PLUS"]
+                  : ["⭐ PLUS — Extra features (Depending on the server)", "🔹 BASE", "🔹 PLUS"];
               const expectedLabel = locale === "it" ? "🛒 Acquista ora" : "🛒 Buy now";
 
               verify[locale].embedCount = embeds.length;
