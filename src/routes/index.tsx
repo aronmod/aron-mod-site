@@ -814,7 +814,7 @@ function Servers({ lang }: { lang: Lang }) {
 
 function Pricing({ lang }: { lang: Lang }) {
   const t = copy[lang].pricing;
-  const guideUrl = lang === "it" ? LINKS.guideIt : LINKS.guideEn;
+  const guideUrl = LINKS.purchaseChannel;
 
   const PlanCard = ({
     plan,
@@ -900,6 +900,17 @@ function Pricing({ lang }: { lang: Lang }) {
         <PlanCard plan={t.base} highlight={false} />
         <PlanCard plan={t.plus} highlight={true} />
       </div>
+      <ol className="mx-auto mt-10 grid max-w-4xl gap-3 sm:grid-cols-4">
+        {t.steps.map((step, i) => (
+          <li
+            key={step}
+            className="glass-card flex items-start gap-2.5 rounded-xl px-4 py-3 text-sm text-foreground/90"
+          >
+            <span className="font-display text-sm font-bold text-accent">{i + 1}.</span>
+            <span>{step}</span>
+          </li>
+        ))}
+      </ol>
       <div aria-hidden className="section-divider mx-auto mt-16 w-2/3 max-w-md sm:mt-20" />
     </section>
   );
