@@ -261,7 +261,9 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
                 .flatMap((row) => row.components ?? [])
                 .find((component) => component.custom_id === panels[locale].customId);
               const expectedTitles =
-                locale === "it" ? ["🛒 Acquista Aron Mod", "BASE", "PLUS"] : ["🛒 Buy Aron Mod", "BASE", "PLUS"];
+                locale === "it"
+                  ? ["🛒 Acquista Aron Mod", "BASE", "PLUS"]
+                  : ["🛒 Buy Aron Mod", "BASE", "PLUS"];
               const expectedLabel = locale === "it" ? "🛒 Acquista ora" : "🛒 Buy now";
               const serialized = JSON.stringify(message).toLocaleUpperCase("it-IT");
 
