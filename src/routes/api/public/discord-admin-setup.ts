@@ -13,11 +13,11 @@ const FALLBACK_PURCHASE_CHANNEL_EN = "1530897159820542103";
 
 type Locale = "it" | "en";
 
-function purchaseChannelId(locale: Locale): string | null {
+function purchaseChannelId(locale: Locale): string {
   if (locale === "it") {
-    return process.env["DISCORD_PURCHASE_CHANNEL_ID"] ?? FALLBACK_PURCHASE_CHANNEL_IT;
+    return process.env["DISCORD_PURCHASE_CHANNEL_ID"] || FALLBACK_PURCHASE_CHANNEL_IT;
   }
-  return process.env["DISCORD_PURCHASE_CHANNEL_ID_EN"] ?? FALLBACK_PURCHASE_CHANNEL_EN;
+  return process.env["DISCORD_PURCHASE_CHANNEL_ID_EN"] || FALLBACK_PURCHASE_CHANNEL_EN;
 }
 
 function guildId(): string {

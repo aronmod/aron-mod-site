@@ -93,7 +93,7 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
               const ticket = interactionChannelId
                 ? await tickets.getTicket(interactionChannelId)
                 : null;
-              const locale = ticket?.locale ?? "it";
+              const locale = ticket?.locale ?? (await tickets.ticketLocale(interactionChannelId));
 
               if (interactionChannelId) {
                 // Switching plan invalidates the previous selection: the old
@@ -121,7 +121,7 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
               const ticket = interactionChannelId
                 ? await tickets.getTicket(interactionChannelId)
                 : null;
-              const locale = ticket?.locale ?? "it";
+              const locale = ticket?.locale ?? (await tickets.ticketLocale(interactionChannelId));
               const c = t(locale);
 
               const { createOrder, cancelPendingOrdersForChannel } =
@@ -331,10 +331,18 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
 
           const discord = await import("@/lib/purchase/discord.server");
           const orderId = String(match[1]);
-          const { orderLocale } = await import("@/lib/purchase/fulfillment.server");
-          const locale = await orderLocale(orderId, body?.channel_id ? String(body.channel_id) : null);
           const { t } = await import("@/lib/purchase/discord-copy.server");
-          const c = t(locale);
+          let c = t("it");
+          try {
+            const { orderLocale } = await import("@/lib/purchase/fulfillment.server");
+            const locale = await orderLocale(
+              orderId,
+              body?.channel_id ? String(body.channel_id) : null,
+            );
+            c = t(locale);
+          } catch {
+            /* Keep Italian as the safest fallback for staff modal errors. */
+          }
           if (!discord.isStaffInteraction(body)) {
             return json({
               type: 4,
