@@ -324,6 +324,13 @@ function Header({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
             </a>
           </div>
 
+          <a
+            href="#prezzi"
+            className="shrink-0 rounded-lg bg-[image:var(--gradient-accent)] px-2 py-1 text-[13px] font-semibold text-primary-foreground transition-transform hover:scale-105 max-[420px]:px-1.5 max-[420px]:py-0.5 max-[420px]:text-[12px] sm:px-3.5 sm:py-1.5 sm:text-[14px]"
+          >
+            {t.header.buy}
+          </a>
+
           <div className="flex items-center gap-1 rounded-lg border border-border p-0.5">
             <button
               type="button"
@@ -354,13 +361,6 @@ function Header({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
               {t.header.langEn}
             </button>
           </div>
-
-          <a
-            href="#prezzi"
-            className="shrink-0 rounded-lg bg-[image:var(--gradient-accent)] px-2 py-1 text-[13px] font-semibold text-primary-foreground transition-transform hover:scale-105 max-[420px]:px-1.5 max-[420px]:py-0.5 max-[420px]:text-[12px] sm:px-3.5 sm:py-1.5 sm:text-[14px]"
-          >
-            {t.header.buy}
-          </a>
         </nav>
       </div>
     </header>
@@ -430,10 +430,10 @@ function Hero({ lang }: { lang: Lang }) {
           className="reveal mx-auto mt-5 max-w-2xl space-y-2 px-4 text-center"
           style={{ animationDelay: "100ms" }}
         >
-          <p className="text-base leading-relaxed font-bold text-foreground sm:text-lg">
+          <p className="text-lg leading-relaxed font-bold text-foreground sm:text-xl">
             {t.hero.subtitle.line1}
           </p>
-          <p className="text-base leading-relaxed font-medium text-foreground sm:text-lg">
+          <p className="text-base leading-relaxed font-medium text-foreground sm:text-xl">
             {t.hero.subtitle.line2}
           </p>
         </div>
@@ -848,7 +848,7 @@ function Pricing({ lang }: { lang: Lang }) {
             type="button"
             aria-pressed={selectedDays === 15}
             onClick={() => setSelectedDays(15)}
-            className={`rounded-xl border px-4 py-3 text-center text-base font-semibold transition-all sm:flex-1 sm:text-lg ${
+            className={`rounded-xl border px-4 py-2 text-center text-base font-semibold transition-all sm:flex-1 sm:text-lg ${
               selectedDays === 15
                 ? "border-primary/60 bg-primary/20 text-foreground shadow-[0_0_18px_-6px_color-mix(in_oklab,var(--primary)_60%,transparent)]"
                 : "border-border/50 bg-card/50 text-muted-foreground hover:border-border hover:text-foreground"
@@ -860,7 +860,7 @@ function Pricing({ lang }: { lang: Lang }) {
             type="button"
             aria-pressed={selectedDays === 30}
             onClick={() => setSelectedDays(30)}
-            className={`rounded-xl border px-4 py-3 text-center text-base font-semibold transition-all sm:flex-1 sm:text-lg ${
+            className={`rounded-xl border px-4 py-2 text-center text-base font-semibold transition-all sm:flex-1 sm:text-lg ${
               selectedDays === 30
                 ? "border-primary/60 bg-primary/20 text-foreground shadow-[0_0_18px_-6px_color-mix(in_oklab,var(--primary)_60%,transparent)]"
                 : "border-border/50 bg-card/50 text-muted-foreground hover:border-border hover:text-foreground"
