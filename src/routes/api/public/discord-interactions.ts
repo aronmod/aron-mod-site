@@ -125,8 +125,9 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
 
             const assignMatch = new RegExp(`^aron_assign_key_(${uuidRe})$`).exec(customId);
             const retryMatch = new RegExp(`^aron_retry_key_delivery_(${uuidRe})$`).exec(customId);
+            const approveMatch = new RegExp(`^aron_approve_delivery_(${uuidRe})$`).exec(customId);
 
-            if (assignMatch || retryMatch) {
+            if (assignMatch || retryMatch || approveMatch) {
               if (!discord.isStaffInteraction(body)) {
                 return json({
                   type: 4,
@@ -141,6 +142,60 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
               const { getServiceClient } = await import("@/lib/purchase/db.server");
               const supabase = getServiceClient();
 
+              if (approveMatch) {
+                const orderId = String(approveMatch[1]);
+                const staffId: string | undefined = body?.member?.user?.id;
+                if (!staffId)
+                  return json({ type: 4, data: { content: "Errore utente.", flags: 64 } });
+
+                const { data, error } = await supabase.rpc("approve_order_delivery", {
+                  _order_id: orderId,
+                  _staff_id: String(staffId),
+                });
+                if (error) throw new Error("approve_rpc_failed");
+                const row = Array.isArray(data) ? data[0] : data;
+                const result = String(row?.result ?? "");
+
+                if (result === "order_not_found" || result === "order_not_paid") {
+                  return json({
+                    type: 4,
+                    data: { content: "⚠️ Ordine non trovato o non pagato.", flags: 64 },
+                  });
+                }
+                if (result === "already_approved") {
+                  return json({
+                    type: 4,
+                    data: {
+                      content: "ℹ️ Consegna già approvata per questo ordine.",
+                      flags: 64,
+                    },
+                  });
+                }
+
+                const channelId = row?.ticket_channel_id
+                  ? String(row.ticket_channel_id)
+                  : body?.channel_id
+                    ? String(body.channel_id)
+                    : null;
+                if (channelId) {
+                  await discord.sendChannelMessage(channelId, {
+                    content: [
+                      "✅ **Revisione completata / Review completed**",
+                      "La consegna è stata approvata dallo staff: la KeyAuth key verrà assegnata a breve in questo ticket.",
+                      "_Delivery approved by the staff: your KeyAuth key will be assigned shortly in this ticket._",
+                    ].join("\n"),
+                    components: discord.staffKeyButtons(orderId),
+                  });
+                }
+                return json({
+                  type: 4,
+                  data: {
+                    content: "✅ Consegna approvata. Ora puoi assegnare la KeyAuth key.",
+                    flags: 64,
+                  },
+                });
+              }
+
               if (assignMatch) {
                 const orderId = String(assignMatch[1]);
                 const { data: order } = await supabase
@@ -152,6 +207,16 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
                   return json({
                     type: 4,
                     data: { content: "⚠️ Ordine non trovato o non pagato.", flags: 64 },
+                  });
+                }
+                if (order.fulfillment_status === "review_required") {
+                  return json({
+                    type: 4,
+                    data: {
+                      content:
+                        "🕵️ Ordine in **revisione manuale**: usa prima **Approva consegna (staff)**.",
+                      flags: 64,
+                    },
                   });
                 }
                 const { data: assignment } = await supabase
@@ -177,6 +242,7 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
                 }
                 return json(discord.keyAuthModal(orderId));
               }
+
 
               const orderId = String(retryMatch![1]);
               const { deliverPendingKey } = await import("@/lib/purchase/fulfillment.server");
