@@ -215,9 +215,7 @@ function CheckoutPage() {
           <div className="mt-8 flex flex-col items-center text-center">
             <CheckCircle2 aria-hidden className="h-14 w-14 text-emerald-400" />
             <h1 className="font-display mt-4 text-2xl font-bold sm:text-3xl">{t.successTitle}</h1>
-            <p className="mt-3 max-w-md text-sm text-foreground/90 sm:text-base">
-              {t.successNote}
-            </p>
+            <p className="mt-3 max-w-md text-sm text-foreground/90 sm:text-base">{t.successNote}</p>
             <a
               href={success.ticketUrl ?? LINKS.discordInvite}
               {...EXTERNAL_LINK_PROPS}
