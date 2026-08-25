@@ -149,7 +149,7 @@ export const copy = {
         "Apri il ticket su Discord",
         "Scegli piano e durata",
         "Paga con PayPal",
-        "Licenza attivata automaticamente",
+        "Ricevi la KeyAuth key nel ticket",
       ],
     },
     showcase: {
