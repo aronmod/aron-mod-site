@@ -889,45 +889,43 @@ function Pricing({ lang }: { lang: Lang }) {
           </a>
         </div>
 
+        {"includes" in plan ? (
+          <div className="mt-6 rounded-xl border border-accent/40 bg-primary/10 p-4">
+            <p className="flex items-start gap-2 text-sm font-bold leading-relaxed text-accent sm:text-base">
+              <HelpCircle aria-hidden className="mt-0.5 h-4 w-4 shrink-0" />
+              <span>{plan.includesIntro}</span>
+            </p>
 
-      {"includes" in plan ? (
-        <div className="mt-6 rounded-xl border border-accent/40 bg-primary/10 p-4">
-          <p className="flex items-start gap-2 text-sm font-bold leading-relaxed text-accent sm:text-base">
-            <HelpCircle aria-hidden className="mt-0.5 h-4 w-4 shrink-0" />
-            <span>{plan.includesIntro}</span>
-          </p>
+            <ul className="mt-3 space-y-1.5">
+              {plan.includes.map((item) => (
+                <li
+                  key={item}
+                  className="flex items-center gap-2 text-sm font-semibold text-foreground"
+                >
+                  <Check
+                    className="h-4 w-4 shrink-0"
+                    style={{
+                      color: "color-mix(in oklab, var(--accent) 60%, var(--violet))",
+                    }}
+                  />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
 
-          <ul className="mt-3 space-y-1.5">
-            {plan.includes.map((item) => (
-              <li
-                key={item}
-                className="flex items-center gap-2 text-sm font-semibold text-foreground"
-              >
-                <Check
-                  className="h-4 w-4 shrink-0"
-                  style={{
-                    color: "color-mix(in oklab, var(--accent) 60%, var(--violet))",
-                  }}
-                />
-                {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
-
-      <ul className="mt-6 flex-1 space-y-2 text-sm text-muted-foreground">
-        {t.commonPerks.map((perk) => (
-          <li key={perk} className="flex items-start gap-2">
-            <CircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
-            {perk}
-          </li>
-        ))}
-      </ul>
+        <ul className="mt-6 flex-1 space-y-2 text-sm text-muted-foreground">
+          {t.commonPerks.map((perk) => (
+            <li key={perk} className="flex items-start gap-2">
+              <CircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+              {perk}
+            </li>
+          ))}
+        </ul>
       </article>
     );
   };
-
 
   return (
     <section id="prezzi" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
@@ -942,7 +940,6 @@ function Pricing({ lang }: { lang: Lang }) {
       <div className="mx-auto mt-12 grid max-w-4xl gap-5.5 md:grid-cols-2 md:gap-x-7.5 md:gap-y-6">
         <PlanCard plan={t.base} planId="base" highlight={false} />
         <PlanCard plan={t.plus} planId="plus" highlight={true} />
-
       </div>
       <ol className="mx-auto mt-10 grid max-w-4xl gap-3 sm:grid-cols-4">
         {t.steps.map((step, i) => (

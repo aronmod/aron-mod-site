@@ -4,7 +4,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 function redirect(url: string) {
-  return new Response(null, { status: 302, headers: { location: url, "cache-control": "no-store" } });
+  return new Response(null, {
+    status: 302,
+    headers: { location: url, "cache-control": "no-store" },
+  });
 }
 
 function text(body: string, status: number) {

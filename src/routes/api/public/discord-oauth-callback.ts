@@ -15,15 +15,7 @@ function redirect(url: string) {
 
 function escapeHtml(value: string): string {
   return value.replace(/[&<>"']/g, (c) =>
-    c === "&"
-      ? "&amp;"
-      : c === "<"
-        ? "&lt;"
-        : c === ">"
-          ? "&gt;"
-          : c === '"'
-            ? "&quot;"
-            : "&#39;",
+    c === "&" ? "&amp;" : c === "<" ? "&lt;" : c === ">" ? "&gt;" : c === '"' ? "&quot;" : "&#39;",
   );
 }
 
@@ -142,25 +134,55 @@ export const Route = createFileRoute("/api/public/discord-oauth-callback")({
         try {
           const fp = await oauth.clientFingerprint(request);
           if (!(await oauth.allowRequest(`oauth_cb:${fp}`, 10, 300))) {
-            return page({ locale, title: c.errorTitle, message: c.errorText, retryUrl, status: 429 });
+            return page({
+              locale,
+              title: c.errorTitle,
+              message: c.errorText,
+              retryUrl,
+              status: 429,
+            });
           }
           if (!(await oauth.allowRequest(`oauth_state:${selection.nonce}`, 1, 900))) {
-            return page({ locale, title: c.errorTitle, message: c.errorText, retryUrl, status: 429 });
+            return page({
+              locale,
+              title: c.errorTitle,
+              message: c.errorText,
+              retryUrl,
+              status: 429,
+            });
           }
 
           const redirectUri = oauth.oauthRedirectUri(request.url);
           const token = await oauth.exchangeCode(code, redirectUri);
           if (!token) {
-            return page({ locale, title: c.errorTitle, message: c.errorText, retryUrl, status: 502 });
+            return page({
+              locale,
+              title: c.errorTitle,
+              message: c.errorText,
+              retryUrl,
+              status: 502,
+            });
           }
           accessToken = token.accessToken;
 
           const userId = await oauth.fetchOauthUserId(accessToken);
           if (!userId) {
-            return page({ locale, title: c.errorTitle, message: c.errorText, retryUrl, status: 502 });
+            return page({
+              locale,
+              title: c.errorTitle,
+              message: c.errorText,
+              retryUrl,
+              status: 502,
+            });
           }
           if (!(await oauth.allowRequest(`oauth_user:${userId}`, 8, 600))) {
-            return page({ locale, title: c.errorTitle, message: c.errorText, retryUrl, status: 429 });
+            return page({
+              locale,
+              title: c.errorTitle,
+              message: c.errorText,
+              retryUrl,
+              status: 429,
+            });
           }
 
           const joined = await oauth.ensureGuildMember(userId, accessToken);
