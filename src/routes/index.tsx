@@ -829,70 +829,91 @@ function Pricing({ lang }: { lang: Lang }) {
   }: {
     plan: (typeof t)["base"] | (typeof t)["plus"];
     highlight: boolean;
-  }) => (
-    <article
-      className={`glass-card relative flex flex-col rounded-2xl p-7 ${highlight ? "glow-ring border-primary/60" : ""}`}
-    >
-      {plan.bestValue ? (
-        <span className="absolute top-5 right-5 rounded-md bg-accent/15 px-2 py-0.5 text-[11px] font-bold tracking-wider text-accent uppercase">
-          {plan.bestValueLabel}
-        </span>
-      ) : null}
-      <h3 className="font-display text-2xl font-bold">{plan.name}</h3>
+  }) => {
+    const [selectedDays, setSelectedDays] = useState<15 | 30>(30);
 
-      <div className="mt-6 flex flex-col gap-2">
-        <div className="rounded-xl border border-border/50 bg-card/50 px-4 py-2.5 text-center text-sm font-semibold text-foreground">
-          {plan.price15}
-        </div>
-        <div className="rounded-xl border border-border/50 bg-card/50 px-4 py-2.5 text-center text-sm font-semibold text-foreground">
-          {plan.price30}
-        </div>
-      </div>
-
-      <a
-        href={panelUrl}
-        {...EXTERNAL_LINK_PROPS}
-        className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-accent)] px-5 py-3 font-display text-sm font-bold text-primary-foreground transition-transform hover:scale-105"
+    return (
+      <article
+        className={`glass-card relative flex flex-col rounded-2xl p-7 ${highlight ? "glow-ring border-primary/60" : ""}`}
       >
-        <ShoppingCart className="h-4 w-4" /> {t.cta}
-      </a>
+        {plan.bestValue ? (
+          <span className="absolute top-5 right-5 rounded-md bg-accent/15 px-2 py-0.5 text-[11px] font-bold tracking-wider text-accent uppercase">
+            {plan.bestValueLabel}
+          </span>
+        ) : null}
+        <h3 className="font-display text-2xl font-bold">{plan.name}</h3>
 
-      {"includes" in plan ? (
-        <div className="mt-6 rounded-xl border border-accent/40 bg-primary/10 p-4">
-          <p className="flex items-start gap-2 text-sm font-bold leading-relaxed text-accent sm:text-base">
-            <HelpCircle aria-hidden className="mt-0.5 h-4 w-4 shrink-0" />
-            <span>{plan.includesIntro}</span>
-          </p>
-
-          <ul className="mt-3 space-y-1.5">
-            {plan.includes.map((item) => (
-              <li
-                key={item}
-                className="flex items-center gap-2 text-sm font-semibold text-foreground"
-              >
-                <Check
-                  className="h-4 w-4 shrink-0"
-                  style={{
-                    color: "color-mix(in oklab, var(--accent) 60%, var(--violet))",
-                  }}
-                />
-                {item}
-              </li>
-            ))}
-          </ul>
+        <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:gap-2.5">
+          <button
+            type="button"
+            aria-pressed={selectedDays === 15}
+            onClick={() => setSelectedDays(15)}
+            className={`rounded-xl border px-4 py-3 text-center text-base font-semibold transition-all sm:flex-1 sm:text-lg ${
+              selectedDays === 15
+                ? "border-primary/60 bg-primary/20 text-foreground shadow-[0_0_18px_-6px_color-mix(in_oklab,var(--primary)_60%,transparent)]"
+                : "border-border/50 bg-card/50 text-muted-foreground hover:border-border hover:text-foreground"
+            }`}
+          >
+            {plan.price15}
+          </button>
+          <button
+            type="button"
+            aria-pressed={selectedDays === 30}
+            onClick={() => setSelectedDays(30)}
+            className={`rounded-xl border px-4 py-3 text-center text-base font-semibold transition-all sm:flex-1 sm:text-lg ${
+              selectedDays === 30
+                ? "border-primary/60 bg-primary/20 text-foreground shadow-[0_0_18px_-6px_color-mix(in_oklab,var(--primary)_60%,transparent)]"
+                : "border-border/50 bg-card/50 text-muted-foreground hover:border-border hover:text-foreground"
+            }`}
+          >
+            {plan.price30}
+          </button>
         </div>
-      ) : null}
 
-      <ul className="mt-6 flex-1 space-y-2 text-sm text-muted-foreground">
-        {t.commonPerks.map((perk) => (
-          <li key={perk} className="flex items-start gap-2">
-            <CircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
-            {perk}
-          </li>
-        ))}
-      </ul>
-    </article>
-  );
+        <a
+          href={panelUrl}
+          {...EXTERNAL_LINK_PROPS}
+          className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-accent)] px-5 py-3 font-display text-sm font-bold text-primary-foreground transition-transform hover:scale-105"
+        >
+          <ShoppingCart className="h-4 w-4" /> {t.cta}
+        </a>
+
+        {"includes" in plan ? (
+          <div className="mt-6 rounded-xl border border-accent/40 bg-primary/10 p-4">
+            <p className="text-sm font-bold leading-relaxed text-accent sm:text-base">
+              {plan.includesIntro}
+            </p>
+
+            <ul className="mt-3 space-y-1.5">
+              {plan.includes.map((item) => (
+                <li
+                  key={item}
+                  className="flex items-center gap-2 text-sm font-semibold text-foreground"
+                >
+                  <Check
+                    className="h-4 w-4 shrink-0"
+                    style={{
+                      color: "color-mix(in oklab, var(--accent) 60%, var(--violet))",
+                    }}
+                  />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+
+        <ul className="mt-6 flex-1 space-y-2 text-sm text-muted-foreground">
+          {t.commonPerks.map((perk) => (
+            <li key={perk} className="flex items-start gap-2">
+              <CircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+              {perk}
+            </li>
+          ))}
+        </ul>
+      </article>
+    );
+  };
 
   return (
     <section id="prezzi" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
@@ -908,17 +929,6 @@ function Pricing({ lang }: { lang: Lang }) {
         <PlanCard plan={t.base} highlight={false} />
         <PlanCard plan={t.plus} highlight={true} />
       </div>
-      <ol className="mx-auto mt-10 grid max-w-4xl gap-3 sm:grid-cols-4">
-        {t.steps.map((step, i) => (
-          <li
-            key={step}
-            className="glass-card flex items-start gap-2.5 rounded-xl px-4 py-3 text-sm text-foreground/90"
-          >
-            <span className="font-display text-sm font-bold text-accent">{i + 1}.</span>
-            <span>{step}</span>
-          </li>
-        ))}
-      </ol>
       <div aria-hidden className="section-divider mx-auto mt-16 w-2/3 max-w-md sm:mt-20" />
     </section>
   );
