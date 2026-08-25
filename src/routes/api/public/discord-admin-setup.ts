@@ -120,18 +120,26 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
                 {
                   title: "🛒 Buy Aron Mod",
                   description:
-                    "Click **Buy** and choose your plan and duration.\n\nAfter the payment is verified, you will receive the key directly in the ticket.",
+                    "Click **Buy** and choose the plan and duration that best suit your needs. Then complete the payment with PayPal.\n\nAfter the payment is verified, you will receive the key directly in the ticket.",
                   color: 0x3b82f6,
-                },
-                {
-                  title: "BASE",
-                  description: "**15 DAYS · €9**\n**30 DAYS · €15**",
-                  color: 0x3b82f6,
-                },
-                {
-                  title: "PLUS",
-                  description: "**15 DAYS · €12**\n**30 DAYS · €20**",
-                  color: 0x3b82f6,
+                  fields: [
+                    {
+                      name: "⭐ PLUS — Extra features",
+                      value:
+                        "Auto Dungeon\nAuto Alchemy\nAuto Enchant\nHWID Spoofer\n\n*Availability depends on the server.*",
+                      inline: false,
+                    },
+                    {
+                      name: "BASE",
+                      value: "**15 days** · **€9**\n**30 days** · **€15**",
+                      inline: false,
+                    },
+                    {
+                      name: "PLUS",
+                      value: "**15 days** · **€12**\n**30 days** · **€20**",
+                      inline: false,
+                    },
+                  ],
                 },
               ],
               components: [
