@@ -924,8 +924,10 @@ function Pricing({ lang }: { lang: Lang }) {
           </li>
         ))}
       </ul>
-    </article>
-  );
+      </article>
+    );
+  };
+
 
   return (
     <section id="prezzi" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
