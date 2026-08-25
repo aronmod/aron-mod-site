@@ -124,11 +124,14 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
                 }
 
                 await tickets.updateTicket(interactionChannelId, {
-                  panelMessageId: body?.message?.id ? String(body.message.id) : undefined,
+                  panelMessageId: body?.message?.id
+                    ? String(body.message.id)
+                    : (ticket?.panelMessageId ?? null),
                   selectedPlan: plan,
                   selectedDays: null,
                   summaryMessageId: durationMessageId,
                 });
+
               }
 
               // The plan panel stays untouched and clean.
