@@ -44,7 +44,7 @@ function idsOf(message: PanelMessage): string[] {
 }
 
 const SPACER = "\u200b";
-const INVISIBLE_RE = /^[\s\u200b\u200c\u200d\ufeff\u2060\u2063]*$/;
+const INVISIBLE_RE = new RegExp("^[\\s\\u200b\\u200c\\u200d\\ufeff\\u2060\\u2063]*$", "u");
 
 function isSpacerField(name: string): boolean {
   return INVISIBLE_RE.test(name);
