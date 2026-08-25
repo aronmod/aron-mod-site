@@ -20,12 +20,12 @@ export const Route = createFileRoute("/checkout/$token")({
       {
         name: "description",
         content:
-          "Completa in sicurezza l'acquisto della tua licenza Aron Mod con PayPal. Prezzi e ordine verificati lato server.",
+          "Completa in sicurezza l'acquisto di Aron Mod con PayPal. Prezzi e ordine verificati lato server.",
       },
       { property: "og:title", content: "Checkout sicuro — Aron Mod" },
       {
         property: "og:description",
-        content: "Completa in sicurezza l'acquisto della tua licenza Aron Mod con PayPal.",
+        content: "Completa in sicurezza l'acquisto di Aron Mod con PayPal.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -53,7 +53,7 @@ const T = {
     payError: "Pagamento non completato. Nessun addebito confermato: riprova o contatta lo staff.",
     processing: "Verifica del pagamento in corso…",
     backTicket: "Torna al Discord",
-    safe: "Prezzo e ordine sono verificati lato server. Non inserire mai la tua license key su questo sito.",
+    safe: "Prezzo e ordine sono verificati lato server. Non inserire mai la tua KeyAuth key su questo sito.",
     missingConfig: "Pagamenti temporaneamente non disponibili. Contatta lo staff su Discord.",
   },
   en: {
@@ -72,7 +72,7 @@ const T = {
     payError: "Payment not completed. No confirmed charge: try again or contact staff.",
     processing: "Verifying your payment…",
     backTicket: "Back to Discord",
-    safe: "Price and order are verified server-side. Never enter your license key on this website.",
+    safe: "Price and order are verified server-side. Never enter your KeyAuth key on this website.",
     missingConfig: "Payments temporarily unavailable. Please contact staff on Discord.",
   },
 } as const;
