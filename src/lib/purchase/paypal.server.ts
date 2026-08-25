@@ -92,10 +92,7 @@ export async function capturePaypalOrder(paypalOrderId: string, orderId: string)
   });
 }
 
-export async function verifyWebhookSignature(
-  headers: Headers,
-  rawBody: string,
-): Promise<boolean> {
+export async function verifyWebhookSignature(headers: Headers, rawBody: string): Promise<boolean> {
   const webhookId = process.env["PAYPAL_WEBHOOK_ID"];
   if (!webhookId) return false;
   const required = [

@@ -46,16 +46,25 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Aron Mod - Il Bot di Metin per Server Privati" },
-      { name: "description", content: "FarmBot, Auto Dungeon, Auto Alchimia e altre funzioni avanzate." },
+      {
+        name: "description",
+        content: "FarmBot, Auto Dungeon, Auto Alchimia e altre funzioni avanzate.",
+      },
       { property: "og:title", content: "Aron Mod - Il Bot di Metin per Server Privati" },
-      { property: "og:description", content: "FarmBot, Auto Dungeon, Auto Alchimia e altre funzioni avanzate." },
+      {
+        property: "og:description",
+        content: "FarmBot, Auto Dungeon, Auto Alchimia e altre funzioni avanzate.",
+      },
       { property: "og:url", content: "https://aronmod.net/" },
       { property: "og:image", content: "https://aronmod.net/og-aron-mod-v2.png" },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "630" },
       { property: "og:image:alt", content: "Logo Aron Mod" },
       { name: "twitter:title", content: "Aron Mod - Il Bot di Metin per Server Privati" },
-      { name: "twitter:description", content: "FarmBot, Auto Dungeon, Auto Alchimia e altre funzioni avanzate." },
+      {
+        name: "twitter:description",
+        content: "FarmBot, Auto Dungeon, Auto Alchimia e altre funzioni avanzate.",
+      },
       { name: "twitter:image", content: "https://aronmod.net/og-aron-mod-v2.png" },
       { name: "twitter:image:alt", content: "Logo Aron Mod" },
     ],
@@ -122,7 +131,6 @@ function Index() {
     setMeta('meta[name="twitter:title"]', meta.title);
     setMeta('meta[name="twitter:description"]', meta.description);
   }, [lang]);
-
 
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [ticketOpen, setTicketOpen] = useState(false);
@@ -434,7 +442,6 @@ function Hero({ lang }: { lang: Lang }) {
           className="reveal mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row"
           style={{ animationDelay: "140ms" }}
         >
-
           <a
             href="#prezzi"
             className="glow-ring hover-lift-glow inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-accent)] px-7 py-3.5 font-display text-base font-bold text-primary-foreground hover:shadow-[0_0_0_1px_color-mix(in_oklab,var(--violet)_45%,transparent),0_18px_50px_-16px_color-mix(in_oklab,var(--primary)_80%,transparent)] sm:w-auto"

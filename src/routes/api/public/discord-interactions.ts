@@ -44,7 +44,10 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
               if (!channelId) {
                 return json({
                   type: 4,
-                  data: { content: "⚠️ Impossibile aprire il ticket. Contatta lo staff.", flags: 64 },
+                  data: {
+                    content: "⚠️ Impossibile aprire il ticket. Contatta lo staff.",
+                    flags: 64,
+                  },
                 });
               }
               await discord.sendChannelMessage(channelId, {

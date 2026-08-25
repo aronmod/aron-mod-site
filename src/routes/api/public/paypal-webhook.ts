@@ -63,13 +63,20 @@ export const Route = createFileRoute("/api/public/paypal-webhook")({
               resource?.status === "COMPLETED";
             if (!amountOk) {
               console.error("webhook_amount_mismatch", { eventId });
-              await alertStaff(`⚠️ Webhook PayPal con importo non corrispondente (evento ${eventId}).`);
+              await alertStaff(
+                `⚠️ Webhook PayPal con importo non corrispondente (evento ${eventId}).`,
+              );
               return new Response("ok", { status: 200 });
             }
             const { fulfillOrder } = await import("@/lib/purchase/fulfillment.server");
             await fulfillOrder(orderId, captureId, "paypal_webhook");
-          } else if (eventType === "PAYMENT.CAPTURE.REFUNDED" || eventType === "PAYMENT.CAPTURE.REVERSED") {
-            const lookup = supabase.from("purchase_orders").select("id, license_id, discord_user_id");
+          } else if (
+            eventType === "PAYMENT.CAPTURE.REFUNDED" ||
+            eventType === "PAYMENT.CAPTURE.REVERSED"
+          ) {
+            const lookup = supabase
+              .from("purchase_orders")
+              .select("id, license_id, discord_user_id");
             const { data: order } = orderId
               ? await lookup.eq("id", orderId).maybeSingle()
               : await lookup.eq("paypal_capture_id", captureId ?? "").maybeSingle();
@@ -79,7 +86,10 @@ export const Route = createFileRoute("/api/public/paypal-webhook")({
                 .update({ status: eventType.endsWith("REFUNDED") ? "refunded" : "reversed" })
                 .eq("id", order.id);
               if (order.license_id) {
-                await supabase.from("licenses").update({ status: "suspended" }).eq("id", order.license_id);
+                await supabase
+                  .from("licenses")
+                  .update({ status: "suspended" })
+                  .eq("id", order.license_id);
                 await supabase.from("license_audit").insert({
                   license_id: order.license_id,
                   action: "license_suspended",

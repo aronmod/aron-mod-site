@@ -33,7 +33,8 @@ export const getCheckoutSummary = createServerFn({ method: "GET" })
       currency: String(order.currency),
       orderRef: shortId(String(order.id)),
       expiresAt: String(order.checkout_expires_at),
-      paypalClientId: process.env["PUBLIC_PAYPAL_CLIENT_ID"] ?? process.env["PAYPAL_CLIENT_ID"] ?? "",
+      paypalClientId:
+        process.env["PUBLIC_PAYPAL_CLIENT_ID"] ?? process.env["PAYPAL_CLIENT_ID"] ?? "",
     };
   });
 
@@ -48,7 +49,8 @@ export const startPaypalOrder = createServerFn({ method: "POST" })
     const order = await getOrderByToken(data.token);
     if (!order) return { ok: false, error: "not_found" };
     if (order.status === "paid") return { ok: false, error: "already_paid" };
-    if (new Date(order.checkout_expires_at).getTime() < Date.now()) return { ok: false, error: "expired" };
+    if (new Date(order.checkout_expires_at).getTime() < Date.now())
+      return { ok: false, error: "expired" };
     if (order.paypal_order_id) return { ok: true, paypalOrderId: String(order.paypal_order_id) };
 
     const orderId = String(order.id);

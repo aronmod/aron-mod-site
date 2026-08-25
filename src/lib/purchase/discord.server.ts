@@ -57,7 +57,10 @@ export async function ensureTicketChannel(userId: string): Promise<string | null
   const existing = await discordFetch(`/guilds/${guildId}/channels`, { method: "GET" });
   if (Array.isArray(existing.json)) {
     const found = existing.json.find(
-      (c: any) => c?.parent_id === categoryId && typeof c?.topic === "string" && c.topic.includes(topicMarker),
+      (c: any) =>
+        c?.parent_id === categoryId &&
+        typeof c?.topic === "string" &&
+        c.topic.includes(topicMarker),
     );
     if (found?.id) return String(found.id);
   }

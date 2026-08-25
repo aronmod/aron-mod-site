@@ -15,7 +15,11 @@ export type FulfillResult =
  * The plaintext key exists only in this function's scope and is delivered to the
  * buyer's Discord ticket; only its SHA-256 is persisted.
  */
-export async function fulfillOrder(orderId: string, captureId: string, source: string): Promise<FulfillResult> {
+export async function fulfillOrder(
+  orderId: string,
+  captureId: string,
+  source: string,
+): Promise<FulfillResult> {
   const supabase = getServiceClient();
   const plaintextKey = generateLicenseKey();
   const keyHash = await sha256Hex(plaintextKey);
@@ -65,7 +69,9 @@ export async function fulfillOrder(orderId: string, captureId: string, source: s
       );
     }
     if (order.discord_ticket_channel_id) {
-      await sendChannelMessage(String(order.discord_ticket_channel_id), { content: lines.join("\n") });
+      await sendChannelMessage(String(order.discord_ticket_channel_id), {
+        content: lines.join("\n"),
+      });
     }
     if (order.discord_user_id) {
       await addCustomerRole(String(order.discord_user_id));

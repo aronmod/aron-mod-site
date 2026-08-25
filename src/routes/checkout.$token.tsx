@@ -4,7 +4,11 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import { Loader2, ShieldCheck, TriangleAlert } from "lucide-react";
 
-import { finalizePaypalOrder, getCheckoutSummary, startPaypalOrder } from "@/lib/checkout.functions";
+import {
+  finalizePaypalOrder,
+  getCheckoutSummary,
+  startPaypalOrder,
+} from "@/lib/checkout.functions";
 import { formatEur } from "@/lib/purchase/pricing";
 import { useLang } from "@/hooks/use-lang";
 import { LINKS, EXTERNAL_LINK_PROPS } from "@/config/links";
@@ -36,7 +40,8 @@ const T = {
     title: "Checkout Aron Mod",
     loading: "Caricamento dell'ordine…",
     notFound: "Link di pagamento non valido.",
-    expired: "Questo link di pagamento è scaduto. Torna nel ticket Discord e richiedi un nuovo link.",
+    expired:
+      "Questo link di pagamento è scaduto. Torna nel ticket Discord e richiedi un nuovo link.",
     paid: "Questo ordine risulta già pagato. Controlla il tuo ticket Discord.",
     cancelled: "Questo ordine è stato annullato.",
     plan: "Piano",
@@ -223,7 +228,10 @@ function CheckoutPage() {
         ) : null}
 
         {error ? (
-          <p role="alert" className="mt-5 rounded-lg border border-destructive/50 bg-destructive/10 p-3 text-sm">
+          <p
+            role="alert"
+            className="mt-5 rounded-lg border border-destructive/50 bg-destructive/10 p-3 text-sm"
+          >
             {error}
           </p>
         ) : null}
