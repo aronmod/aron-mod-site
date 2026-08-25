@@ -35,6 +35,11 @@ export async function sendChannelMessage(channelId: string, body: unknown) {
   return discordFetch(`/channels/${channelId}/messages`, { method: "POST", body });
 }
 
+export async function editChannelMessage(channelId: string, messageId: string, body: unknown) {
+  return discordFetch(`/channels/${channelId}/messages/${messageId}`, { method: "PATCH", body });
+}
+
+
 export async function addCustomerRole(userId: string) {
   const guildId = process.env["DISCORD_GUILD_ID"];
   const roleId = process.env["DISCORD_CUSTOMER_ROLE_ID"];
