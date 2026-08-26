@@ -71,7 +71,8 @@ export async function alertStaff(content: string) {
 export function ticketCategoryIds(): { itCategory?: string; enCategory?: string } {
   return {
     itCategory:
-      process.env["DISCORD_PURCHASE_TICKET_CATEGORY_ID"] ?? process.env["DISCORD_TICKET_CATEGORY_ID"],
+      process.env["DISCORD_PURCHASE_TICKET_CATEGORY_ID"] ??
+      process.env["DISCORD_TICKET_CATEGORY_ID"],
     enCategory:
       process.env["DISCORD_PURCHASE_TICKET_CATEGORY_ID_EN"] ??
       process.env["DISCORD_TICKET_CATEGORY_ID_EN"],
@@ -89,7 +90,6 @@ export async function ensureTicketChannel(userId: string, locale: Locale): Promi
   // Strict mapping: IT -> "Ticket Acquisto", EN -> "Ticket Buy". No EN->IT fallback.
   const categoryId = locale === "it" ? itCategory : enCategory;
   if (!guildId || !categoryId) throw new Error("discord_config_missing");
-
 
   const topicMarker = `aron-order:${userId}`;
   const existing = await discordFetch(`/guilds/${guildId}/channels`, { method: "GET" });
