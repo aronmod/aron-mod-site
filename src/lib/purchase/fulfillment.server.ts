@@ -11,12 +11,10 @@ import { t, type Locale } from "./discord-copy.server";
 import {
   addCustomerRole,
   alertStaff,
-  purpleMessage,
   reviewButtons,
   sendChannelMessage,
   staffKeyButtons,
 } from "./discord.server";
-
 import type { RiskOutcome } from "./risk.server";
 import { ticketLocale } from "./tickets.server";
 
@@ -151,16 +149,14 @@ export async function fulfillOrder(
 
   if (channelId) {
     const res = await sendChannelMessage(channelId, {
-      ...purpleMessage(
-        (needsReview ? reviewMessage : paidMessage)(
-          locale,
-          orderId,
-          captureId,
-          String(row.plan),
-          Number(row.days),
-          Number(row.amount_cents),
-          userId,
-        ),
+      content: (needsReview ? reviewMessage : paidMessage)(
+        locale,
+        orderId,
+        captureId,
+        String(row.plan),
+        Number(row.days),
+        Number(row.amount_cents),
+        userId,
       ),
       components: needsReview ? reviewButtons(orderId, locale) : staffKeyButtons(orderId, locale),
     });
@@ -244,17 +240,14 @@ export async function deliverPendingKey(orderId: string): Promise<DeliveryResult
   }
 
   const res = await sendChannelMessage(channelId, {
-    ...purpleMessage(
-      keyMessage(
-        await orderLocale(orderId, channelId),
-        String(order.plan),
-        Number(order.days),
-        plaintextKey,
-        order.discord_user_id ? String(order.discord_user_id) : null,
-      ),
+    content: keyMessage(
+      await orderLocale(orderId, channelId),
+      String(order.plan),
+      Number(order.days),
+      plaintextKey,
+      order.discord_user_id ? String(order.discord_user_id) : null,
     ),
   });
-
   if (!res.ok) {
     await failDelivery(`discord_${res.status}`);
     return { status: "failed" };

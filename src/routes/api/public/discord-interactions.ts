@@ -311,7 +311,7 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
                   if (channelId) {
                     const locale = await tickets.ticketLocale(channelId);
                     await discord.sendChannelMessage(channelId, {
-                      ...discord.purpleMessage(t(locale).approvedNote),
+                      content: t(locale).approvedNote,
                       components: discord.staffKeyButtons(orderId, locale),
                     });
                   }
