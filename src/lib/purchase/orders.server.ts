@@ -8,14 +8,13 @@ import { CURRENCY, priceCents, type Days, type Plan } from "./pricing";
 export const CHECKOUT_TTL_MINUTES = 30;
 
 /**
- * Absolute checkout URL for a token. In sandbox/dev the stable dev host returns
- * 403 on non-API pages, so the authenticated preview host is used instead.
+ * Absolute checkout URL for a token. Customers always land on the public
+ * aronmod.net domain, even when PayPal is in sandbox mode, so they never need
+ * to authenticate against a Lovable preview/dev host.
  */
-export function checkoutUrlFor(token: string, requestUrl: string): string {
-  const SANDBOX_CHECKOUT_ORIGIN =
-    "https://id-preview--1c134ef5-f387-4545-90d6-32fe56e14d6a.lovable.app";
-  const base = process.env["PAYPAL_ENV"] === "sandbox" ? SANDBOX_CHECKOUT_ORIGIN : requestUrl;
-  return new URL(`/checkout/${token}`, base).toString();
+export function checkoutUrlFor(token: string, _requestUrl: string): string {
+  const PUBLIC_CHECKOUT_ORIGIN = "https://aronmod.net";
+  return new URL(`/checkout/${token}`, PUBLIC_CHECKOUT_ORIGIN).toString();
 }
 
 /**
