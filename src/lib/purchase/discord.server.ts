@@ -4,7 +4,6 @@ import { t, type Locale } from "./discord-copy.server";
 import { DISCORD_PURPLE } from "./discord-theme";
 import { priceCents } from "./pricing";
 
-
 const API = "https://discord.com/api/v10";
 
 function botToken(): string {
@@ -254,7 +253,6 @@ export function finalOrderMessage(
     components: payButton(locale, url),
   };
 }
-
 
 /** Discord link buttons are always style 5; the label is a plain PAGA / PAY. */
 export function payButton(locale: Locale, url: string) {

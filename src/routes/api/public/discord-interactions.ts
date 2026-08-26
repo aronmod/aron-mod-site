@@ -314,7 +314,6 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
                       ...discord.purpleMessage(t(locale).approvedNote),
                       components: discord.staffKeyButtons(orderId, locale),
                     });
-
                   }
 
                   await failEphemeral(c.approvedEphemeral);

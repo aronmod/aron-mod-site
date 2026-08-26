@@ -165,7 +165,6 @@ export async function fulfillOrder(
       components: needsReview ? reviewButtons(orderId, locale) : staffKeyButtons(orderId, locale),
     });
 
-
     if (!res.ok) {
       await alertStaff(
         `⚠️ Pagamento confermato ma messaggio non inviato nel ticket. ${orderRefInline(orderId, captureId)}. Assegnare manualmente la KeyAuth key.`,
