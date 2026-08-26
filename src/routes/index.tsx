@@ -1046,7 +1046,7 @@ function DownloadSection({ lang }: { lang: Lang }) {
                 offset: "sm:top-4",
               },
               {
-                src: "/loader-launch.png",
+                src: lang === "it" ? loaderLaunchIt.url : loaderLaunchEn.url,
                 alt: t.images.launchAlt,
                 caption: t.images.launchCaption,
                 delay: "3s",
