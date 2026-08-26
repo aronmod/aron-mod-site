@@ -191,8 +191,8 @@ export const copy = {
         a: "Aron Mod è pensata esclusivamente per retro server e server privati autorizzati. Consigliamo sempre un utilizzo moderato e responsabile, nel rispetto delle regole del server su cui giochi. L'utilizzo della mod avviene sotto la responsabilità esclusiva dell'utente: dopo l'acquisto, Aron Mod e il suo staff non sono responsabili di ban, sospensioni, perdita dell'account, di oggetti o progressi di gioco, né di altri provvedimenti o conseguenze derivanti dal suo utilizzo.",
       },
       {
-        q: "Come funziona l'acquisto?",
-        a: "Per acquistare Aron Mod, entra nel nostro Discord ufficiale e apri un ticket nella sezione italiana o inglese. Lo staff ti fornirà tutte le informazioni necessarie e ti guiderà durante l'acquisto.",
+        q: "Come posso acquistare Aron Mod?",
+        a: "Per acquistare Aron Mod dal sito, scegli il piano e la durata, clicca Acquista e verrai reindirizzato al Discord ufficiale. Oppure entra direttamente nel nostro Discord ufficiale, apri un ticket nella sezione Acquista o Buy e segui tutti i passaggi.",
       },
       {
         q: "Posso usarla su più PC?",
@@ -443,8 +443,8 @@ export const copy = {
         a: "Aron Mod is intended exclusively for retro servers and authorized private servers. We always recommend moderate and responsible use, respecting the rules of the server you play on. Use of the mod is under the sole responsibility of the user: after purchase, Aron Mod and its staff are not responsible for bans, suspensions, loss of account, items or game progress, nor any other measures or consequences resulting from its use.",
       },
       {
-        q: "How does the purchase work?",
-        a: "To buy Aron Mod, join our official Discord and open a ticket in the Italian or English section. Our staff will provide all the necessary information and guide you through the purchase.",
+        q: "How can I purchase Aron Mod?",
+        a: "To purchase Aron Mod from the website, choose your plan and duration, click Buy, and you will be redirected to the official Discord. Alternatively, join our official Discord directly, open a ticket in the Buy or Acquista section, and follow all the steps.",
       },
       {
         q: "Can I use it on multiple PCs?",
