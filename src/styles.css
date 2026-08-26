@@ -54,7 +54,7 @@
   --secondary: oklch(0.24 0.05 265);
   --secondary-foreground: oklch(0.97 0.01 250);
   --muted: oklch(0.22 0.04 265);
-  --muted-foreground: oklch(0.79 0.025 255);
+  --muted-foreground: oklch(0.84 0.025 255);
   --accent: oklch(0.75 0.16 200);
   --accent-foreground: oklch(0.12 0.03 265);
   --destructive: oklch(0.6 0.23 27);
@@ -120,6 +120,15 @@
   h4 {
     font-family: var(--font-display);
     letter-spacing: -0.01em;
+  }
+
+  /* Secondary/grey text: slightly larger for readability on dark background */
+  .text-muted-foreground.text-sm {
+    font-size: 0.9375rem;
+  }
+
+  .text-muted-foreground.text-xs {
+    font-size: 0.8125rem;
   }
 }
 

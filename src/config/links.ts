@@ -1,5 +1,5 @@
 export const LINKS = {
-  discordInvite: "https://discord.gg/CyUESCgyq3",
+  discordInvite: "https://discord.gg/dgQu5eeE",
   purchaseChannel: "https://discord.com/channels/1530601137462448400/1530897133719257148",
   // Deep links to the two localized purchase panels (set by the admin setup endpoint).
   purchasePanelIt:

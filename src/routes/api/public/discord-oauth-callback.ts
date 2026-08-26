@@ -4,7 +4,7 @@
 
 import { createFileRoute } from "@tanstack/react-router";
 
-const DISCORD_INVITE = "https://discord.gg/CyUESCgyq3";
+const DISCORD_INVITE = "https://discord.gg/dgQu5eeE";
 
 function redirect(url: string) {
   return new Response(null, {
