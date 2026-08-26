@@ -180,7 +180,7 @@ export const copy = {
         "Verifica della chiave di licenza con opzione «Salva Licenza»",
         "Avvio automatico del client con multi-client integrato",
         "Memorizzazione dei percorsi recenti per avviare più rapidamente il gioco",
-        "Il loader si aggiorna in automatico a ogni avvio. Ti avvisa se é presente un aggiornamento durante l'utilizzo",
+        "Aggiornamento automatico e supporto IT / EN nel loader",
       ],
       download: "Download",
       buyLicense: "Acquista la Mod",
@@ -197,6 +197,10 @@ export const copy = {
       {
         q: "Posso usarla su più PC?",
         a: "La licenza è legata a un singolo HWID. Puoi richiedere un solo reset per licenza aprendo un ticket sul Discord ufficiale.",
+      },
+      {
+        q: "Come ricevo gli aggiornamenti?",
+        a: "Il loader si aggiorna in automatico a ogni avvio. Ti avvisa se é presente un aggiornamento durante l'utilizzo",
       },
     ],
     support: {
@@ -428,7 +432,7 @@ export const copy = {
         "License key verification with «Save License» option",
         "Automatic client launch with built-in multi-client",
         "Recent path history for faster game launch",
-        "The loader updates automatically on every launch. It notifies you if an update is available while in use",
+        "Automatic updates and IT / EN support inside the loader",
       ],
       download: "Download",
       buyLicense: "Buy the Mod",
@@ -445,6 +449,10 @@ export const copy = {
       {
         q: "Can I use it on multiple PCs?",
         a: "The license is tied to a single HWID. You can request only one reset per license by opening a ticket on the official Discord.",
+      },
+      {
+        q: "How do I receive updates?",
+        a: "The loader updates automatically on every launch. It notifies you if an update is available while in use.",
       },
     ],
     support: {
