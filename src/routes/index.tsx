@@ -324,42 +324,44 @@ function Header({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
             </a>
           </div>
 
-          <a
-            href="#prezzi"
-            className="shrink-0 rounded-lg bg-[image:var(--gradient-accent)] px-2 py-1 text-[13px] font-semibold text-primary-foreground transition-transform hover:scale-105 max-[420px]:px-1.5 max-[420px]:py-0.5 max-[420px]:text-[12px] sm:px-3.5 sm:py-1.5 sm:text-[14px]"
-          >
-            {t.header.buy}
-          </a>
+          <div className="ml-auto flex items-center gap-2 sm:gap-3 md:ml-6 lg:ml-10">
+            <a
+              href="#prezzi"
+              className="flex h-9 shrink-0 items-center rounded-lg bg-[image:var(--gradient-accent)] px-3 text-[13px] font-semibold text-primary-foreground transition-transform hover:scale-105 max-[420px]:h-8 max-[420px]:px-2.5 max-[420px]:text-[12px]"
+            >
+              {t.header.buy}
+            </a>
 
-          <div className="flex items-center gap-1 rounded-lg border border-border p-0.5">
-            <button
-              type="button"
-              onClick={() => setLang("it")}
-              aria-pressed={lang === "it"}
-              aria-label={lang === "it" ? "Lingua italiana selezionata" : "Passa all'italiano"}
-              className={`flex items-center gap-1 rounded-md px-1 py-1 text-xs font-bold transition-colors sm:gap-1.5 sm:px-1.5 ${
-                lang === "it"
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <FlagIt />
-              {t.header.langIt}
-            </button>
-            <button
-              type="button"
-              onClick={() => setLang("en")}
-              aria-pressed={lang === "en"}
-              aria-label={lang === "en" ? "English language selected" : "Switch to English"}
-              className={`flex items-center gap-1 rounded-md px-1 py-1 text-xs font-bold transition-colors sm:gap-1.5 sm:px-1.5 ${
-                lang === "en"
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <FlagGb />
-              {t.header.langEn}
-            </button>
+            <div className="flex items-center gap-1 rounded-lg border border-border p-0.5">
+              <button
+                type="button"
+                onClick={() => setLang("it")}
+                aria-pressed={lang === "it"}
+                aria-label={lang === "it" ? "Lingua italiana selezionata" : "Passa all'italiano"}
+                className={`flex items-center gap-1 rounded-md px-1 py-1 text-xs font-bold transition-colors sm:gap-1.5 sm:px-1.5 ${
+                  lang === "it"
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <FlagIt />
+                {t.header.langIt}
+              </button>
+              <button
+                type="button"
+                onClick={() => setLang("en")}
+                aria-pressed={lang === "en"}
+                aria-label={lang === "en" ? "English language selected" : "Switch to English"}
+                className={`flex items-center gap-1 rounded-md px-1 py-1 text-xs font-bold transition-colors sm:gap-1.5 sm:px-1.5 ${
+                  lang === "en"
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <FlagGb />
+                {t.header.langEn}
+              </button>
+            </div>
           </div>
         </nav>
       </div>
