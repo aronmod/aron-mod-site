@@ -64,9 +64,25 @@ export async function alertStaff(content: string) {
 }
 
 /**
+ * Dedicated purchase-ticket categories. Prefers the dedicated
+ * DISCORD_PURCHASE_TICKET_CATEGORY_ID(_EN) secrets and falls back to the
+ * legacy language categories only when they are not configured.
+ */
+export function ticketCategoryIds(): { itCategory?: string; enCategory?: string } {
+  return {
+    itCategory:
+      process.env["DISCORD_PURCHASE_TICKET_CATEGORY_ID"] ?? process.env["DISCORD_TICKET_CATEGORY_ID"],
+    enCategory:
+      process.env["DISCORD_PURCHASE_TICKET_CATEGORY_ID_EN"] ??
+      process.env["DISCORD_TICKET_CATEGORY_ID_EN"],
+  };
+}
+
+/**
  * Finds an existing open ticket channel for a user, or creates a private one.
  * The locale comes from the entry point (IT / EN panel) and decides the category.
  */
+
 export async function ensureTicketChannel(userId: string, locale: Locale): Promise<string | null> {
   const guildId = process.env["DISCORD_GUILD_ID"];
   const { itCategory, enCategory } = ticketCategoryIds();
