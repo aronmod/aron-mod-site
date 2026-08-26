@@ -86,12 +86,11 @@ export async function ticketLocale(channelId: string | null | undefined): Promis
     .maybeSingle();
   if (data?.locale === "it" || data?.locale === "en") return data.locale;
 
-  const itCategory = process.env["DISCORD_TICKET_CATEGORY_ID"];
-  const enCategory = process.env["DISCORD_TICKET_CATEGORY_ID_EN"];
+  const { ticketCategoryIds, getDiscordChannel } = await import("./discord.server");
+  const { itCategory, enCategory } = ticketCategoryIds();
   if (!itCategory && !enCategory) return "it";
 
   try {
-    const { getDiscordChannel } = await import("./discord.server");
     const channel = await getDiscordChannel(channelId);
     const parentId = channel.json?.parent_id ? String(channel.json.parent_id) : null;
     if (enCategory && parentId === enCategory) return "en";
