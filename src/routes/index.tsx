@@ -327,7 +327,7 @@ function Header({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
           <div className="ml-auto flex items-center gap-2 sm:gap-3 md:ml-6 lg:ml-10">
             <a
               href="#prezzi"
-              className="flex h-9 shrink-0 items-center rounded-lg bg-[image:var(--gradient-accent)] px-3 text-[13px] font-semibold text-primary-foreground transition-transform hover:scale-105 max-[420px]:h-8 max-[420px]:px-2.5 max-[420px]:text-[12px]"
+              className="flex h-8 shrink-0 items-center rounded-md bg-[image:var(--gradient-accent)] px-2 text-xs font-semibold text-primary-foreground transition-all hover:brightness-110 max-[420px]:h-[30px] max-[420px]:px-1.5"
             >
               {t.header.buy}
             </a>
