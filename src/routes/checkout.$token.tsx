@@ -366,7 +366,30 @@ function CheckoutPage() {
             <p className="font-display text-sm font-semibold tracking-wide text-foreground/90 sm:text-base">
               {t.choose}
             </p>
-            <div ref={buttonsRef} className="mt-4" />
+            <div ref={paypalRef} className="mt-4" />
+            <button
+              type="button"
+              onClick={() => setCardOpen((open) => !open)}
+              aria-expanded={cardOpen}
+              aria-controls="card-payment-panel"
+              className="font-display mt-3 flex w-full items-center justify-between gap-3 rounded-full border border-border bg-card/60 px-5 py-3 text-sm font-semibold text-foreground transition hover:border-primary/60 sm:text-base"
+            >
+              {t.card}
+              <ChevronDown
+                aria-hidden
+                className={`h-4 w-4 text-muted-foreground transition-transform ${cardOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+            {/* color-scheme: light keeps PayPal's own card/billing form legible
+                instead of inheriting the dark page scheme inside its iframe. */}
+            <div
+              id="card-payment-panel"
+              hidden={!cardOpen}
+              style={{ colorScheme: "light" }}
+              className="mt-3 rounded-2xl bg-white/95 p-3"
+            >
+              <div ref={cardRef} />
+            </div>
           </div>
         ) : (
           <p className="mt-8 text-sm text-muted-foreground">{t.missingConfig}</p>
