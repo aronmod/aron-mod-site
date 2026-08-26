@@ -643,7 +643,10 @@ function Servers({ lang }: { lang: Lang }) {
         <SectionTitle title={t.servers.title} text={t.servers.text} />
         <div className="mt-5 flex justify-center">
           <span className="font-clean inline-flex items-center gap-2 rounded-full border border-accent/50 bg-accent/10 px-4 py-1.5 text-sm font-semibold tracking-wide text-accent">
-            <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse-glow" aria-hidden="true" />
+            <span
+              className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse-glow"
+              aria-hidden="true"
+            />
             {t.servers.updating}
           </span>
         </div>
