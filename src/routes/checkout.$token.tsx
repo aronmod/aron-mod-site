@@ -63,8 +63,7 @@ const T = {
     brand: "Aron Mod",
     loading: "Loading your order…",
     notFound: "Invalid payment link.",
-    expired:
-      "This payment link has expired. Go back to your Discord ticket and request a new one.",
+    expired: "This payment link has expired. Go back to your Discord ticket and request a new one.",
     paid: "This order is already paid. Check your Discord ticket.",
     cancelled: "This order was cancelled.",
     plan: "Plan",
