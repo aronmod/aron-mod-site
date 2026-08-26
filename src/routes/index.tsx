@@ -41,6 +41,10 @@ import { LinkModal } from "@/components/LinkModal";
 import { ImageLightbox } from "@/components/ImageLightbox";
 import { copy, type Lang } from "@/lib/copy";
 import { useLang } from "@/hooks/use-lang";
+import loaderLoginIt from "@/assets/loader-login-it.png.asset.json";
+import loaderLoginEn from "@/assets/loader-login-en.png.asset.json";
+import loaderLaunchIt from "@/assets/loader-launch-it.png.asset.json";
+import loaderLaunchEn from "@/assets/loader-launch-en.png.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -1039,14 +1043,14 @@ function DownloadSection({ lang }: { lang: Lang }) {
           <div className="relative grid grid-cols-2 items-center gap-4 sm:gap-6">
             {[
               {
-                src: "/loader-login.png",
+                src: lang === "it" ? loaderLoginIt.url : loaderLoginEn.url,
                 alt: t.images.loginAlt,
                 caption: t.images.loginCaption,
                 delay: "0s",
                 offset: "sm:top-4",
               },
               {
-                src: "/loader-launch.png",
+                src: lang === "it" ? loaderLaunchIt.url : loaderLaunchEn.url,
                 alt: t.images.launchAlt,
                 caption: t.images.launchCaption,
                 delay: "3s",
