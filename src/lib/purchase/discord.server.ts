@@ -338,3 +338,29 @@ export async function verifyDiscordSignature(
     return false;
   }
 }
+
+/**
+ * Interaction follow-up REST calls. These use the interaction token (not the
+ * bot token) and are the only way to finish work after a deferred ACK.
+ */
+async function interactionFetch(path: string, method: string, body: unknown) {
+  const appId = process.env["DISCORD_APPLICATION_ID"];
+  if (!appId) throw new Error("discord_config_missing");
+  const res = await fetch(`${API}${path.replace("{app}", appId)}`, {
+    method,
+    headers: { "Content-Type": "application/json" },
+    body: body === undefined ? null : JSON.stringify(body),
+  });
+  if (!res.ok) console.error("discord_interaction_followup_error", { path, status: res.status });
+  return { ok: res.ok, status: res.status };
+}
+
+/** Replaces the deferred ACK (or the component's own message) with real content. */
+export async function editOriginalInteraction(token: string, body: unknown) {
+  return interactionFetch(`/webhooks/{app}/${token}/messages/@original`, "PATCH", body);
+}
+
+/** Sends an additional (ephemeral when flags: 64) message for the interaction. */
+export async function followupInteraction(token: string, body: unknown) {
+  return interactionFetch(`/webhooks/{app}/${token}`, "POST", body);
+}
