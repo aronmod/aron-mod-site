@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
-import { CheckCircle2, Loader2, TriangleAlert } from "lucide-react";
+import { CheckCircle2, ChevronDown, Loader2, TriangleAlert } from "lucide-react";
 
 import {
   finalizePaypalOrder,
@@ -54,6 +54,7 @@ const T = {
     payError: "Pagamento non completato. Nessun addebito confermato: riprova o contatta lo staff.",
     processing: "Verifica del pagamento in corso…",
     choose: "Scegli come pagare",
+    card: "Carta di debito o credito",
     backTicket: "Torna al ticket Discord",
     backCommunity: "Vai al server Discord",
     successTitle: "Pagamento completato",
@@ -79,6 +80,7 @@ const T = {
     payError: "Payment not completed. No confirmed charge: try again or contact staff.",
     processing: "Verifying your payment…",
     choose: "Choose how to pay",
+    card: "Debit or credit card",
     backTicket: "Back to Discord ticket",
     backCommunity: "Go to the Discord server",
     successTitle: "Payment completed",
@@ -224,7 +226,6 @@ function CheckoutPage() {
       })
       .render(cardRef.current);
   }, [cardOpen, token, createOrder, finalize, t.payError]);
-
 
   // Auto-redirect only after the server confirmed the capture, and only to a
   // server-built ticket deep link.
