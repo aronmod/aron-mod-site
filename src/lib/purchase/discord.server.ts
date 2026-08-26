@@ -69,10 +69,11 @@ export async function alertStaff(content: string) {
  */
 export async function ensureTicketChannel(userId: string, locale: Locale): Promise<string | null> {
   const guildId = process.env["DISCORD_GUILD_ID"];
-  const itCategory = process.env["DISCORD_TICKET_CATEGORY_ID"];
-  const enCategory = process.env["DISCORD_TICKET_CATEGORY_ID_EN"];
+  const { itCategory, enCategory } = ticketCategoryIds();
+  // Strict mapping: IT -> "Ticket Acquisto", EN -> "Ticket Buy". No EN->IT fallback.
   const categoryId = locale === "it" ? itCategory : enCategory;
   if (!guildId || !categoryId) throw new Error("discord_config_missing");
+
 
   const topicMarker = `aron-order:${userId}`;
   const existing = await discordFetch(`/guilds/${guildId}/channels`, { method: "GET" });
