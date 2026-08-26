@@ -15,9 +15,11 @@ async function keepAlive(promise: Promise<void>): Promise<void> {
   try {
     // Cloudflare Workers terminate the isolate once the response is returned
     // unless the pending promise is registered with waitUntil.
-    const mod = (await import(/* @vite-ignore */ "cloudflare:workers")) as {
+    // @ts-expect-error runtime built-in module, resolved only on Workers
+    const mod = (await import("cloudflare:workers")) as {
       waitUntil?: (p: Promise<unknown>) => void;
     };
+
     if (typeof mod.waitUntil === "function") {
       mod.waitUntil(promise);
       return;
