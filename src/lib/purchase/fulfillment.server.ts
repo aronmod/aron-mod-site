@@ -11,10 +11,12 @@ import { t, type Locale } from "./discord-copy.server";
 import {
   addCustomerRole,
   alertStaff,
+  purpleMessage,
   reviewButtons,
   sendChannelMessage,
   staffKeyButtons,
 } from "./discord.server";
+
 import type { RiskOutcome } from "./risk.server";
 import { ticketLocale } from "./tickets.server";
 
