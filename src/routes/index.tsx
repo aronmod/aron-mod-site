@@ -41,6 +41,10 @@ import { LinkModal } from "@/components/LinkModal";
 import { ImageLightbox } from "@/components/ImageLightbox";
 import { copy, type Lang } from "@/lib/copy";
 import { useLang } from "@/hooks/use-lang";
+import loaderLoginIt from "@/assets/loader-login-it.png.asset.json";
+import loaderLoginEn from "@/assets/loader-login-en.png.asset.json";
+import loaderLaunchIt from "@/assets/loader-launch-it.png.asset.json";
+import loaderLaunchEn from "@/assets/loader-launch-en.png.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
