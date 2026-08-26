@@ -68,7 +68,10 @@ export async function alertStaff(content: string) {
  * DISCORD_PURCHASE_TICKET_CATEGORY_ID(_EN) secrets and falls back to the
  * legacy language categories only when they are not configured.
  */
-export function ticketCategoryIds(): { itCategory?: string; enCategory?: string } {
+export function ticketCategoryIds(): {
+  itCategory?: string | undefined;
+  enCategory?: string | undefined;
+} {
   return {
     itCategory:
       process.env["DISCORD_PURCHASE_TICKET_CATEGORY_ID"] ??
