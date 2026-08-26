@@ -216,14 +216,8 @@ function CheckoutPage() {
           </div>
         </dl>
 
-        {data?.expiresAt ? (
-          <p className="mt-3 text-xs text-muted-foreground">
-            {t.expires} {new Date(data.expiresAt).toLocaleString(lang === "it" ? "it-IT" : "en-GB")}
-          </p>
-        ) : null}
-
         {paymentUrl ? (
-          <div className="mt-8 space-y-5">
+          <div className="mt-8">
             <a
               href={paymentUrl}
               {...EXTERNAL_LINK_PROPS}
@@ -232,14 +226,13 @@ function CheckoutPage() {
               {t.payNow}
             </a>
 
-            <div className="rounded-2xl border border-accent/50 bg-accent/10 p-4 text-sm leading-relaxed text-foreground/90">
+            <div className="mt-9 rounded-2xl border border-accent/50 bg-accent/10 p-4 text-sm leading-relaxed text-foreground/90">
               <p className="font-display font-bold">{t.importantTitle}</p>
               <p className="mt-2">{t.importantType}</p>
               <p className="mt-1 font-semibold">{t.importantGoods}</p>
-              <p className="mt-3">{t.importantTransaction}</p>
             </div>
 
-            <p className="text-sm text-foreground/90 sm:text-base">{t.manualVerify}</p>
+            <p className="mt-5 text-sm text-foreground/90 sm:text-base">{t.manualVerify}</p>
           </div>
         ) : (
           <p className="mt-8 text-sm text-muted-foreground">
