@@ -151,17 +151,20 @@ export async function fulfillOrder(
 
   if (channelId) {
     const res = await sendChannelMessage(channelId, {
-      content: (needsReview ? reviewMessage : paidMessage)(
-        locale,
-        orderId,
-        captureId,
-        String(row.plan),
-        Number(row.days),
-        Number(row.amount_cents),
-        userId,
+      ...purpleMessage(
+        (needsReview ? reviewMessage : paidMessage)(
+          locale,
+          orderId,
+          captureId,
+          String(row.plan),
+          Number(row.days),
+          Number(row.amount_cents),
+          userId,
+        ),
       ),
       components: needsReview ? reviewButtons(orderId, locale) : staffKeyButtons(orderId, locale),
     });
+
 
     if (!res.ok) {
       await alertStaff(
@@ -242,14 +245,17 @@ export async function deliverPendingKey(orderId: string): Promise<DeliveryResult
   }
 
   const res = await sendChannelMessage(channelId, {
-    content: keyMessage(
-      await orderLocale(orderId, channelId),
-      String(order.plan),
-      Number(order.days),
-      plaintextKey,
-      order.discord_user_id ? String(order.discord_user_id) : null,
+    ...purpleMessage(
+      keyMessage(
+        await orderLocale(orderId, channelId),
+        String(order.plan),
+        Number(order.days),
+        plaintextKey,
+        order.discord_user_id ? String(order.discord_user_id) : null,
+      ),
     ),
   });
+
   if (!res.ok) {
     await failDelivery(`discord_${res.status}`);
     return { status: "failed" };
