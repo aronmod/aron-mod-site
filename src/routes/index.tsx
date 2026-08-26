@@ -641,6 +641,12 @@ function Servers({ lang }: { lang: Lang }) {
       />
       <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
         <SectionTitle title={t.servers.title} text={t.servers.text} />
+        <div className="mt-5 flex justify-center">
+          <span className="font-clean inline-flex items-center gap-2 rounded-full border border-accent/50 bg-accent/10 px-4 py-1.5 text-sm font-semibold tracking-wide text-accent">
+            <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse-glow" aria-hidden="true" />
+            {t.servers.updating}
+          </span>
+        </div>
 
         <div className="spectrum-frame mx-auto mt-10 w-full lg:max-w-4xl">
           <div className="spectrum-inner p-4 sm:p-5">
@@ -1176,7 +1182,7 @@ function Footer({ lang }: { lang: Lang }) {
   return (
     <footer className="border-t border-border/60 bg-card/30">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-        <div className="grid gap-10 md:grid-cols-[1.4fr_1fr] md:gap-x-20 lg:gap-x-28">
+        <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr] md:gap-x-20 lg:gap-x-28">
           <div>
             <div className="flex items-center gap-3">
               <img
@@ -1205,6 +1211,23 @@ function Footer({ lang }: { lang: Lang }) {
                   </a>
                 </li>
               ))}
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="font-display text-sm font-bold tracking-wider uppercase">
+              {t.footer.contactTitle}
+            </h3>
+            <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+              <li>
+                <a
+                  href={LINKS.discordInvite}
+                  {...EXTERNAL_LINK_PROPS}
+                  className="transition-colors hover:text-foreground"
+                >
+                  Discord
+                </a>
+              </li>
             </ul>
           </div>
         </div>
