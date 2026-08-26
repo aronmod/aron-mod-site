@@ -142,9 +142,8 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
 
                 if (interactionChannelId) {
                   // Switching plan invalidates any previous unpaid order (backend only).
-                  const { cancelPendingOrdersForChannel } = await import(
-                    "@/lib/purchase/orders.server"
-                  );
+                  const { cancelPendingOrdersForChannel } =
+                    await import("@/lib/purchase/orders.server");
                   await cancelPendingOrdersForChannel(interactionChannelId);
 
                   // Exactly one duration message: edit it in place when it exists.
@@ -205,14 +204,12 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
                   : null;
                 const locale = ticket?.locale ?? (await tickets.ticketLocale(interactionChannelId));
 
-                const { createOrder, cancelPendingOrdersForChannel, checkoutUrlFor } = await import(
-                  "@/lib/purchase/orders.server"
-                );
+                const { createOrder, cancelPendingOrdersForChannel, checkoutUrlFor } =
+                  await import("@/lib/purchase/orders.server");
                 const { shortId } = await import("@/lib/purchase/crypto.server");
 
                 // Exactly one active awaiting_payment order per ticket.
-                if (interactionChannelId)
-                  await cancelPendingOrdersForChannel(interactionChannelId);
+                if (interactionChannelId) await cancelPendingOrdersForChannel(interactionChannelId);
 
                 const order = await createOrder({
                   discordUserId: userId,
@@ -381,9 +378,8 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
             const orderId = String(retryMatch![1]);
             runAfterResponse(async () => {
               try {
-                const { deliverPendingKey, orderLocale } = await import(
-                  "@/lib/purchase/fulfillment.server"
-                );
+                const { deliverPendingKey, orderLocale } =
+                  await import("@/lib/purchase/fulfillment.server");
                 const locale = await orderLocale(orderId, interactionChannelId);
                 const c = t(locale);
                 const result = await deliverPendingKey(orderId);
@@ -439,7 +435,9 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
           // The raw key exists only in this request and inside the AES-GCM outbox.
           type ModalField = { custom_id?: string; value?: string };
           type ModalRow = { components?: ModalField[] };
-          const rows: ModalRow[] = Array.isArray(body?.data?.components) ? body.data.components : [];
+          const rows: ModalRow[] = Array.isArray(body?.data?.components)
+            ? body.data.components
+            : [];
           const field = rows
             .flatMap((r) => (Array.isArray(r?.components) ? r.components : []))
             .find((f) => f?.custom_id === "keyauth_key");
@@ -470,9 +468,8 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
                 return;
               }
 
-              const { encryptSecretValue, last4, sha256Hex } = await import(
-                "@/lib/purchase/crypto.server"
-              );
+              const { encryptSecretValue, last4, sha256Hex } =
+                await import("@/lib/purchase/crypto.server");
               const { getServiceClient } = await import("@/lib/purchase/db.server");
               const supabase = getServiceClient();
               const encrypted = await encryptSecretValue(rawKey);
