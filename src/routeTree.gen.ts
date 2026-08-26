@@ -18,7 +18,6 @@ import { Route as ApiPublicDiscordOauthCallbackRouteImport } from './routes/api/
 import { Route as ApiPublicDiscordOauthStartRouteImport } from './routes/api/public/discord-oauth-start'
 import { Route as ApiPublicLicenseValidateRouteImport } from './routes/api/public/license-validate'
 import { Route as ApiPublicPaypalWebhookRouteImport } from './routes/api/public/paypal-webhook'
-import { Route as ApiPublicTmpSyncPanelsRouteImport } from './routes/api/public/tmp-sync-panels'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -70,11 +69,6 @@ const ApiPublicPaypalWebhookRoute = ApiPublicPaypalWebhookRouteImport.update({
   path: '/api/public/paypal-webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicTmpSyncPanelsRoute = ApiPublicTmpSyncPanelsRouteImport.update({
-  id: '/api/public/tmp-sync-panels',
-  path: '/api/public/tmp-sync-panels',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -86,7 +80,6 @@ export interface FileRoutesByFullPath {
   '/api/public/discord-oauth-start': typeof ApiPublicDiscordOauthStartRoute
   '/api/public/license-validate': typeof ApiPublicLicenseValidateRoute
   '/api/public/paypal-webhook': typeof ApiPublicPaypalWebhookRoute
-  '/api/public/tmp-sync-panels': typeof ApiPublicTmpSyncPanelsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -98,7 +91,6 @@ export interface FileRoutesByTo {
   '/api/public/discord-oauth-start': typeof ApiPublicDiscordOauthStartRoute
   '/api/public/license-validate': typeof ApiPublicLicenseValidateRoute
   '/api/public/paypal-webhook': typeof ApiPublicPaypalWebhookRoute
-  '/api/public/tmp-sync-panels': typeof ApiPublicTmpSyncPanelsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -111,7 +103,6 @@ export interface FileRoutesById {
   '/api/public/discord-oauth-start': typeof ApiPublicDiscordOauthStartRoute
   '/api/public/license-validate': typeof ApiPublicLicenseValidateRoute
   '/api/public/paypal-webhook': typeof ApiPublicPaypalWebhookRoute
-  '/api/public/tmp-sync-panels': typeof ApiPublicTmpSyncPanelsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -125,7 +116,6 @@ export interface FileRouteTypes {
     | '/api/public/discord-oauth-start'
     | '/api/public/license-validate'
     | '/api/public/paypal-webhook'
-    | '/api/public/tmp-sync-panels'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -137,7 +127,6 @@ export interface FileRouteTypes {
     | '/api/public/discord-oauth-start'
     | '/api/public/license-validate'
     | '/api/public/paypal-webhook'
-    | '/api/public/tmp-sync-panels'
   id:
     | '__root__'
     | '/'
@@ -149,7 +138,6 @@ export interface FileRouteTypes {
     | '/api/public/discord-oauth-start'
     | '/api/public/license-validate'
     | '/api/public/paypal-webhook'
-    | '/api/public/tmp-sync-panels'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -162,7 +150,6 @@ export interface RootRouteChildren {
   ApiPublicDiscordOauthStartRoute: typeof ApiPublicDiscordOauthStartRoute
   ApiPublicLicenseValidateRoute: typeof ApiPublicLicenseValidateRoute
   ApiPublicPaypalWebhookRoute: typeof ApiPublicPaypalWebhookRoute
-  ApiPublicTmpSyncPanelsRoute: typeof ApiPublicTmpSyncPanelsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -230,13 +217,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicPaypalWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/tmp-sync-panels': {
-      id: '/api/public/tmp-sync-panels'
-      path: '/api/public/tmp-sync-panels'
-      fullPath: '/api/public/tmp-sync-panels'
-      preLoaderRoute: typeof ApiPublicTmpSyncPanelsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -250,7 +230,6 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicDiscordOauthStartRoute: ApiPublicDiscordOauthStartRoute,
   ApiPublicLicenseValidateRoute: ApiPublicLicenseValidateRoute,
   ApiPublicPaypalWebhookRoute: ApiPublicPaypalWebhookRoute,
-  ApiPublicTmpSyncPanelsRoute: ApiPublicTmpSyncPanelsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
