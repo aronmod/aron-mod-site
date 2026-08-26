@@ -140,7 +140,7 @@ export const copy = {
         includes: ["Auto Dungeon", "Auto Alchimia", "Switch Ammalia", "HWID Spoofer"],
       },
       commonPerks: [
-        "Funzioni principali della mod incluse",
+        "Funzioni principali incluse",
         "Aggiornamenti costanti inclusi",
         "Assistenza tramite ticket Discord",
       ],
@@ -392,7 +392,7 @@ export const copy = {
         includes: ["Auto Dungeon", "Auto Alchemy", "Auto Enchant", "HWID Spoofer"],
       },
       commonPerks: [
-        "Core mod features included",
+        "Core features included",
         "Constant updates included",
         "Support via Discord ticket",
       ],
