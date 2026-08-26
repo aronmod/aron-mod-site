@@ -86,6 +86,7 @@ export const copy = {
     servers: {
       title: "Server supportati",
       text: "Aron Mod è attualmente disponibile per i server indicati qui sotto. La lista verrà aggiornata con l'aggiunta di nuovi server.",
+      updating: "Lista in aggiornamento",
       searchPlaceholder: "Cerca server per nome...",
       colStatus: "Status",
       colServer: "Nome server",
@@ -200,7 +201,7 @@ export const copy = {
       },
       {
         q: "Come ricevo gli aggiornamenti?",
-        a: "Il loader si aggiorna in automatico a ogni avvio. Ti avvisa se é presente un aggiornamento durante l'utilizzo",
+        a: "Il loader si aggiorna in automatico a ogni avvio. Ti avvisa se è presente un aggiornamento durante l'utilizzo",
       },
     ],
     support: {
@@ -216,6 +217,7 @@ export const copy = {
       disclaimer:
         "Aron Mod è un progetto indipendente destinato esclusivamente a retro server e server privati autorizzati. Non è affiliato, sponsorizzato o approvato da Gameforge o dagli sviluppatori di Metin2.",
       navTitle: "Navigazione",
+      contactTitle: "Contatti",
       nav: [
         ["Funzioni", "#funzioni"],
         ["Lista server", "#server"],
@@ -339,6 +341,7 @@ export const copy = {
     servers: {
       title: "Supported servers",
       text: "Aron Mod is currently available for the servers listed below. The list will be updated as new servers are added.",
+      updating: "List being updated",
       searchPlaceholder: "Search servers by name...",
       colStatus: "Status",
       colServer: "Server name",
@@ -468,6 +471,7 @@ export const copy = {
       disclaimer:
         "Aron Mod is an independent project intended exclusively for retro servers and authorized private servers. It is not affiliated with, sponsored by or endorsed by Gameforge or the Metin2 developers.",
       navTitle: "Navigation",
+      contactTitle: "Contact",
       nav: [
         ["Features", "#funzioni"],
         ["Server list", "#server"],
