@@ -1,14 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useRef, useState } from "react";
-import { CheckCircle2, ChevronDown, Loader2, TriangleAlert } from "lucide-react";
+import { Loader2, TriangleAlert } from "lucide-react";
 
-import {
-  finalizePaypalOrder,
-  getCheckoutSummary,
-  startPaypalOrder,
-} from "@/lib/checkout.functions";
+import { getCheckoutSummary } from "@/lib/checkout.functions";
 import { formatEur } from "@/lib/purchase/pricing";
 import { useLang } from "@/hooks/use-lang";
 import { LINKS, EXTERNAL_LINK_PROPS } from "@/config/links";
@@ -51,24 +46,25 @@ const T = {
     total: "Totale",
     order: "Ordine",
     expires: "Il link scade il",
-    payError: "Pagamento non completato. Nessun addebito confermato: riprova o contatta lo staff.",
-    processing: "Verifica del pagamento in corso…",
-    choose: "Scegli come pagare",
-    card: "Carta di debito o credito",
     backTicket: "Torna al ticket Discord",
     backCommunity: "Vai al server Discord",
-    successTitle: "Pagamento completato",
-    successNote: "La key verrà consegnata nel ticket Discord dopo la verifica del pagamento.",
-    redirecting: "Ti reindirizziamo al tuo ticket Discord…",
-    delivery: "La key verrà consegnata nel ticket Discord dopo la verifica del pagamento.",
-    missingConfig: "Pagamenti temporaneamente non disponibili. Contatta lo staff su Discord.",
+    payNow: "🛒 PAGA ORA",
+    importantTitle: "📌 IMPORTANTE",
+    importantType: "Se PayPal chiede il tipo di pagamento, seleziona:",
+    importantGoods: "✅ Pagamento di beni e servizi",
+    importantTransaction: "Dopo il pagamento, copia l'ID transazione PayPal.",
+    manualVerify:
+      "Dopo il pagamento, torna nel ticket Discord e invia l'ID transazione PayPal insieme al codice ordine.",
+    delivery:
+      "La key verrà consegnata nel ticket Discord dopo la verifica manuale del pagamento da parte dello staff.",
   },
   en: {
     title: "Checkout",
     brand: "Aron Mod",
     loading: "Loading your order…",
     notFound: "Invalid payment link.",
-    expired: "This payment link has expired. Go back to your Discord ticket and request a new one.",
+    expired:
+      "This payment link has expired. Go back to your Discord ticket and request a new one.",
     paid: "This order is already paid. Check your Discord ticket.",
     cancelled: "This order was cancelled.",
     plan: "Plan",
@@ -77,17 +73,17 @@ const T = {
     total: "Total",
     order: "Order",
     expires: "Link expires on",
-    payError: "Payment not completed. No confirmed charge: try again or contact staff.",
-    processing: "Verifying your payment…",
-    choose: "Choose how to pay",
-    card: "Debit or credit card",
     backTicket: "Back to Discord ticket",
     backCommunity: "Go to the Discord server",
-    successTitle: "Payment completed",
-    successNote: "The key will be delivered in your Discord ticket after the payment is verified.",
-    redirecting: "Redirecting you to your Discord ticket…",
-    delivery: "The key will be delivered in your Discord ticket after the payment is verified.",
-    missingConfig: "Payments temporarily unavailable. Please contact staff on Discord.",
+    payNow: "🛒 PAY NOW",
+    importantTitle: "📌 IMPORTANT",
+    importantType: "If PayPal asks for the payment type, select:",
+    importantGoods: "✅ Goods and Services payment",
+    importantTransaction: "After payment, copy the PayPal transaction ID.",
+    manualVerify:
+      "After payment, return to the Discord ticket and send the PayPal transaction ID along with the order code.",
+    delivery:
+      "The key will be delivered in the Discord ticket after the staff manually verifies the payment.",
   },
 } as const;
 
@@ -121,24 +117,19 @@ function Header({ title }: { title: string }) {
   );
 }
 
+function paypalMeUrl(plan?: "base" | "plus", days?: 15 | 30): string | null {
+  if (plan === "base" && days === 15) return "https://paypal.me/aronmod/9";
+  if (plan === "base" && days === 30) return "https://paypal.me/aronmod/15";
+  if (plan === "plus" && days === 15) return "https://paypal.me/aronmod/12";
+  if (plan === "plus" && days === 30) return "https://paypal.me/aronmod/20";
+  return null;
+}
+
 function CheckoutPage() {
   const { token } = Route.useParams();
   const [uiLang] = useLang();
 
   const fetchSummary = useServerFn(getCheckoutSummary);
-  const createOrder = useServerFn(startPaypalOrder);
-  const finalize = useServerFn(finalizePaypalOrder);
-
-  const [error, setError] = useState<string | null>(null);
-  const [processing, setProcessing] = useState(false);
-  const [success, setSuccess] = useState<{ ticketUrl: string | null } | null>(null);
-  const [cardOpen, setCardOpen] = useState(false);
-  const paypalRef = useRef<HTMLDivElement | null>(null);
-  const cardRef = useRef<HTMLDivElement | null>(null);
-  const renderedRef = useRef(false);
-  const cardRenderedRef = useRef(false);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const sdkRef = useRef<any>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["checkout", token],
@@ -150,124 +141,13 @@ function CheckoutPage() {
   const lang = data?.locale ?? uiLang;
   const t = T[lang];
 
-  const clientId = data?.state === "ok" ? (data.paypalClientId ?? "") : "";
-
-  useEffect(() => {
-    if (data?.state !== "ok" || !clientId || renderedRef.current) return;
-    renderedRef.current = true;
-
-    const script = document.createElement("script");
-    script.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(clientId)}&currency=EUR&intent=capture&disable-funding=mybank`;
-    script.async = true;
-    script.onload = () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const paypal = (window as unknown as { paypal?: any }).paypal;
-      if (!paypal || !paypalRef.current) return;
-      sdkRef.current = paypal;
-      // Only the funding-source split is UI: order creation and capture stay
-      // exactly as before, server-side verified.
-      paypal
-        .Buttons({
-          fundingSource: paypal.FUNDING.PAYPAL,
-          style: { layout: "vertical", shape: "pill", color: "blue", height: 48 },
-          createOrder: async () => {
-            setError(null);
-            const res = await createOrder({ data: { token } });
-            if (!res.ok || !res.paypalOrderId) throw new Error(res.error ?? "paypal_error");
-            return res.paypalOrderId;
-          },
-          onApprove: async (details: { orderID: string }) => {
-            setProcessing(true);
-            // Only a server-verified capture unlocks the success state.
-            const res = await finalize({ data: { token, paypalOrderId: details.orderID } });
-            setProcessing(false);
-            if (res.ok) {
-              setSuccess({ ticketUrl: res.ticketUrl ?? null });
-            } else {
-              setError(t.payError);
-            }
-          },
-          onError: () => setError(t.payError),
-        })
-        .render(paypalRef.current);
-    };
-    script.onerror = () => setError(t.payError);
-    document.body.appendChild(script);
-  }, [data?.state, clientId, token, createOrder, finalize, t.payError]);
-
-  // The card button is rendered lazily the first time the section is expanded
-  // and kept mounted afterwards, so collapsing never loses the checkout token.
-  useEffect(() => {
-    if (!cardOpen || cardRenderedRef.current) return;
-    const paypal = sdkRef.current;
-    if (!paypal || !cardRef.current) return;
-    cardRenderedRef.current = true;
-    paypal
-      .Buttons({
-        fundingSource: paypal.FUNDING.CARD,
-        style: { layout: "vertical", shape: "pill", height: 48 },
-        createOrder: async () => {
-          setError(null);
-          const res = await createOrder({ data: { token } });
-          if (!res.ok || !res.paypalOrderId) throw new Error(res.error ?? "paypal_error");
-          return res.paypalOrderId;
-        },
-        onApprove: async (details: { orderID: string }) => {
-          setProcessing(true);
-          const res = await finalize({ data: { token, paypalOrderId: details.orderID } });
-          setProcessing(false);
-          if (res.ok) {
-            setSuccess({ ticketUrl: res.ticketUrl ?? null });
-          } else {
-            setError(t.payError);
-          }
-        },
-        onError: () => setError(t.payError),
-      })
-      .render(cardRef.current);
-  }, [cardOpen, token, createOrder, finalize, t.payError]);
-
-  // Auto-redirect only after the server confirmed the capture, and only to a
-  // server-built ticket deep link.
-  useEffect(() => {
-    if (!success?.ticketUrl) return;
-    const url = success.ticketUrl;
-    const timer = window.setTimeout(() => {
-      window.location.assign(url);
-    }, 3000);
-    return () => window.clearTimeout(timer);
-  }, [success]);
+  const paymentUrl = data?.state === "ok" ? paypalMeUrl(data.plan, data.days) : null;
 
   if (isLoading) {
     return (
       <Shell>
         <div className="glass-card flex items-center gap-3 rounded-2xl p-7 text-muted-foreground">
           <Loader2 className="h-5 w-5 animate-spin text-accent" /> {t.loading}
-        </div>
-      </Shell>
-    );
-  }
-
-  if (success) {
-    return (
-      <Shell>
-        <div className="glass-card rounded-3xl p-7 sm:p-10">
-          <Header title={t.title} />
-          <div className="mt-8 flex flex-col items-center text-center">
-            <CheckCircle2 aria-hidden className="h-14 w-14 text-emerald-400" />
-            <h1 className="font-display mt-4 text-2xl font-bold sm:text-3xl">{t.successTitle}</h1>
-            <p className="mt-3 max-w-md text-sm text-foreground/90 sm:text-base">{t.successNote}</p>
-            <a
-              href={success.ticketUrl ?? LINKS.discordInvite}
-              {...EXTERNAL_LINK_PROPS}
-              className="font-display mt-7 inline-flex w-full items-center justify-center rounded-xl bg-[image:var(--gradient-accent)] px-6 py-3.5 text-base font-bold text-primary-foreground sm:w-auto"
-            >
-              {success.ticketUrl ? t.backTicket : t.backCommunity}
-            </a>
-            {success.ticketUrl ? (
-              <p className="mt-3 text-xs text-muted-foreground">{t.redirecting}</p>
-            ) : null}
-          </div>
         </div>
       </Shell>
     );
@@ -347,54 +227,42 @@ function CheckoutPage() {
           </p>
         ) : null}
 
-        {error ? (
-          <p
-            role="alert"
-            className="mt-5 rounded-lg border border-destructive/50 bg-destructive/10 p-3 text-sm"
-          >
-            {error}
-          </p>
-        ) : null}
-
-        {processing ? (
-          <p className="mt-5 flex items-center gap-2 text-sm text-muted-foreground">
-            <Loader2 className="h-4 w-4 animate-spin text-accent" /> {t.processing}
-          </p>
-        ) : null}
-
-        {clientId ? (
-          <div className="mt-8">
-            <p className="font-display text-sm font-semibold tracking-wide text-foreground/90 sm:text-base">
-              {t.choose}
-            </p>
-            <div ref={paypalRef} className="mt-4" />
-            <button
-              type="button"
-              onClick={() => setCardOpen((open) => !open)}
-              aria-expanded={cardOpen}
-              aria-controls="card-payment-panel"
-              className="font-display mt-3 flex w-full items-center justify-between gap-3 rounded-full border border-border bg-card/60 px-5 py-3 text-sm font-semibold text-foreground transition hover:border-primary/60 sm:text-base"
+        {paymentUrl ? (
+          <div className="mt-8 space-y-5">
+            <a
+              href={paymentUrl}
+              {...EXTERNAL_LINK_PROPS}
+              className="font-display flex w-full items-center justify-center rounded-xl bg-[image:var(--gradient-accent)] px-6 py-4 text-lg font-bold text-primary-foreground transition hover:opacity-90"
             >
-              {t.card}
-              <ChevronDown
-                aria-hidden
-                className={`h-4 w-4 text-muted-foreground transition-transform ${cardOpen ? "rotate-180" : ""}`}
-              />
-            </button>
-            {/* color-scheme: light keeps PayPal's own card/billing form legible
-                instead of inheriting the dark page scheme inside its iframe. */}
-            <div
-              id="card-payment-panel"
-              hidden={!cardOpen}
-              style={{ colorScheme: "light" }}
-              className="mt-3 rounded-2xl bg-white/95 p-3"
-            >
-              <div ref={cardRef} />
+              {t.payNow}
+            </a>
+
+            <div className="rounded-2xl border border-accent/50 bg-accent/10 p-4 text-sm leading-relaxed text-foreground/90">
+              <p className="font-display font-bold">{t.importantTitle}</p>
+              <p className="mt-2">{t.importantType}</p>
+              <p className="mt-1 font-semibold">{t.importantGoods}</p>
+              <p className="mt-3">{t.importantTransaction}</p>
             </div>
+
+            <p className="text-sm text-foreground/90 sm:text-base">{t.manualVerify}</p>
           </div>
         ) : (
-          <p className="mt-8 text-sm text-muted-foreground">{t.missingConfig}</p>
+          <p className="mt-8 text-sm text-muted-foreground">
+            {lang === "it"
+              ? "Pagamenti temporaneamente non disponibili. Contatta lo staff su Discord."
+              : "Payments temporarily unavailable. Please contact staff on Discord."}
+          </p>
         )}
+
+        {data?.ticketUrl ? (
+          <a
+            href={data.ticketUrl}
+            {...EXTERNAL_LINK_PROPS}
+            className="font-display mt-6 inline-flex w-full items-center justify-center rounded-xl border border-border bg-card/60 px-5 py-3 text-sm font-semibold text-foreground transition hover:border-primary/60 sm:w-auto"
+          >
+            {t.backTicket}
+          </a>
+        ) : null}
 
         <p className="mt-8 text-sm text-foreground/90 sm:text-base">{t.delivery}</p>
       </div>
