@@ -1,7 +1,6 @@
 // Server-only Discord REST + interaction signature verification.
 
 import { t, type Locale } from "./discord-copy.server";
-import { DISCORD_PURPLE } from "./discord-theme";
 import { priceCents } from "./pricing";
 
 const API = "https://discord.com/api/v10";
@@ -141,27 +140,6 @@ function shortEur(cents: number): string {
 const SPACER = "\u200B";
 
 /**
- * Every AronMod purchase/ticket message is rendered as an embed so Discord
- * always paints the same #9C59FF accent bar. The texts are unchanged: the
- * leading mention stays in `content` (so it still pings) and the remaining
- * lines become the embed description.
- */
-export function purpleMessage(text: string): {
-  content: string;
-  embeds: Array<Record<string, unknown>>;
-} {
-  const lines = text.split("\n");
-  const first = lines[0] ?? "";
-  const hasMention = /^<@!?\d+>/.test(first.trim());
-  const content = hasMention ? first : "";
-  const description = (hasMention ? lines.slice(1) : lines).join("\n").trim();
-  return {
-    content,
-    embeds: [{ description: description.length > 0 ? description : SPACER, color: DISCORD_PURPLE }],
-  };
-}
-
-/**
  * The persistent plan panel: header + plan buttons only, one button per action
  * row so they are never glued together. The selected plan turns green.
  */
@@ -190,7 +168,7 @@ export function panelMessage(
     },
   ];
 
-  return { ...purpleMessage(lines.join("\n")), components: rows };
+  return { content: lines.join("\n"), components: rows };
 }
 
 /**
@@ -207,7 +185,7 @@ export function durationMessage(
   const label30 = `${c.days30} — ${shortEur(priceCents(plan, 30))}`;
   const style = (days: 15 | 30) => (selectedDays === days ? 3 : 2);
   return {
-    ...purpleMessage([SPACER, c.chooseDuration, SPACER].join("\n")),
+    content: [SPACER, c.chooseDuration, SPACER].join("\n"),
     components: [
       {
         type: 1,
@@ -237,19 +215,17 @@ export function finalOrderMessage(
 ) {
   const c = t(locale);
   return {
-    ...purpleMessage(
-      [
-        c.welcome(userId),
-        c.panelTitle,
-        "",
-        c.orderRef(ref),
-        "",
-        c.orderPlanLine(plan, days),
-        c.orderTotalLine(amountCents),
-        "",
-        SPACER,
-      ].join("\n"),
-    ),
+    content: [
+      c.welcome(userId),
+      c.panelTitle,
+      "",
+      c.orderRef(ref),
+      "",
+      c.orderPlanLine(plan, days),
+      c.orderTotalLine(amountCents),
+      "",
+      SPACER,
+    ].join("\n"),
     components: payButton(locale, url),
   };
 }
