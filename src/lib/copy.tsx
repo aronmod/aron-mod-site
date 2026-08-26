@@ -177,10 +177,10 @@ export const copy = {
         "Un'interfaccia essenziale in italiano e inglese: inserisci la chiave di licenza, avvia il client e tieni sotto controllo la scadenza del tuo piano. Il download avviene esclusivamente tramite il Discord ufficiale.",
       specs: [
         "Windows 10 / 11 · 64 bit",
-        "Verifica della chiave di licenza con opzione «Memorizza key»",
+        "Verifica della chiave di licenza con opzione «Salva Licenza»",
         "Avvio automatico del client con multi-client integrato",
         "Memorizzazione dei percorsi recenti per avviare più rapidamente il gioco",
-        "Aggiornamento automatico e supporto IT / EN nel loader",
+        "Il loader si aggiorna in automatico a ogni avvio. Ti avvisa se é presente un aggiornamento durante l'utilizzo",
       ],
       download: "Download",
       buyLicense: "Acquista la Mod",
@@ -196,11 +196,7 @@ export const copy = {
       },
       {
         q: "Posso usarla su più PC?",
-        a: "La licenza è legata a un singolo HWID. Puoi richiedere un reset gratuito al mese aprendo un ticket sul Discord ufficiale.",
-      },
-      {
-        q: "Come ricevo gli aggiornamenti?",
-        a: "Il loader si aggiorna in automatico a ogni avvio. Le patch note vengono pubblicate nel canale #changelog del Discord.",
+        a: "La licenza è legata a un singolo HWID. Puoi richiedere un solo reset per licenza aprendo un ticket sul Discord ufficiale.",
       },
     ],
     support: {
@@ -429,10 +425,10 @@ export const copy = {
         "A clean interface in Italian and English: enter your license key, launch the client and keep track of your plan's expiration. Download is only available through the official Discord.",
       specs: [
         "Windows 10 / 11 · 64 bit",
-        "License key verification with «Remember key» option",
+        "License key verification with «Save License» option",
         "Automatic client launch with built-in multi-client",
         "Recent path history for faster game launch",
-        "Automatic updates and IT / EN support inside the loader",
+        "The loader updates automatically on every launch. It notifies you if an update is available while in use",
       ],
       download: "Download",
       buyLicense: "Buy the Mod",
@@ -448,11 +444,7 @@ export const copy = {
       },
       {
         q: "Can I use it on multiple PCs?",
-        a: "The license is tied to a single HWID. You can request one free reset per month by opening a ticket on the official Discord.",
-      },
-      {
-        q: "How do I receive updates?",
-        a: "The loader updates automatically on every launch. Patch notes are posted in the #changelog channel on Discord.",
+        a: "The license is tied to a single HWID. You can request only one reset per license by opening a ticket on the official Discord.",
       },
     ],
     support: {
