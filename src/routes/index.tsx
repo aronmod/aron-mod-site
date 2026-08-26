@@ -1039,7 +1039,7 @@ function DownloadSection({ lang }: { lang: Lang }) {
           <div className="relative grid grid-cols-2 items-center gap-4 sm:gap-6">
             {[
               {
-                src: "/loader-login.png",
+                src: lang === "it" ? loaderLoginIt.url : loaderLoginEn.url,
                 alt: t.images.loginAlt,
                 caption: t.images.loginCaption,
                 delay: "0s",
