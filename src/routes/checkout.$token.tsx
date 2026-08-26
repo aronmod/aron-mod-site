@@ -130,8 +130,13 @@ function CheckoutPage() {
   const [error, setError] = useState<string | null>(null);
   const [processing, setProcessing] = useState(false);
   const [success, setSuccess] = useState<{ ticketUrl: string | null } | null>(null);
-  const buttonsRef = useRef<HTMLDivElement | null>(null);
+  const [cardOpen, setCardOpen] = useState(false);
+  const paypalRef = useRef<HTMLDivElement | null>(null);
+  const cardRef = useRef<HTMLDivElement | null>(null);
   const renderedRef = useRef(false);
+  const cardRenderedRef = useRef(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const sdkRef = useRef<any>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["checkout", token],
@@ -155,9 +160,13 @@ function CheckoutPage() {
     script.onload = () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const paypal = (window as unknown as { paypal?: any }).paypal;
-      if (!paypal || !buttonsRef.current) return;
+      if (!paypal || !paypalRef.current) return;
+      sdkRef.current = paypal;
+      // Only the funding-source split is UI: order creation and capture stay
+      // exactly as before, server-side verified.
       paypal
         .Buttons({
+          fundingSource: paypal.FUNDING.PAYPAL,
           style: { layout: "vertical", shape: "pill", color: "blue", height: 48 },
           createOrder: async () => {
             setError(null);
@@ -178,11 +187,44 @@ function CheckoutPage() {
           },
           onError: () => setError(t.payError),
         })
-        .render(buttonsRef.current);
+        .render(paypalRef.current);
     };
     script.onerror = () => setError(t.payError);
     document.body.appendChild(script);
   }, [data?.state, clientId, token, createOrder, finalize, t.payError]);
+
+  // The card button is rendered lazily the first time the section is expanded
+  // and kept mounted afterwards, so collapsing never loses the checkout token.
+  useEffect(() => {
+    if (!cardOpen || cardRenderedRef.current) return;
+    const paypal = sdkRef.current;
+    if (!paypal || !cardRef.current) return;
+    cardRenderedRef.current = true;
+    paypal
+      .Buttons({
+        fundingSource: paypal.FUNDING.CARD,
+        style: { layout: "vertical", shape: "pill", height: 48 },
+        createOrder: async () => {
+          setError(null);
+          const res = await createOrder({ data: { token } });
+          if (!res.ok || !res.paypalOrderId) throw new Error(res.error ?? "paypal_error");
+          return res.paypalOrderId;
+        },
+        onApprove: async (details: { orderID: string }) => {
+          setProcessing(true);
+          const res = await finalize({ data: { token, paypalOrderId: details.orderID } });
+          setProcessing(false);
+          if (res.ok) {
+            setSuccess({ ticketUrl: res.ticketUrl ?? null });
+          } else {
+            setError(t.payError);
+          }
+        },
+        onError: () => setError(t.payError),
+      })
+      .render(cardRef.current);
+  }, [cardOpen, token, createOrder, finalize, t.payError]);
+
 
   // Auto-redirect only after the server confirmed the capture, and only to a
   // server-built ticket deep link.
