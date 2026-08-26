@@ -45,18 +45,16 @@ const T = {
     daysUnit: "giorni",
     total: "Totale",
     order: "Ordine",
-    expires: "Il link scade il",
     backTicket: "Torna al ticket Discord",
     backCommunity: "Vai al server Discord",
     payNow: "🛒 PAGA ORA",
     importantTitle: "📌 IMPORTANTE",
     importantType: "Se PayPal chiede il tipo di pagamento, seleziona:",
     importantGoods: "✅ Pagamento di beni e servizi",
-    importantTransaction: "Dopo il pagamento, copia l'ID transazione PayPal.",
     manualVerify:
-      "Dopo il pagamento, torna nel ticket Discord e invia l'ID transazione PayPal insieme al codice ordine.",
+      "Dopo il pagamento, torna nel ticket Discord e invia l'ID transazione del pagamento PayPal.",
     delivery:
-      "La key verrà consegnata nel ticket Discord dopo la verifica manuale del pagamento da parte dello staff.",
+      "La key verrà consegnata nel ticket Discord dopo la verifica del pagamento da parte dello staff.",
   },
   en: {
     title: "Checkout",
@@ -71,18 +69,16 @@ const T = {
     daysUnit: "days",
     total: "Total",
     order: "Order",
-    expires: "Link expires on",
     backTicket: "Back to Discord ticket",
     backCommunity: "Go to the Discord server",
     payNow: "🛒 PAY NOW",
     importantTitle: "📌 IMPORTANT",
     importantType: "If PayPal asks for the payment type, select:",
     importantGoods: "✅ Goods and Services payment",
-    importantTransaction: "After payment, copy the PayPal transaction ID.",
     manualVerify:
-      "After payment, return to the Discord ticket and send the PayPal transaction ID along with the order code.",
+      "After payment, return to the Discord ticket and send the PayPal payment transaction ID.",
     delivery:
-      "The key will be delivered in the Discord ticket after the staff manually verifies the payment.",
+      "The key will be delivered in the Discord ticket after the payment is verified by the staff.",
   },
 } as const;
 
