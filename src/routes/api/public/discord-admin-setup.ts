@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+import { DISCORD_PURPLE } from "@/lib/purchase/discord-theme";
+
 function timingSafeEqual(a: string, b: string): boolean {
   if (a.length !== b.length) return false;
   let diff = 0;
@@ -29,6 +31,7 @@ type PanelMessage = {
   embeds?: Array<{
     title?: string;
     description?: string;
+    color?: number;
     fields?: Array<{ name?: string; value?: string }>;
   }>;
   components?: Array<{
@@ -127,7 +130,7 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
                 {
                   title: "🛒 Acquista Aron Mod",
                   description: IT_DESCRIPTION,
-                  color: 0x3b82f6,
+                  color: DISCORD_PURPLE,
                 },
               ],
               components: [
@@ -152,7 +155,7 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
                 {
                   title: "🛒 Buy Aron Mod",
                   description: EN_DESCRIPTION,
-                  color: 0x3b82f6,
+                  color: DISCORD_PURPLE,
                 },
               ],
               components: [
@@ -257,6 +260,7 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
             descriptionMatches: boolean;
             buttonLabel: string;
             buttonStyle: number | null;
+            color: number | null;
             hasPiano: boolean;
           }
         > = {
@@ -271,6 +275,7 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
             descriptionMatches: false,
             buttonLabel: "",
             buttonStyle: null,
+            color: null,
             hasPiano: false,
           },
           en: {
@@ -284,6 +289,7 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
             descriptionMatches: false,
             buttonLabel: "",
             buttonStyle: null,
+            color: null,
             hasPiano: false,
           },
         };
@@ -319,6 +325,7 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
               verify[locale].descriptionMatches = description === expectedDescription;
               verify[locale].buttonLabel = String(button?.label ?? "");
               verify[locale].buttonStyle = typeof button?.style === "number" ? button.style : null;
+              verify[locale].color = typeof embed?.color === "number" ? embed.color : null;
               verify[locale].hasPiano = description.includes("PIANO");
               verify[locale].exact =
                 embeds.length === 1 &&
@@ -326,6 +333,7 @@ export const Route = createFileRoute("/api/public/discord-admin-setup")({
                 fields.length === 0 &&
                 spacerLines === 5 &&
                 description === expectedDescription &&
+                Number(embed?.color ?? 0) === DISCORD_PURPLE &&
                 button?.label === expectedLabel &&
                 button.style === 1 &&
                 !verify[locale].hasPiano;
