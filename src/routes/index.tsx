@@ -850,7 +850,7 @@ function Pricing({ lang }: { lang: Lang }) {
             type="button"
             aria-pressed={selectedDays === 15}
             onClick={() => setSelectedDays(15)}
-            className={`rounded-xl border px-4 py-2 text-center text-base font-semibold transition-all sm:flex-1 sm:text-lg ${
+            className={`rounded-xl border px-4 py-1.5 text-center text-base font-semibold transition-all sm:flex-1 sm:text-lg ${
               selectedDays === 15
                 ? "border-primary/60 bg-primary/20 text-foreground shadow-[0_0_18px_-6px_color-mix(in_oklab,var(--primary)_60%,transparent)]"
                 : "border-border/50 bg-card/50 text-muted-foreground hover:border-border hover:text-foreground"
@@ -862,7 +862,7 @@ function Pricing({ lang }: { lang: Lang }) {
             type="button"
             aria-pressed={selectedDays === 30}
             onClick={() => setSelectedDays(30)}
-            className={`rounded-xl border px-4 py-2 text-center text-base font-semibold transition-all sm:flex-1 sm:text-lg ${
+            className={`rounded-xl border px-4 py-1.5 text-center text-base font-semibold transition-all sm:flex-1 sm:text-lg ${
               selectedDays === 30
                 ? "border-primary/60 bg-primary/20 text-foreground shadow-[0_0_18px_-6px_color-mix(in_oklab,var(--primary)_60%,transparent)]"
                 : "border-border/50 bg-card/50 text-muted-foreground hover:border-border hover:text-foreground"
@@ -881,7 +881,7 @@ function Pricing({ lang }: { lang: Lang }) {
         </a>
 
         {"includes" in plan ? (
-          <div className="mt-6 rounded-xl border border-accent/40 bg-primary/10 p-4">
+          <div className="mt-10 rounded-xl border border-accent/40 bg-primary/10 p-4">
             <p className="text-sm font-bold leading-relaxed text-accent sm:text-base">
               {plan.includesIntro}
             </p>
@@ -905,7 +905,7 @@ function Pricing({ lang }: { lang: Lang }) {
           </div>
         ) : null}
 
-        <ul className="mt-6 flex-1 space-y-2 text-sm text-muted-foreground">
+        <ul className="mt-10 flex-1 space-y-2 text-sm text-muted-foreground">
           {t.commonPerks.map((perk) => (
             <li key={perk} className="flex items-start gap-2">
               <CircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
