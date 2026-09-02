@@ -38,6 +38,12 @@ export async function sendChannelMessage(channelId: string, body: unknown) {
   return discordFetch(`/channels/${channelId}/messages`, { method: "POST", body });
 }
 
+export async function listChannelMessages(channelId: string, limit = 100) {
+  return discordFetch(`/channels/${channelId}/messages?limit=${Math.min(100, Math.max(1, limit))}`, {
+    method: "GET",
+  });
+}
+
 export async function editChannelMessage(channelId: string, messageId: string, body: unknown) {
   return discordFetch(`/channels/${channelId}/messages/${messageId}`, { method: "PATCH", body });
 }
