@@ -16,6 +16,7 @@ import { Route as ApiPublicDiscordAdminSetupRouteImport } from './routes/api/pub
 import { Route as ApiPublicDiscordInteractionsRouteImport } from './routes/api/public/discord-interactions'
 import { Route as ApiPublicDiscordOauthCallbackRouteImport } from './routes/api/public/discord-oauth-callback'
 import { Route as ApiPublicDiscordOauthStartRouteImport } from './routes/api/public/discord-oauth-start'
+import { Route as ApiPublicDiscordRegisterCommandsRouteImport } from './routes/api/public/discord-register-commands'
 import { Route as ApiPublicLicenseValidateRouteImport } from './routes/api/public/license-validate'
 import { Route as ApiPublicPaypalWebhookRouteImport } from './routes/api/public/paypal-webhook'
 
@@ -58,6 +59,12 @@ const ApiPublicDiscordOauthStartRoute =
     path: '/api/public/discord-oauth-start',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicDiscordRegisterCommandsRoute =
+  ApiPublicDiscordRegisterCommandsRouteImport.update({
+    id: '/api/public/discord-register-commands',
+    path: '/api/public/discord-register-commands',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicLicenseValidateRoute =
   ApiPublicLicenseValidateRouteImport.update({
     id: '/api/public/license-validate',
@@ -78,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/api/public/discord-interactions': typeof ApiPublicDiscordInteractionsRoute
   '/api/public/discord-oauth-callback': typeof ApiPublicDiscordOauthCallbackRoute
   '/api/public/discord-oauth-start': typeof ApiPublicDiscordOauthStartRoute
+  '/api/public/discord-register-commands': typeof ApiPublicDiscordRegisterCommandsRoute
   '/api/public/license-validate': typeof ApiPublicLicenseValidateRoute
   '/api/public/paypal-webhook': typeof ApiPublicPaypalWebhookRoute
 }
@@ -89,6 +97,7 @@ export interface FileRoutesByTo {
   '/api/public/discord-interactions': typeof ApiPublicDiscordInteractionsRoute
   '/api/public/discord-oauth-callback': typeof ApiPublicDiscordOauthCallbackRoute
   '/api/public/discord-oauth-start': typeof ApiPublicDiscordOauthStartRoute
+  '/api/public/discord-register-commands': typeof ApiPublicDiscordRegisterCommandsRoute
   '/api/public/license-validate': typeof ApiPublicLicenseValidateRoute
   '/api/public/paypal-webhook': typeof ApiPublicPaypalWebhookRoute
 }
@@ -101,6 +110,7 @@ export interface FileRoutesById {
   '/api/public/discord-interactions': typeof ApiPublicDiscordInteractionsRoute
   '/api/public/discord-oauth-callback': typeof ApiPublicDiscordOauthCallbackRoute
   '/api/public/discord-oauth-start': typeof ApiPublicDiscordOauthStartRoute
+  '/api/public/discord-register-commands': typeof ApiPublicDiscordRegisterCommandsRoute
   '/api/public/license-validate': typeof ApiPublicLicenseValidateRoute
   '/api/public/paypal-webhook': typeof ApiPublicPaypalWebhookRoute
 }
@@ -114,6 +124,7 @@ export interface FileRouteTypes {
     | '/api/public/discord-interactions'
     | '/api/public/discord-oauth-callback'
     | '/api/public/discord-oauth-start'
+    | '/api/public/discord-register-commands'
     | '/api/public/license-validate'
     | '/api/public/paypal-webhook'
   fileRoutesByTo: FileRoutesByTo
@@ -125,6 +136,7 @@ export interface FileRouteTypes {
     | '/api/public/discord-interactions'
     | '/api/public/discord-oauth-callback'
     | '/api/public/discord-oauth-start'
+    | '/api/public/discord-register-commands'
     | '/api/public/license-validate'
     | '/api/public/paypal-webhook'
   id:
@@ -136,6 +148,7 @@ export interface FileRouteTypes {
     | '/api/public/discord-interactions'
     | '/api/public/discord-oauth-callback'
     | '/api/public/discord-oauth-start'
+    | '/api/public/discord-register-commands'
     | '/api/public/license-validate'
     | '/api/public/paypal-webhook'
   fileRoutesById: FileRoutesById
@@ -148,6 +161,7 @@ export interface RootRouteChildren {
   ApiPublicDiscordInteractionsRoute: typeof ApiPublicDiscordInteractionsRoute
   ApiPublicDiscordOauthCallbackRoute: typeof ApiPublicDiscordOauthCallbackRoute
   ApiPublicDiscordOauthStartRoute: typeof ApiPublicDiscordOauthStartRoute
+  ApiPublicDiscordRegisterCommandsRoute: typeof ApiPublicDiscordRegisterCommandsRoute
   ApiPublicLicenseValidateRoute: typeof ApiPublicLicenseValidateRoute
   ApiPublicPaypalWebhookRoute: typeof ApiPublicPaypalWebhookRoute
 }
@@ -203,6 +217,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicDiscordOauthStartRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/discord-register-commands': {
+      id: '/api/public/discord-register-commands'
+      path: '/api/public/discord-register-commands'
+      fullPath: '/api/public/discord-register-commands'
+      preLoaderRoute: typeof ApiPublicDiscordRegisterCommandsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/license-validate': {
       id: '/api/public/license-validate'
       path: '/api/public/license-validate'
@@ -228,6 +249,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicDiscordInteractionsRoute: ApiPublicDiscordInteractionsRoute,
   ApiPublicDiscordOauthCallbackRoute: ApiPublicDiscordOauthCallbackRoute,
   ApiPublicDiscordOauthStartRoute: ApiPublicDiscordOauthStartRoute,
+  ApiPublicDiscordRegisterCommandsRoute: ApiPublicDiscordRegisterCommandsRoute,
   ApiPublicLicenseValidateRoute: ApiPublicLicenseValidateRoute,
   ApiPublicPaypalWebhookRoute: ApiPublicPaypalWebhookRoute,
 }

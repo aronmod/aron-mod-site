@@ -391,6 +391,54 @@ export type Database = {
         }
         Relationships: []
       }
+      reviews: {
+        Row: {
+          body: string
+          created_at: string
+          discord_user_id: string
+          discord_username: string | null
+          id: string
+          locale: string
+          public_message_id: string | null
+          rating: number
+          reject_reason: string | null
+          reviewed_at: string | null
+          reviewer_discord_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          discord_user_id: string
+          discord_username?: string | null
+          id?: string
+          locale?: string
+          public_message_id?: string | null
+          rating: number
+          reject_reason?: string | null
+          reviewed_at?: string | null
+          reviewer_discord_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          discord_user_id?: string
+          discord_username?: string | null
+          id?: string
+          locale?: string
+          public_message_id?: string | null
+          rating?: number
+          reject_reason?: string | null
+          reviewed_at?: string | null
+          reviewer_discord_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

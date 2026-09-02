@@ -44,11 +44,157 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
         // PING
         if (body?.type === 1) return json({ type: 1 });
 
+        // APPLICATION_COMMAND (slash commands)
+        if (body?.type === 2) {
+          const commandName = String(body?.data?.name ?? "");
+          const interactionToken: string = String(body?.token ?? "");
+          const discord = await import("@/lib/purchase/discord.server");
+          const { rc } = await import("@/lib/reviews/reviews-copy.server");
+          const setupLocale = String(body?.locale ?? "").startsWith("en") ? "en" : "it";
+          const c = rc(setupLocale);
+
+          if (commandName === "setup-recensioni") {
+            if (!discord.isStaffInteraction(body)) {
+              return json({ type: 4, data: { content: c.staffOnly, flags: 64 } });
+            }
+            const { reviewsChannelId } = await import("@/lib/reviews/reviews.server");
+            const target = reviewsChannelId();
+            const channelId: string | null = body?.channel_id ? String(body.channel_id) : null;
+            if (!target) return json({ type: 4, data: { content: c.notConfigured, flags: 64 } });
+            if (channelId !== target) {
+              return json({ type: 4, data: { content: c.wrongChannel, flags: 64 } });
+            }
+
+            runAfterResponse(async () => {
+              try {
+                const { reviewPanelMessage } = await import("@/lib/reviews/reviews-discord.server");
+                const messages = await discord.listChannelMessages(target, 100);
+                type ReviewPanelMessage = {
+                  id?: string;
+                  components?: Array<{ components?: Array<{ custom_id?: string }> }>;
+                };
+                const candidates = (
+                  Array.isArray(messages.json) ? messages.json : []
+                ) as ReviewPanelMessage[];
+                const panels = candidates.filter((message) =>
+                  message.components?.some((row) =>
+                    row.components?.some((component) => component.custom_id === "aron_review_open"),
+                  ),
+                );
+                const panel = reviewPanelMessage(setupLocale);
+                let sent = false;
+                const current = panels[0];
+                if (current?.id) {
+                  sent = (await discord.editChannelMessage(target, current.id, panel)).ok;
+                  for (const duplicate of panels.slice(1)) {
+                    if (duplicate.id) await discord.deleteChannelMessage(target, duplicate.id);
+                  }
+                }
+                if (!sent) sent = (await discord.sendChannelMessage(target, panel)).ok;
+                await discord.editOriginalInteraction(interactionToken, {
+                  content: sent ? c.panelPublished : c.genericError,
+                });
+              } catch (err) {
+                console.error("review_setup_error", {
+                  message: err instanceof Error ? err.message : "unknown",
+                });
+                await discord.editOriginalInteraction(interactionToken, {
+                  content: c.genericError,
+                });
+              }
+            });
+            return json(DEFER_EPHEMERAL);
+          }
+
+          return json({ type: 4, data: { content: c.genericError, flags: 64 } });
+        }
+
         // MESSAGE_COMPONENT
         if (body?.type === 3) {
           const customId: string = String(body?.data?.custom_id ?? "");
-          const userId: string | undefined = body?.member?.user?.id ?? body?.user?.id;
           const interactionToken: string = String(body?.token ?? "");
+          const userId: string | undefined = body?.member?.user?.id ?? body?.user?.id;
+          const reviewLocale = String(body?.locale ?? "").startsWith("en") ? "en" : "it";
+
+          if (customId === "aron_review_open") {
+            const { reviewModal } = await import("@/lib/reviews/reviews-discord.server");
+            return json(reviewModal(reviewLocale));
+          }
+
+          const reviewAction = /^(aron_review_(approve|reject))_([0-9a-fA-F-]{36})$/.exec(customId);
+          if (reviewAction) {
+            const discord = await import("@/lib/purchase/discord.server");
+            const { approverIds, getReview, markReviewed, reviewsChannelId, setPublicMessageId } =
+              await import("@/lib/reviews/reviews.server");
+            const { publicReviewMessage, sendDirectMessage } =
+              await import("@/lib/reviews/reviews-discord.server");
+            const { rc } = await import("@/lib/reviews/reviews-copy.server");
+            const reviewerId = userId ?? "";
+            if (!approverIds().includes(reviewerId)) {
+              return json({ type: 4, data: { content: rc(reviewLocale).reviewerOnly, flags: 64 } });
+            }
+
+            runAfterResponse(async () => {
+              const c = rc(reviewLocale);
+              try {
+                const review = await getReview(String(reviewAction[3]));
+                if (!review) {
+                  await discord.editOriginalInteraction(interactionToken, {
+                    content: c.notFound,
+                    components: [],
+                  });
+                  return;
+                }
+                const reviewLanguage = review.locale === "en" ? "en" : "it";
+                const result = reviewAction[2] === "approve" ? "approved" : "rejected";
+                const updated = await markReviewed(review.id, result, reviewerId);
+                if (!updated) {
+                  await discord.editOriginalInteraction(interactionToken, {
+                    content: c.alreadyHandled,
+                    components: [],
+                  });
+                  return;
+                }
+
+                if (result === "approved") {
+                  const channelId = reviewsChannelId();
+                  if (!channelId) throw new Error("reviews_channel_missing");
+                  const published = await discord.sendChannelMessage(
+                    channelId,
+                    publicReviewMessage(reviewLanguage, {
+                      rating: updated.rating,
+                      body: updated.body,
+                      createdAt: updated.created_at,
+                    }),
+                  );
+                  if (!published.ok || !published.json?.id)
+                    throw new Error("review_publish_failed");
+                  await setPublicMessageId(updated.id, String(published.json.id));
+                }
+
+                await discord.editOriginalInteraction(interactionToken, {
+                  content: result === "approved" ? c.approved : c.rejected,
+                  components: [],
+                });
+                await sendDirectMessage(updated.discord_user_id, {
+                  content:
+                    result === "approved"
+                      ? rc(reviewLanguage).dmApproved
+                      : rc(reviewLanguage).dmRejected,
+                });
+              } catch (err) {
+                console.error("review_moderation_error", {
+                  message: err instanceof Error ? err.message : "unknown",
+                });
+                await discord.editOriginalInteraction(interactionToken, {
+                  content: c.genericError,
+                  components: [],
+                });
+              }
+            });
+            return json(DEFER_UPDATE);
+          }
+
           const discord = await import("@/lib/purchase/discord.server");
           const { normalizeLocale, t } = await import("@/lib/purchase/discord-copy.server");
           const tickets = await import("@/lib/purchase/tickets.server");
@@ -411,6 +557,123 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
         if (body?.type === 5) {
           const customId: string = String(body?.data?.custom_id ?? "");
           const interactionToken: string = String(body?.token ?? "");
+          const reviewLocale = String(body?.locale ?? "").startsWith("en") ? "en" : "it";
+          const reviewChannelId = body?.channel_id ? String(body.channel_id) : null;
+
+          if (customId === "aron_review_modal") {
+            const discord = await import("@/lib/purchase/discord.server");
+            const { rc } = await import("@/lib/reviews/reviews-copy.server");
+            const {
+              approverIds,
+              createPendingReview,
+              parseRating,
+              reviewRateLimitOk,
+              reviewsChannelId,
+              sanitizeReviewBody,
+            } = await import("@/lib/reviews/reviews.server");
+            const { reviewerDmCard, sendDirectMessage } =
+              await import("@/lib/reviews/reviews-discord.server");
+            const c = rc(reviewLocale);
+            const target = reviewsChannelId();
+            const memberUser = body?.member?.user ?? body?.user;
+            const userId = typeof memberUser?.id === "string" ? memberUser.id : "";
+            const username =
+              typeof memberUser?.global_name === "string"
+                ? memberUser.global_name
+                : typeof memberUser?.username === "string"
+                  ? memberUser.username
+                  : null;
+            type ModalField = { custom_id?: string; value?: string };
+            type ModalRow = { components?: ModalField[] };
+            const rawRows: unknown[] = Array.isArray(body?.data?.components)
+              ? body.data.components
+              : [];
+            const fields: ModalField[] = rawRows.flatMap((rawRow) => {
+              const row = rawRow as ModalRow;
+              return Array.isArray(row.components) ? row.components : [];
+            });
+            const rawRating =
+              fields.find((field) => field.custom_id === "review_rating")?.value ?? "";
+            const rawBody = fields.find((field) => field.custom_id === "review_body")?.value ?? "";
+
+            runAfterResponse(async () => {
+              const reply = async (content: string) => {
+                await discord.editOriginalInteraction(interactionToken, { content });
+              };
+              try {
+                if (!target || reviewChannelId !== target) {
+                  await reply(c.notConfigured);
+                  return;
+                }
+                if (!userId) {
+                  await reply(c.genericError);
+                  return;
+                }
+                if (approverIds().length === 0) {
+                  await reply(c.noReviewers);
+                  return;
+                }
+                const rating = parseRating(rawRating);
+                const bodyText = sanitizeReviewBody(rawBody);
+                if (rating === null) {
+                  await reply(c.invalidRating);
+                  return;
+                }
+                if (bodyText.length < 20 || bodyText.length > 1000) {
+                  await reply(c.invalidBody);
+                  return;
+                }
+                if (!(await reviewRateLimitOk(userId))) {
+                  await reply(c.rateLimited);
+                  return;
+                }
+
+                const result = await createPendingReview({
+                  discordUserId: userId,
+                  discordUsername: username,
+                  locale: reviewLocale,
+                  rating,
+                  body: bodyText,
+                });
+                if (result.status === "pending_exists") {
+                  await reply(c.alreadyPending);
+                  return;
+                }
+                if (result.status === "approved_exists") {
+                  await reply(c.alreadyApproved);
+                  return;
+                }
+                if (result.status !== "created") {
+                  await reply(c.genericError);
+                  return;
+                }
+
+                const review = result.review;
+                const reviewerPayload = reviewerDmCard(reviewLocale, {
+                  id: review.id,
+                  discordUserId: review.discord_user_id,
+                  discordUsername: review.discord_username,
+                  rating: review.rating,
+                  body: review.body,
+                  createdAt: review.created_at,
+                });
+                const reviewerResults = await Promise.all(
+                  approverIds().map((reviewerId) => sendDirectMessage(reviewerId, reviewerPayload)),
+                );
+                if (!reviewerResults.some(Boolean)) {
+                  console.error("reviewer_dm_failed", { reviewId: review.id });
+                }
+                await reply(c.submitted);
+              } catch (err) {
+                console.error("review_submit_error", {
+                  message: err instanceof Error ? err.message : "unknown",
+                });
+                await reply(c.genericError);
+              }
+            });
+            return json(DEFER_EPHEMERAL);
+          }
+
           const { t } = await import("@/lib/purchase/discord-copy.server");
           const discord = await import("@/lib/purchase/discord.server");
           const tickets = await import("@/lib/purchase/tickets.server");
