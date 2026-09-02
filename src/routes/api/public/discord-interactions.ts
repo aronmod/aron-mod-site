@@ -126,8 +126,9 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
             const discord = await import("@/lib/purchase/discord.server");
             const { approverIds, getReview, markReviewed, reviewsChannelId, setPublicMessageId } =
               await import("@/lib/reviews/reviews.server");
-            const { publicReviewMessage, sendDirectMessage } =
+            const { publicReviewMessage, sendDirectMessage, repositionReviewPanel } =
               await import("@/lib/reviews/reviews-discord.server");
+
             const { rc } = await import("@/lib/reviews/reviews-copy.server");
             const reviewerId = userId ?? "";
             if (!approverIds().includes(reviewerId)) {
@@ -170,6 +171,8 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
                   if (!published.ok || !published.json?.id)
                     throw new Error("review_publish_failed");
                   await setPublicMessageId(updated.id, String(published.json.id));
+                  // Best-effort: keep the panel as the last message. Never rolls back.
+                  await repositionReviewPanel(channelId, reviewLanguage);
                 }
 
                 await discord.editOriginalInteraction(interactionToken, {
