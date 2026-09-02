@@ -178,3 +178,50 @@ export function publicReviewMessage(
     allowed_mentions: { parse: [] },
   };
 }
+
+/**
+ * Keeps the review panel as the last message of the channel: deletes every
+ * existing panel (identified via the `aron_review_open` component) and reposts
+ * the same panel content at the bottom. Never throws: callers must not roll
+ * back an already published review if this fails.
+ */
+export async function repositionReviewPanel(
+  channelId: string,
+  fallbackLocale: Locale,
+): Promise<boolean> {
+  try {
+    const {
+      listChannelMessages,
+      deleteChannelMessage,
+      sendChannelMessage: send,
+    } = await import("@/lib/purchase/discord.server");
+    const messages = await listChannelMessages(channelId, 100);
+    type PanelMessage = {
+      id?: string;
+      embeds?: unknown[];
+      components?: Array<{ components?: Array<{ custom_id?: string }> }>;
+    };
+    const list = (Array.isArray(messages.json) ? messages.json : []) as PanelMessage[];
+    const panels = list.filter((message) =>
+      message.components?.some((row) =>
+        row.components?.some((component) => component.custom_id === REVIEW_OPEN_ID),
+      ),
+    );
+    const source = panels[0];
+    const payload =
+      source && Array.isArray(source.embeds) && source.embeds.length > 0
+        ? { embeds: source.embeds, components: source.components }
+        : reviewPanelMessage(fallbackLocale);
+
+    for (const panel of panels) {
+      if (panel.id) await deleteChannelMessage(channelId, panel.id);
+    }
+    const res = await send(channelId, payload);
+    return res.ok;
+  } catch (err) {
+    console.error("review_panel_reposition_failed", {
+      message: err instanceof Error ? err.message : "unknown",
+    });
+    return false;
+  }
+}
