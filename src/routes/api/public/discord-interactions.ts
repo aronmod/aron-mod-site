@@ -175,7 +175,6 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
                   await repositionReviewPanel(channelId, reviewLanguage);
                 }
 
-
                 await discord.editOriginalInteraction(interactionToken, {
                   content: result === "approved" ? c.approved : c.rejected,
                   components: [],
