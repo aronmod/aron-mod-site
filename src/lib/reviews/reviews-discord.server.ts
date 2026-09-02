@@ -158,6 +158,9 @@ export function reviewerDmCard(
   };
 }
 
+/** Published review cards use blue #2563EB; the main panel stays purple. */
+export const REVIEW_BLUE = 0x2563eb;
+
 /** Public, fully anonymous post. No username, no mention, no user ID. */
 export function publicReviewMessage(
   locale: Locale,
@@ -167,7 +170,8 @@ export function publicReviewMessage(
   return {
     embeds: [
       {
-        color: DISCORD_PURPLE,
+        color: REVIEW_BLUE,
+
         title: stars(review.rating),
         description: review.body,
         footer: {
