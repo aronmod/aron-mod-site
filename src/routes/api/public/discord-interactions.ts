@@ -126,8 +126,9 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
             const discord = await import("@/lib/purchase/discord.server");
             const { approverIds, getReview, markReviewed, reviewsChannelId, setPublicMessageId } =
               await import("@/lib/reviews/reviews.server");
-            const { publicReviewMessage, sendDirectMessage } =
+            const { publicReviewMessage, sendDirectMessage, repositionReviewPanel } =
               await import("@/lib/reviews/reviews-discord.server");
+
             const { rc } = await import("@/lib/reviews/reviews-copy.server");
             const reviewerId = userId ?? "";
             if (!approverIds().includes(reviewerId)) {
