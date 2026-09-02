@@ -171,7 +171,10 @@ export const Route = createFileRoute("/api/public/discord-interactions")({
                   if (!published.ok || !published.json?.id)
                     throw new Error("review_publish_failed");
                   await setPublicMessageId(updated.id, String(published.json.id));
+                  // Best-effort: keep the panel as the last message. Never rolls back.
+                  await repositionReviewPanel(channelId, reviewLanguage);
                 }
+
 
                 await discord.editOriginalInteraction(interactionToken, {
                   content: result === "approved" ? c.approved : c.rejected,
